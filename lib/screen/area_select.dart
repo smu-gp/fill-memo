@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sp_client/localizations.dart';
 import 'package:sp_client/screen/result.dart';
 
@@ -15,12 +16,41 @@ class AreaSelectScreen extends StatefulWidget {
 }
 
 class _AreaSelectScreenState extends State<AreaSelectScreen> {
+  static const openCVChannel = const MethodChannel('spclient.smugp.com/opencv');
+
+  String _openCVVersionString;
+
+  @override
+  void initState() {
+    super.initState();
+    _getOpenCVVersion();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).get('title')),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            tooltip: 'OpenCV version',
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text('OpenCV version'),
+                        content: Text(_openCVVersionString),
+                        actions: <Widget>[
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('close'))
+                        ],
+                      ));
+            },
+          ),
           IconButton(
             icon: Icon(Icons.send),
             onPressed: () {
@@ -65,5 +95,12 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
     Navigator.pop(context);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => ResultScreen()));
+  }
+
+  Future<void> _getOpenCVVersion() async {
+    String versionString = await openCVChannel.invokeMethod("getVersionString");
+    setState(() {
+      _openCVVersionString = versionString;
+    });
   }
 }
