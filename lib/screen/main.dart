@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sp_client/localizations.dart';
+import 'package:sp_client/screen/area_select.dart';
+import 'package:sp_client/screen/result.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen();
@@ -20,20 +22,27 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).get('title')),
       ),
-      body: ListView(
-        children: <Widget>[
-          ListTile(
-            title: Text('Hello!'),
-            onTap: () {},
-          ),
-        ],
-      ),
+      body: _buildHistoryWidgets(),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Increment',
+        tooltip: AppLocalizations.of(context).get('add_image'),
         child: Icon(Icons.add_photo_alternate),
         onPressed: _showBottomSheet,
       ),
     );
+  }
+
+  Widget _buildHistoryWidgets() {
+    var histories = List<String>.generate(
+        10, (index) => '${new DateTime.now().toString()}');
+    return ListView.builder(
+        itemBuilder: (context, index) => ListTile(
+              title: Text(histories[index]),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ResultScreen()));
+              },
+            ),
+        itemCount: histories.length);
   }
 
   void _showBottomSheet() {
@@ -56,6 +65,7 @@ class _MainScreenState extends State<MainScreen> {
                       AppLocalizations.of(context).get('image_from_gallery')),
                   onTap: () {
                     _getImage(ImageSource.gallery);
+                    Navigator.pop(context);
                   },
                 ),
                 ListTile(
@@ -64,6 +74,7 @@ class _MainScreenState extends State<MainScreen> {
                       AppLocalizations.of(context).get('image_from_camera')),
                   onTap: () {
                     _getImage(ImageSource.camera);
+                    Navigator.pop(context);
                   },
                 )
               ],
@@ -74,5 +85,13 @@ class _MainScreenState extends State<MainScreen> {
 
   void _getImage(ImageSource src) async {
     var image = await ImagePicker.pickImage(source: src);
+    if (image != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AreaSelectScreen(
+                    selectImage: image,
+                  )));
+    }
   }
 }

@@ -2,5 +2,7 @@
   "title": "sp_client",
   "add_image": "이미지 추가",
   "image_from_gallery": "갤러리에서 선택",
-  "image_from_camera": "사진 촬영"
+  "image_from_camera": "사진 촬영",
+  "send_image": "이미지 보내기",
+  "dialog_send_image": "이미지 보내는 중..."
 }
