@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sp_client/localizations.dart';
-import 'package:sp_client/screen/result.dart';
+import 'package:sp_client/localization.dart';
+import 'package:sp_client/screen/result_screen.dart';
 
 class AreaSelectScreen extends StatefulWidget {
   final File selectImage;
@@ -30,7 +30,6 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).get('title')),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.info),
@@ -46,7 +45,7 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('close'))
+                              child: Text('CLOSE'))
                         ],
                       ));
             },
@@ -60,6 +59,7 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
             tooltip: AppLocalizations.of(context).get('send_image'),
           )
         ],
+        elevation: 0.0,
       ),
       backgroundColor: Colors.black,
       body: Center(child: Image.file(widget.selectImage)),

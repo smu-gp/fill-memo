@@ -1,5 +1,8 @@
 {
-  "title": "sp_client",
+  "app_name": "sp_client",
+  "title_history": "History",
+  "title_image_select": "Selected Image",
+  "title_result": "Result",
   "add_image": "Add Image",
   "image_from_gallery": "Select from gallery",
   "image_from_camera": "Take from camera",

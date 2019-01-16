@@ -1,14 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sp_client/localizations.dart';
+import 'package:sp_client/localization.dart';
+import 'package:sp_client/screen/main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen();
-
-  factory SplashScreen.forDesignTime() {
-    return new SplashScreen();
-  }
 
   @override
   State<StatefulWidget> createState() => _SplashScreenState();
@@ -30,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   BoxDecoration(color: Colors.black12, shape: BoxShape.circle)),
           Padding(
             padding: const EdgeInsets.only(bottom: 72.0),
-            child: Text(AppLocalizations.of(context).get('title'),
+            child: Text(AppLocalizations.of(context).get('app_name'),
                 style: Theme.of(context).textTheme.title),
           )
         ],
@@ -41,7 +38,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    _navigationMain();
+//    _startTimer();
   }
 
   _startTimer() async {
@@ -50,6 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _navigationMain() {
-    Navigator.of(context).pushReplacementNamed('/main');
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MainScreen()));
   }
 }
