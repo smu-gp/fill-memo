@@ -3,7 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/dependency_injection.dart';
 import 'package:sp_client/localization.dart';
+import 'package:sp_client/models.dart';
 import 'package:sp_client/screen/result_screen.dart';
 
 class AreaSelectScreen extends StatefulWidget {
@@ -18,6 +21,7 @@ class AreaSelectScreen extends StatefulWidget {
 class _AreaSelectScreenState extends State<AreaSelectScreen> {
   static const openCVChannel = const MethodChannel('spclient.smugp.com/opencv');
 
+  HistoryBloc _bloc;
   String _openCVVersionString;
 
   @override
@@ -28,6 +32,8 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var db = Injector.of(context).database;
+    _bloc = HistoryBloc(db);
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -52,9 +58,10 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
           ),
           IconButton(
             icon: Icon(Icons.send),
-            onPressed: () {
+            onPressed: () async {
               _showProgressDialog();
-              _startTimer();
+              var newHistory = await _writeHistory();
+              _navigationResult(newHistory.id);
             },
             tooltip: AppLocalizations.of(context).get('send_image'),
           )
@@ -75,23 +82,24 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
             content: Row(
               children: <Widget>[
                 CircularProgressIndicator(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Text(
-                      AppLocalizations.of(context).get('dialog_send_image')),
-                )
+                SizedBox(
+                  width: 24.0,
+                ),
+                Text(AppLocalizations.of(context).get('dialog_send_image'))
               ],
             ),
           );
         });
   }
 
-  _startTimer() async {
-    var _duration = new Duration(seconds: 3);
-    return Timer(_duration, _navigationResult);
+  Future<History> _writeHistory() {
+    var newHistory = History();
+    newHistory.sourceImage = widget.selectImage.path;
+    newHistory.createdAt = DateTime.now().millisecondsSinceEpoch;
+    return _bloc.create(newHistory);
   }
 
-  void _navigationResult() {
+  void _navigationResult(int historyId) {
     Navigator.pop(context);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => ResultScreen()));
