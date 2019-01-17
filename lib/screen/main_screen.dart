@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sp_client/bloc/history_bloc.dart';
@@ -34,14 +36,8 @@ class _MainScreenState extends State<MainScreen> {
             centerTitle: true,
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.bug_report),
-                onPressed: () {
-                  var history = History();
-                  history.createdAt = DateTime.now().millisecondsSinceEpoch;
-                  history.sourceImage = "Test";
-                  _bloc.create(history);
-                  _bloc.readAll();
-                },
+                icon: Icon(Icons.sort),
+                onPressed: () {},
               ),
               IconButton(
                 icon: Icon(Icons.settings),
@@ -85,11 +81,14 @@ class _MainScreenState extends State<MainScreen> {
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) => GridTile(
-                      child: Container(
-                        color: Colors.grey,
+                      child: Image.file(
+                        File(items[index].sourceImage),
+                        fit: BoxFit.cover,
                       ),
                       footer: GridTileBar(
-                        title: Text(items[index].createdAt.toString()),
+                        title: Text(DateTime.fromMillisecondsSinceEpoch(
+                                items[index].createdAt)
+                            .toString()),
                         backgroundColor: Colors.black45,
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
