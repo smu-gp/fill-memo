@@ -17,57 +17,67 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   HistoryBloc _bloc;
+  SortOrder _sortOrder = SortOrder.createdAtDes;
 
   @override
   Widget build(BuildContext context) {
     var db = Injector.of(context).database;
     _bloc = HistoryBloc(db);
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            title: Text(
-              AppLocalizations.of(context).get('title_history'),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+    return OrientationBuilder(
+      builder: (context, orientation) => Scaffold(
+            body: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  title: Text(
+                    AppLocalizations.of(context).get('title_history'),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  pinned: true,
+                  centerTitle: true,
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.sort),
+                      tooltip: AppLocalizations.of(context).get('sort'),
+                      onPressed: () {
+                        _showSortDialog();
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.settings),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    left: 4.0,
+                    right: 4.0,
+                    top: 4.0,
+                    bottom: 80.0,
+                  ),
+                  sliver: _buildHistories(orientation),
+                )
+              ],
             ),
-            pinned: true,
-            centerTitle: true,
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.sort),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {},
-              ),
-            ],
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: FloatingActionButton.extended(
+              tooltip: AppLocalizations.of(context).get('add_image'),
+              onPressed: _addImage,
+              icon: Icon(Icons.add),
+              label: Text(AppLocalizations.of(context).get('add_image')),
+            ),
           ),
-          SliverPadding(
-            padding: EdgeInsets.only(
-              left: 4.0,
-              right: 4.0,
-              top: 4.0,
-              bottom: 80.0,
-            ),
-            sliver: _buildHistories(),
-          )
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        tooltip: AppLocalizations.of(context).get('add_image'),
-        onPressed: _addImage,
-        icon: Icon(Icons.add),
-        label: Text(AppLocalizations.of(context).get('add_image')),
-      ),
     );
   }
 
-  Widget _buildHistories() {
-    _bloc.readAll();
+  Widget _buildHistories(Orientation orientation) {
+    _bloc.readAll(
+      orderBy:
+          '${History.columnCreatedAt} ${_sortOrder == SortOrder.createdAtAsc ? 'ASC' : 'DESC'}',
+    );
     return StreamBuilder(
         stream: _bloc.allData,
         builder: (context, AsyncSnapshot<List<History>> snapshot) {
@@ -77,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 mainAxisSpacing: 4.0,
                 crossAxisSpacing: 4.0,
-                crossAxisCount: 2,
+                crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) => GridTile(
@@ -110,6 +120,45 @@ class _MainScreenState extends State<MainScreen> {
             );
           }
         });
+  }
+
+  _showSortDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context).get('sort')),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 24.0,
+              horizontal: 0.0,
+            ),
+            content: Wrap(
+              children: <Widget>[
+                RadioListTile<SortOrder>(
+                    title: Text(
+                        AppLocalizations.of(context).get('order_created_des')),
+                    value: SortOrder.createdAtDes,
+                    groupValue: _sortOrder,
+                    onChanged: (value) {
+                      setState(() {
+                        _sortOrder = value;
+                        Navigator.pop(context);
+                      });
+                    }),
+                RadioListTile<SortOrder>(
+                    title: Text(
+                        AppLocalizations.of(context).get('order_created_asc')),
+                    value: SortOrder.createdAtAsc,
+                    groupValue: _sortOrder,
+                    onChanged: (value) {
+                      setState(() {
+                        _sortOrder = value;
+                        Navigator.pop(context);
+                      });
+                    }),
+              ],
+            ),
+          ),
+    );
   }
 
   _addImage() async {

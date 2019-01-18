@@ -7,5 +7,8 @@
   "image_from_gallery": "Select from gallery",
   "image_from_camera": "Take from camera",
   "send_image": "Send Image",
-  "dialog_send_image": "Send image..."
+  "dialog_send_image": "Send image...",
+  "sort": "Sort",
+  "order_created_asc": "Created Date Ascending",
+  "order_created_des": "Created Date Descending"
 }

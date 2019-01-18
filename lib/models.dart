@@ -62,4 +62,4 @@ class Result {
   }
 }
 
-enum SortOrder { dateAsc, dateDes }
+enum SortOrder { createdAtAsc, createdAtDes }

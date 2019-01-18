@@ -7,5 +7,8 @@
   "image_from_gallery": "갤러리에서 선택",
   "image_from_camera": "사진 촬영",
   "send_image": "이미지 보내기",
-  "dialog_send_image": "이미지 보내는 중..."
+  "dialog_send_image": "이미지 보내는 중...",
+  "sort": "정렬",
+  "order_created_asc": "만든 날짜 오름차순",
+  "order_created_des": "만든 날짜 내림차순"
 }
