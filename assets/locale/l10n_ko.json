@@ -10,5 +10,7 @@
   "dialog_send_image": "이미지 보내는 중...",
   "sort": "정렬",
   "order_created_asc": "만든 날짜 오름차순",
-  "order_created_des": "만든 날짜 내림차순"
+  "order_created_des": "만든 날짜 내림차순",
+  "undo": "되돌리기",
+  "item_deleted": "$ 삭제됨"
 }

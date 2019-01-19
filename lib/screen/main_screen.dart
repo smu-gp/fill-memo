@@ -25,41 +25,43 @@ class _MainScreenState extends State<MainScreen> {
     _bloc = HistoryBloc(db);
     return OrientationBuilder(
       builder: (context, orientation) => Scaffold(
-            body: CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  title: Text(
-                    AppLocalizations.of(context).get('title_history'),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+            body: Builder(
+              builder: (context) => CustomScrollView(
+                    slivers: <Widget>[
+                      SliverAppBar(
+                        title: Text(
+                          AppLocalizations.of(context).get('title_history'),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        pinned: true,
+                        centerTitle: true,
+                        actions: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.sort),
+                            tooltip: AppLocalizations.of(context).get('sort'),
+                            onPressed: () {
+                              _showSortDialog();
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.settings),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                      SliverPadding(
+                        padding: EdgeInsets.only(
+                          left: 4.0,
+                          right: 4.0,
+                          top: 4.0,
+                          bottom: 80.0,
+                        ),
+                        sliver: _buildHistories(context, orientation),
+                      )
+                    ],
                   ),
-                  pinned: true,
-                  centerTitle: true,
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.sort),
-                      tooltip: AppLocalizations.of(context).get('sort'),
-                      onPressed: () {
-                        _showSortDialog();
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.settings),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: 4.0,
-                    right: 4.0,
-                    top: 4.0,
-                    bottom: 80.0,
-                  ),
-                  sliver: _buildHistories(orientation),
-                )
-              ],
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
@@ -73,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildHistories(Orientation orientation) {
+  Widget _buildHistories(BuildContext context, Orientation orientation) {
     _bloc.readAll(
       orderBy:
           '${History.columnCreatedAt} ${_sortOrder == SortOrder.createdAtAsc ? 'ASC' : 'DESC'}',
@@ -104,7 +106,9 @@ class _MainScreenState extends State<MainScreen> {
                           icon: Icon(Icons.delete),
                           onPressed: () {
                             _bloc.delete(items[index].id);
-                            _bloc.readAll();
+                            Scaffold.of(context).showSnackBar(
+                                _buildDeleteHistorySnackBar(items[index]));
+                            setState(() {});
                           },
                         ),
                       ),
@@ -158,6 +162,23 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
           ),
+    );
+  }
+
+  _buildDeleteHistorySnackBar(History history) {
+    return SnackBar(
+      content: Text(AppLocalizations.of(context)
+          .get('item_deleted')
+          .replaceFirst(
+              '\$',
+              DateTime.fromMillisecondsSinceEpoch(history.createdAt)
+                  .toString())),
+      action: SnackBarAction(
+          label: AppLocalizations.of(context).get('undo'),
+          onPressed: () {
+            _bloc.create(history);
+            setState(() {});
+          }),
     );
   }
 

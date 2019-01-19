@@ -9,6 +9,8 @@
   "send_image": "Send Image",
   "dialog_send_image": "Send image...",
   "sort": "Sort",
-  "order_created_asc": "Created Date Ascending",
-  "order_created_des": "Created Date Descending"
+  "order_created_asc": "Created date ascending",
+  "order_created_des": "Created date descending",
+  "undo": "UNDO",
+  "item_deleted": "$ is deleted"
 }
