@@ -1,19 +1,22 @@
-import 'package:sp_client/bloc/base_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sp_client/models.dart';
 import 'package:sqflite/sqflite.dart';
 
-class HistoryBloc extends BaseBloc<History> {
-  HistoryBloc(Database db) : super(db);
+class HistoryBloc {
+  final Database _db;
+  final dataFetcher = PublishSubject<List<History>>();
 
-  @override
+  Observable<List<History>> get allData => dataFetcher.stream;
+
+  HistoryBloc(this._db);
+
   Future<History> create(History newObject) async {
-    newObject.id = await db.insert(History.tableName, newObject.toMap());
+    newObject.id = await _db.insert(History.tableName, newObject.toMap());
     return newObject;
   }
 
-  @override
   Future<History> read(int id) async {
-    var maps = await db.query(
+    var maps = await _db.query(
       History.tableName,
       columns: [
         History.columnId,
@@ -29,9 +32,8 @@ class HistoryBloc extends BaseBloc<History> {
     return null;
   }
 
-  @override
-  Future readAll({String orderBy}) async {
-    var maps = await db.query(
+  void readAll({String orderBy}) async {
+    var maps = await _db.query(
       History.tableName,
       columns: [
         History.columnId,
@@ -48,12 +50,15 @@ class HistoryBloc extends BaseBloc<History> {
     }
   }
 
-  @override
   Future<int> delete(int id) async {
-    return await db.delete(
+    return await _db.delete(
       History.tableName,
       where: '${History.columnId} = ?',
       whereArgs: [id],
     );
+  }
+
+  void dispose() {
+    dataFetcher.close();
   }
 }
