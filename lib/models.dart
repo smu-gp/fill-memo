@@ -8,7 +8,7 @@ class History {
   String sourceImage;
   int createdAt;
 
-  History();
+  History({this.id, this.sourceImage, this.createdAt});
 
   History.fromMap(Map<String, dynamic> map) {
     id = map[columnId];
@@ -40,7 +40,7 @@ class Result {
   String type;
   String content;
 
-  Result();
+  Result({this.id, this.historyId, this.type, this.content});
 
   Result.fromMap(Map<String, dynamic> map) {
     id = map[columnId];
