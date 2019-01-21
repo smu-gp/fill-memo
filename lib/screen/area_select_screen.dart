@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/bloc/result_bloc.dart';
 import 'package:sp_client/dependency_injection.dart';
 import 'package:sp_client/localization.dart';
 import 'package:sp_client/models.dart';
@@ -21,7 +22,8 @@ class AreaSelectScreen extends StatefulWidget {
 class _AreaSelectScreenState extends State<AreaSelectScreen> {
   static const openCVChannel = const MethodChannel('spclient.smugp.com/opencv');
 
-  HistoryBloc _bloc;
+  HistoryBloc _historyBloc;
+  ResultBloc _resultBloc;
   String _openCVVersionString;
 
   @override
@@ -33,7 +35,8 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
   @override
   Widget build(BuildContext context) {
     var db = Injector.of(context).database;
-    _bloc = HistoryBloc(db);
+    _historyBloc = HistoryBloc(db);
+    _resultBloc = ResultBloc(db);
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -61,6 +64,7 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
             onPressed: () async {
               _showProgressDialog();
               var newHistory = await _writeHistory();
+              _writeDummyResults(newHistory.id);
               _navigationResult(newHistory.id);
             },
             tooltip: AppLocalizations.of(context).get('send_image'),
@@ -93,16 +97,37 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
   }
 
   Future<History> _writeHistory() {
-    var newHistory = History();
-    newHistory.sourceImage = widget.selectImage.path;
-    newHistory.createdAt = DateTime.now().millisecondsSinceEpoch;
-    return _bloc.create(newHistory);
+    var newHistory = History(
+      sourceImage: widget.selectImage.path,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+    return _historyBloc.create(newHistory);
+  }
+
+  void _writeDummyResults(int historyId) {
+    var newTextResult = Result(
+      historyId: historyId,
+      type: 'text',
+      content: 'Test content',
+    );
+    _resultBloc.create(newTextResult);
+    var newImageResult = Result(
+      historyId: historyId,
+      type: 'image',
+      content:
+          'https://cdn-images-1.medium.com/max/1200/1*5-aoK8IBmXve5whBQM90GA.png',
+    );
+    _resultBloc.create(newImageResult);
   }
 
   void _navigationResult(int historyId) {
     Navigator.pop(context);
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => ResultScreen()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => ResultScreen(
+                  historyId: historyId,
+                )));
   }
 
   Future<void> _getOpenCVVersion() async {

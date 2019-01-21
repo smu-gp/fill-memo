@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/bloc/result_bloc.dart';
 import 'package:sp_client/dependency_injection.dart';
 import 'package:sp_client/localization.dart';
 import 'package:sp_client/models.dart';
 import 'package:sp_client/screen/area_select_screen.dart';
+import 'package:sp_client/screen/result_screen.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen();
@@ -16,13 +18,15 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  HistoryBloc _bloc;
+  HistoryBloc _historyBloc;
+  ResultBloc _resultBloc;
   SortOrder _sortOrder = SortOrder.createdAtDes;
 
   @override
   Widget build(BuildContext context) {
     var db = Injector.of(context).database;
-    _bloc = HistoryBloc(db);
+    _historyBloc = HistoryBloc(db);
+    _resultBloc = ResultBloc(db);
     return OrientationBuilder(
       builder: (context, orientation) => Scaffold(
             body: Builder(
@@ -41,9 +45,10 @@ class _MainScreenState extends State<MainScreen> {
                           IconButton(
                             icon: Icon(Icons.sort),
                             tooltip: AppLocalizations.of(context).get('sort'),
-                            onPressed: () {
-                              _showSortDialog();
-                            },
+                            onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) => _buildSortDialog(),
+                                ),
                           ),
                           IconButton(
                             icon: Icon(Icons.settings),
@@ -76,12 +81,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildHistories(BuildContext context, Orientation orientation) {
-    _bloc.readAll(
+    _historyBloc.readAll(
       orderBy:
           '${History.columnCreatedAt} ${_sortOrder == SortOrder.createdAtAsc ? 'ASC' : 'DESC'}',
     );
     return StreamBuilder(
-        stream: _bloc.allData,
+        stream: _historyBloc.allData,
         builder: (context, AsyncSnapshot<List<History>> snapshot) {
           if (snapshot.hasData && snapshot.data.isNotEmpty) {
             var items = snapshot.data;
@@ -93,9 +98,20 @@ class _MainScreenState extends State<MainScreen> {
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) => GridTile(
-                      child: Image.file(
-                        File(items[index].sourceImage),
+                      child: Ink.image(
+                        image: FileImage(File(items[index].sourceImage)),
                         fit: BoxFit.cover,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ResultScreen(
+                                        historyId: items[index].id,
+                                      ),
+                                ));
+                          },
+                        ),
                       ),
                       footer: GridTileBar(
                         title: Text(DateTime.fromMillisecondsSinceEpoch(
@@ -105,9 +121,17 @@ class _MainScreenState extends State<MainScreen> {
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {
-                            _bloc.delete(items[index].id);
-                            Scaffold.of(context).showSnackBar(
-                                _buildDeleteHistorySnackBar(items[index]));
+                            _historyBloc.delete(items[index].id);
+                            Scaffold.of(context)
+                                .showSnackBar(
+                                    _buildDeleteHistorySnackBar(items[index]))
+                                .closed
+                                .then((SnackBarClosedReason reason) {
+                              if (reason == SnackBarClosedReason.timeout ||
+                                  reason == SnackBarClosedReason.swipe) {
+                                _resultBloc.deleteByHistoryId(items[index].id);
+                              }
+                            });
                             setState(() {});
                           },
                         ),
@@ -126,42 +150,39 @@ class _MainScreenState extends State<MainScreen> {
         });
   }
 
-  _showSortDialog() async {
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context).get('sort')),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 24.0,
-              horizontal: 0.0,
-            ),
-            content: Wrap(
-              children: <Widget>[
-                RadioListTile<SortOrder>(
-                    title: Text(
-                        AppLocalizations.of(context).get('order_created_des')),
-                    value: SortOrder.createdAtDes,
-                    groupValue: _sortOrder,
-                    onChanged: (value) {
-                      setState(() {
-                        _sortOrder = value;
-                        Navigator.pop(context);
-                      });
-                    }),
-                RadioListTile<SortOrder>(
-                    title: Text(
-                        AppLocalizations.of(context).get('order_created_asc')),
-                    value: SortOrder.createdAtAsc,
-                    groupValue: _sortOrder,
-                    onChanged: (value) {
-                      setState(() {
-                        _sortOrder = value;
-                        Navigator.pop(context);
-                      });
-                    }),
-              ],
-            ),
-          ),
+  _buildSortDialog() {
+    return AlertDialog(
+      title: Text(AppLocalizations.of(context).get('sort')),
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 24.0,
+        horizontal: 0.0,
+      ),
+      content: Wrap(
+        children: <Widget>[
+          RadioListTile<SortOrder>(
+              title:
+                  Text(AppLocalizations.of(context).get('order_created_des')),
+              value: SortOrder.createdAtDes,
+              groupValue: _sortOrder,
+              onChanged: (value) {
+                setState(() {
+                  _sortOrder = value;
+                  Navigator.pop(context);
+                });
+              }),
+          RadioListTile<SortOrder>(
+              title:
+                  Text(AppLocalizations.of(context).get('order_created_asc')),
+              value: SortOrder.createdAtAsc,
+              groupValue: _sortOrder,
+              onChanged: (value) {
+                setState(() {
+                  _sortOrder = value;
+                  Navigator.pop(context);
+                });
+              }),
+        ],
+      ),
     );
   }
 
@@ -176,39 +197,41 @@ class _MainScreenState extends State<MainScreen> {
       action: SnackBarAction(
           label: AppLocalizations.of(context).get('undo'),
           onPressed: () {
-            _bloc.create(history);
+            _historyBloc.create(history);
             setState(() {});
           }),
+    );
+  }
+
+  _buildBottomSheet() {
+    return Container(
+      child: Wrap(
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.image),
+            title: Text(AppLocalizations.of(context).get('image_from_gallery')),
+            onTap: () {
+              _getImage(ImageSource.gallery);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.photo_camera),
+            title: Text(AppLocalizations.of(context).get('image_from_camera')),
+            onTap: () {
+              _getImage(ImageSource.camera);
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
     );
   }
 
   _addImage() async {
     await showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(Icons.image),
-                  title: Text(
-                      AppLocalizations.of(context).get('image_from_gallery')),
-                  onTap: () {
-                    _getImage(ImageSource.gallery);
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.photo_camera),
-                  title: Text(
-                      AppLocalizations.of(context).get('image_from_camera')),
-                  onTap: () {
-                    _getImage(ImageSource.camera);
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ),
-          ),
+      builder: (context) => _buildBottomSheet(),
     );
   }
 
