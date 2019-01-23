@@ -33,6 +33,13 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
   }
 
   @override
+  void dispose() {
+    _historyBloc.dispose();
+    _resultBloc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var db = Injector.of(context).database;
     _historyBloc = HistoryBloc(db);

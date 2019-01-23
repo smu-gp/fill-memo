@@ -23,6 +23,13 @@ class _MainScreenState extends State<MainScreen> {
   SortOrder _sortOrder = SortOrder.createdAtDes;
 
   @override
+  void dispose() {
+    _historyBloc.dispose();
+    _resultBloc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var db = Injector.of(context).database;
     _historyBloc = HistoryBloc(db);

@@ -18,6 +18,12 @@ class _ResultScreenState extends State<ResultScreen> {
   ResultBloc _bloc;
 
   @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var db = Injector.of(context).database;
     _bloc = ResultBloc(db);
