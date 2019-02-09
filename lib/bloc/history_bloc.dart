@@ -5,7 +5,7 @@ import 'package:sp_client/model/sort_order.dart';
 import 'package:sp_client/repository/base_repository.dart';
 
 class HistoryBloc extends BaseBloc {
-  final BaseRepository<History> _historyInteractor;
+  final BaseRepository<History> _historyRepository;
   final _dataFetcher = BehaviorSubject<List<History>>();
   final _sortOrderController = BehaviorSubject<SortOrder>(
     seedValue: SortOrder.createdAtDes,
@@ -16,24 +16,24 @@ class HistoryBloc extends BaseBloc {
 
   Observable<SortOrder> get activeSortOrder => _sortOrderController.stream;
 
-  HistoryBloc(this._historyInteractor) {
+  HistoryBloc(this._historyRepository) {
     activeSortOrder.listen((sortOrder) => readAll());
   }
 
   Future<History> create(History newObject) {
-    var created = _historyInteractor.create(newObject);
+    var created = _historyRepository.create(newObject);
     readAll();
     return created;
   }
 
-  Future<History> readById(int id) => _historyInteractor.readById(id);
+  Future<History> readById(int id) => _historyRepository.readById(id);
 
   Future readAll() async {
     var orderBy = History.columnCreatedAt +
         (_sortOrderController.value == SortOrder.createdAtAsc
             ? ' ASC'
             : ' DESC');
-    var list = await _historyInteractor.readAll(orderBy: orderBy);
+    var list = await _historyRepository.readAll(orderBy: orderBy);
     _dataFetcher.add(list);
   }
 
@@ -46,7 +46,7 @@ class HistoryBloc extends BaseBloc {
         },
       )),
     );
-    return _historyInteractor.delete(id);
+    return _historyRepository.delete(id);
   }
 
   void updateSort(SortOrder order) => _sortOrderController.add(order);
