@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/bloc/history_bloc_provider.dart';
 import 'package:sp_client/bloc/result_bloc.dart';
-import 'package:sp_client/dependency_injection.dart';
-import 'package:sp_client/localization.dart';
-import 'package:sp_client/models.dart';
+import 'package:sp_client/bloc/result_bloc_provider.dart';
+import 'package:sp_client/model/history.dart';
+import 'package:sp_client/model/result.dart';
 import 'package:sp_client/screen/result_screen.dart';
+import 'package:sp_client/util/localization.dart';
 
 class AreaSelectScreen extends StatefulWidget {
   final File selectImage;
@@ -33,17 +35,9 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
   }
 
   @override
-  void dispose() {
-    _historyBloc.dispose();
-    _resultBloc.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var db = Injector.of(context).database;
-    _historyBloc = HistoryBloc(db);
-    _resultBloc = ResultBloc(db);
+    _historyBloc = HistoryBlocProvider.of(context);
+    _resultBloc = ResultBlocProvider.of(context);
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[

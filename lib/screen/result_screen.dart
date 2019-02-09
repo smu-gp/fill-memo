@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sp_client/bloc/result_bloc.dart';
-import 'package:sp_client/dependency_injection.dart';
-import 'package:sp_client/localization.dart';
-import 'package:sp_client/models.dart';
+import 'package:sp_client/bloc/result_bloc_provider.dart';
+import 'package:sp_client/model/result.dart';
+import 'package:sp_client/util/localization.dart';
 
 class ResultScreen extends StatefulWidget {
   final int historyId;
@@ -18,15 +18,8 @@ class _ResultScreenState extends State<ResultScreen> {
   ResultBloc _bloc;
 
   @override
-  void dispose() {
-    _bloc.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var db = Injector.of(context).database;
-    _bloc = ResultBloc(db);
+    _bloc = ResultBlocProvider.of(context);
     return Scaffold(
       body: Builder(
         builder: (context) => CustomScrollView(

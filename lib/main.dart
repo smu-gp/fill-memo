@@ -1,12 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:sp_client/app.dart';
-import 'package:sp_client/bloc/db_provider.dart';
-import 'package:sp_client/dependency_injection.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/bloc/history_bloc_provider.dart';
+import 'package:sp_client/bloc/result_bloc.dart';
+import 'package:sp_client/bloc/result_bloc_provider.dart';
+import 'package:sp_client/repository/database_builder.dart';
+import 'package:sp_client/repository/history_repository.dart';
+import 'package:sp_client/repository/result_repository.dart';
+import 'package:sp_client/screen/main_screen.dart';
+import 'package:sp_client/util/localization.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() async {
-  var db = await dbProvider.database;
-  runApp(Injector(
-    database: db,
-    child: App(),
-  ));
+  final db = await databaseBuilder.database;
+  runApp(App(db));
+}
+
+class App extends StatelessWidget {
+  final Database database;
+
+  App(this.database);
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: Colors.white,
+      systemNavigationBarColor: null,
+    ));
+    return HistoryBlocProvider(
+      bloc: HistoryBloc(HistoryRepository(database)),
+      child: ResultBlocProvider(
+        bloc: ResultBloc(ResultRepository(database)),
+        child: MaterialApp(
+          onGenerateTitle: (context) =>
+              AppLocalizations.of(context).get('app_name'),
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: Colors.white,
+            accentColor: Color(0xFFFF6F61),
+          ),
+          localizationsDelegates: [
+            const AppLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', 'US'),
+            const Locale('ko', 'KR'),
+          ],
+          home: MainScreen(),
+          debugShowCheckedModeBanner: false,
+        ),
+      ),
+    );
+  }
 }

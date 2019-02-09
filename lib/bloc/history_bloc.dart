@@ -1,64 +1,59 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:sp_client/models.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sp_client/bloc/base_bloc.dart';
+import 'package:sp_client/model/history.dart';
+import 'package:sp_client/model/sort_order.dart';
+import 'package:sp_client/repository/base_repository.dart';
 
-class HistoryBloc {
-  final Database _db;
-  final dataFetcher = PublishSubject<List<History>>();
+class HistoryBloc extends BaseBloc {
+  final BaseRepository<History> _historyInteractor;
+  final _dataFetcher = BehaviorSubject<List<History>>();
+  final _sortOrderController = BehaviorSubject<SortOrder>(
+    seedValue: SortOrder.createdAtDes,
+    sync: true,
+  );
 
-  Observable<List<History>> get allData => dataFetcher.stream;
+  Observable<List<History>> get allData => _dataFetcher.stream;
 
-  HistoryBloc(this._db);
+  Observable<SortOrder> get activeSortOrder => _sortOrderController.stream;
 
-  Future<History> create(History newObject) async {
-    newObject.id = await _db.insert(History.tableName, newObject.toMap());
-    return newObject;
+  HistoryBloc(this._historyInteractor) {
+    activeSortOrder.listen((sortOrder) => readAll());
   }
 
-  Future<History> read(int id) async {
-    var maps = await _db.query(
-      History.tableName,
-      columns: [
-        History.columnId,
-        History.columnSourceImage,
-        History.columnCreatedAt,
-      ],
-      where: '${History.columnId} = ?',
-      whereArgs: [id],
+  Future<History> create(History newObject) {
+    var created = _historyInteractor.create(newObject);
+    readAll();
+    return created;
+  }
+
+  Future<History> readById(int id) => _historyInteractor.readById(id);
+
+  Future readAll() async {
+    var orderBy = History.columnCreatedAt +
+        (_sortOrderController.value == SortOrder.createdAtAsc
+            ? ' ASC'
+            : ' DESC');
+    var list = await _historyInteractor.readAll(orderBy: orderBy);
+    _dataFetcher.add(list);
+  }
+
+  Future<bool> delete(int id) {
+    _dataFetcher.add(
+      List.unmodifiable(_dataFetcher.value.fold<List<History>>(
+        [],
+        (prev, entity) {
+          return id == entity.id ? prev : (prev..add(entity));
+        },
+      )),
     );
-    if (maps.length > 0) {
-      return History.fromMap(maps.first);
-    }
-    return null;
+    return _historyInteractor.delete(id);
   }
 
-  void readAll({String orderBy}) async {
-    var maps = await _db.query(
-      History.tableName,
-      columns: [
-        History.columnId,
-        History.columnSourceImage,
-        History.columnCreatedAt,
-      ],
-      orderBy: orderBy,
-    );
-    if (maps.length > 0) {
-      var list = maps.map((map) => History.fromMap(map)).toList();
-      dataFetcher.sink.add(list);
-    } else {
-      dataFetcher.sink.add([]);
-    }
-  }
+  void updateSort(SortOrder order) => _sortOrderController.add(order);
 
-  Future<int> delete(int id) async {
-    return await _db.delete(
-      History.tableName,
-      where: '${History.columnId} = ?',
-      whereArgs: [id],
-    );
-  }
-
+  @override
   void dispose() {
-    dataFetcher.close();
+    _dataFetcher.close();
+    _sortOrderController.close();
   }
 }

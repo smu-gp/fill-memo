@@ -1,49 +1,27 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:sp_client/models.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sp_client/bloc/base_bloc.dart';
+import 'package:sp_client/model/result.dart';
+import 'package:sp_client/repository/base_repository.dart';
 
-class ResultBloc {
-  final Database _db;
-  final dataFetcher = PublishSubject<List<Result>>();
+class ResultBloc extends BaseBloc {
+  final BaseResultRepository _resultInteractor;
+  final _dataFetcher = PublishSubject<List<Result>>();
 
-  Observable<List<Result>> get allData => dataFetcher.stream;
+  Observable<List<Result>> get allData => _dataFetcher.stream;
 
-  ResultBloc(this._db);
+  ResultBloc(this._resultInteractor);
 
-  Future<Result> create(Result newObject) async {
-    newObject.id = await _db.insert(Result.tableName, newObject.toMap());
-    return newObject;
-  }
+  Future<Result> create(Result newObject) =>
+      _resultInteractor.create(newObject);
 
-  Future readByHistoryId(int historyId) async {
-    var maps = await _db.query(
-      Result.tableName,
-      columns: [
-        Result.columnId,
-        Result.columnHistoryId,
-        Result.columnType,
-        Result.columnContent,
-      ],
-      where: '${Result.columnHistoryId} = ?',
-      whereArgs: [historyId],
-    );
-    if (maps.length > 0) {
-      var list = maps.map((map) => Result.fromMap(map)).toList();
-      dataFetcher.sink.add(list);
-    } else {
-      dataFetcher.sink.add([]);
-    }
-  }
+  Future<List<Result>> readByHistoryId(int historyId) =>
+      _resultInteractor.readByHistoryId(historyId);
 
-  Future<int> deleteByHistoryId(int historyId) async {
-    return await _db.delete(
-      Result.tableName,
-      where: '${Result.columnHistoryId} = ?',
-      whereArgs: [historyId],
-    );
-  }
+  Future<int> deleteByHistoryId(int historyId) =>
+      _resultInteractor.deleteByHistoryId(historyId);
 
+  @override
   dispose() {
-    dataFetcher.close();
+    _dataFetcher.close();
   }
 }

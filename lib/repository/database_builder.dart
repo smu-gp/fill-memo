@@ -1,13 +1,14 @@
 import 'package:path/path.dart';
-import 'package:sp_client/models.dart';
+import 'package:sp_client/model/history.dart';
+import 'package:sp_client/model/result.dart';
 import 'package:sqflite/sqflite.dart';
 
-final DBProvider dbProvider = DBProvider._();
+final DatabaseBuilder databaseBuilder = DatabaseBuilder._();
 
-class DBProvider {
+class DatabaseBuilder {
   static Database _database;
 
-  DBProvider._();
+  DatabaseBuilder._();
 
   Future<Database> get database async {
     if (_database != null) {

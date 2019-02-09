@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sp_client/localization.dart';
 import 'package:sp_client/screen/main_screen.dart';
+import 'package:sp_client/util/localization.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen();
