@@ -5,22 +5,27 @@ import 'package:sp_client/bloc/history_bloc.dart';
 import 'package:sp_client/bloc/history_bloc_provider.dart';
 import 'package:sp_client/bloc/result_bloc.dart';
 import 'package:sp_client/bloc/result_bloc_provider.dart';
+import 'package:sp_client/model/history.dart';
+import 'package:sp_client/repository/base_repository.dart';
 import 'package:sp_client/repository/database_builder.dart';
 import 'package:sp_client/repository/history_repository.dart';
 import 'package:sp_client/repository/result_repository.dart';
 import 'package:sp_client/screen/main_screen.dart';
 import 'package:sp_client/util/localization.dart';
-import 'package:sqflite/sqflite.dart';
 
 void main() async {
   final db = await databaseBuilder.database;
-  runApp(App(db));
+  runApp(App(
+    historyRepository: HistoryRepository(db),
+    resultRepository: ResultRepository(db),
+  ));
 }
 
 class App extends StatelessWidget {
-  final Database database;
+  final BaseRepository<History> historyRepository;
+  final BaseResultRepository resultRepository;
 
-  App(this.database);
+  App({this.historyRepository, this.resultRepository});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +34,9 @@ class App extends StatelessWidget {
       systemNavigationBarColor: null,
     ));
     return HistoryBlocProvider(
-      bloc: HistoryBloc(HistoryRepository(database)),
+      bloc: HistoryBloc(historyRepository),
       child: ResultBlocProvider(
-        bloc: ResultBloc(ResultRepository(database)),
+        bloc: ResultBloc(resultRepository),
         child: MaterialApp(
           onGenerateTitle: (context) =>
               AppLocalizations.of(context).get('app_name'),
