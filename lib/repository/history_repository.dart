@@ -2,7 +2,7 @@ import 'package:sp_client/model/history.dart';
 import 'package:sp_client/repository/base_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class HistoryRepository implements BaseRepository<History> {
+class HistoryRepository implements BaseHistoryRepository {
   final Database _db;
 
   HistoryRepository(this._db);
@@ -32,7 +32,8 @@ class HistoryRepository implements BaseRepository<History> {
   }
 
   @override
-  Future<List<History>> readAll({String orderBy}) async {
+  Future<List<History>> readAll(
+      {String sortColumn, bool sortAscending = true}) async {
     var maps = await _db.query(
       History.tableName,
       columns: [
@@ -40,7 +41,7 @@ class HistoryRepository implements BaseRepository<History> {
         History.columnSourceImage,
         History.columnCreatedAt,
       ],
-      orderBy: orderBy,
+      orderBy: '$sortColumn ${sortAscending ? "ASC" : "DESC"}',
     );
     return (maps.length > 0
         ? maps.map((map) => History.fromMap(map)).toList()

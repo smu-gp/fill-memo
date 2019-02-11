@@ -5,7 +5,7 @@ import 'package:sp_client/model/sort_order.dart';
 import 'package:sp_client/repository/base_repository.dart';
 
 class HistoryBloc extends BaseBloc {
-  final BaseRepository<History> _historyRepository;
+  final BaseHistoryRepository _historyRepository;
   final _dataFetcher = BehaviorSubject<List<History>>();
   final _sortOrderController = BehaviorSubject<SortOrder>(
     seedValue: SortOrder.createdAtDes,
@@ -29,11 +29,9 @@ class HistoryBloc extends BaseBloc {
   Future<History> readById(int id) => _historyRepository.readById(id);
 
   Future readAll() async {
-    var orderBy = History.columnCreatedAt +
-        (_sortOrderController.value == SortOrder.createdAtAsc
-            ? ' ASC'
-            : ' DESC');
-    var list = await _historyRepository.readAll(orderBy: orderBy);
+    var list = await _historyRepository.readAll(
+        sortColumn: History.columnCreatedAt,
+        sortAscending: _sortOrderController.value == SortOrder.createdAtAsc);
     _dataFetcher.add(list);
   }
 

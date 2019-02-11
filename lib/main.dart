@@ -5,7 +5,6 @@ import 'package:sp_client/bloc/history_bloc.dart';
 import 'package:sp_client/bloc/history_bloc_provider.dart';
 import 'package:sp_client/bloc/result_bloc.dart';
 import 'package:sp_client/bloc/result_bloc_provider.dart';
-import 'package:sp_client/model/history.dart';
 import 'package:sp_client/repository/base_repository.dart';
 import 'package:sp_client/repository/database_builder.dart';
 import 'package:sp_client/repository/history_repository.dart';
@@ -22,7 +21,7 @@ void main() async {
 }
 
 class App extends StatelessWidget {
-  final BaseRepository<History> historyRepository;
+  final BaseHistoryRepository historyRepository;
   final BaseResultRepository resultRepository;
 
   App({this.historyRepository, this.resultRepository});

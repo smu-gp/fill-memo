@@ -51,23 +51,6 @@ class ResultRepository implements BaseResultRepository {
   }
 
   @override
-  Future<List<Result>> readAll({String orderBy}) async {
-    var maps = await _db.query(
-      Result.tableName,
-      columns: [
-        Result.columnId,
-        Result.columnHistoryId,
-        Result.columnType,
-        Result.columnContent,
-      ],
-      orderBy: orderBy,
-    );
-    return (maps.length > 0
-        ? maps.map((map) => Result.fromMap(map)).toList()
-        : []);
-  }
-
-  @override
   Future<int> deleteByHistoryId(int historyId) async {
     var deleted = await _db.delete(
       Result.tableName,
