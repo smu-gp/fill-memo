@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sp_client/bloc/history_bloc_provider.dart';
 import 'package:sp_client/bloc/result_bloc_provider.dart';
 import 'package:sp_client/model/history.dart';
+import 'package:sp_client/screen/result_screen.dart';
 import 'package:sp_client/util/localization.dart';
 
 class HistoryItem extends StatelessWidget {
@@ -23,7 +24,12 @@ class HistoryItem extends StatelessWidget {
         image: FileImage(File(history.sourceImage)),
         fit: BoxFit.cover,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ResultScreen(historyId: history.id)));
+          },
         ),
       ),
       footer: GridTileBar(

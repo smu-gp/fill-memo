@@ -5,7 +5,7 @@ import 'package:sp_client/repository/base_repository.dart';
 
 class ResultBloc extends BaseBloc {
   final BaseResultRepository _resultRepository;
-  final _dataFetcher = PublishSubject<List<Result>>();
+  final _dataFetcher = BehaviorSubject<List<Result>>();
 
   Observable<List<Result>> get allData => _dataFetcher.stream;
 
@@ -14,8 +14,10 @@ class ResultBloc extends BaseBloc {
   Future<Result> create(Result newObject) =>
       _resultRepository.create(newObject);
 
-  Future<List<Result>> readByHistoryId(int historyId) =>
-      _resultRepository.readByHistoryId(historyId);
+  Future readByHistoryId(int historyId) async {
+    var list = await _resultRepository.readByHistoryId(historyId);
+    _dataFetcher.add(list);
+  }
 
   Future<int> deleteByHistoryId(int historyId) =>
       _resultRepository.deleteByHistoryId(historyId);

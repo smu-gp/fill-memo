@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:sp_client/bloc/result_bloc.dart';
-import 'package:sp_client/bloc/result_bloc_provider.dart';
-import 'package:sp_client/model/result.dart';
 import 'package:sp_client/util/localization.dart';
+import 'package:sp_client/widget/result_list.dart';
 
 class ResultScreen extends StatefulWidget {
   final int historyId;
@@ -15,11 +12,8 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  ResultBloc _bloc;
-
   @override
   Widget build(BuildContext context) {
-    _bloc = ResultBlocProvider.of(context);
     return Scaffold(
       body: Builder(
         builder: (context) => CustomScrollView(
@@ -36,46 +30,13 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
                 SliverPadding(
                   padding: EdgeInsets.all(8.0),
-                  sliver: _buildResults(context),
+                  sliver: ResultList(
+                    historyId: widget.historyId,
+                  ),
                 )
               ],
             ),
       ),
     );
-  }
-
-  Widget _buildResults(BuildContext context) {
-    _bloc.readByHistoryId(widget.historyId);
-    return StreamBuilder(
-        stream: _bloc.allData,
-        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-          if (snapshot.hasData) {
-            var items = snapshot.data;
-            return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  var item = items[index];
-                  return ListTile(
-                    leading: Text('#${index + 1}'),
-                    title: (item.type == 'text'
-                        ? Text(item.content)
-                        : Image.network(item.content)),
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: item.content));
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text(item.content),
-                      ));
-                    },
-                  );
-                },
-                childCount: items.length,
-              ),
-            );
-          } else {
-            return SliverList(
-              delegate: SliverChildListDelegate([]),
-            );
-          }
-        });
   }
 }
