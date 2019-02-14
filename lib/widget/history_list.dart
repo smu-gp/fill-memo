@@ -1,7 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sp_client/bloc/history_bloc_provider.dart';
 import 'package:sp_client/model/history.dart';
+import 'package:sp_client/util/util.dart';
 import 'package:sp_client/widget/history_item.dart';
+import 'package:sp_client/widget/sub_header.dart';
 
 class HistoryList extends StatelessWidget {
   @override
@@ -10,28 +13,45 @@ class HistoryList extends StatelessWidget {
       stream: HistoryBlocProvider.of(context).allData,
       builder: (BuildContext context, AsyncSnapshot<List<History>> snapshot) =>
           snapshot.hasData && snapshot.data.isNotEmpty
-              ? _buildList(snapshot.data)
+              ? OrientationBuilder(
+                  builder: (BuildContext context, Orientation orientation) {
+                  return CustomScrollView(
+                    slivers: _buildList(snapshot.data, orientation),
+                  );
+                })
               : Text('Empty data'),
     );
   }
 
-  Widget _buildList(List<History> histories) {
-    return OrientationBuilder(
-        builder: (BuildContext context, Orientation orientation) {
-      return GridView.count(
-        crossAxisCount: (orientation == Orientation.portrait ? 2 : 4),
+  List<Widget> _buildList(List<History> histories, Orientation orientation) {
+    var items = List<Widget>();
+    groupBy(
+      histories,
+      (History history) => Util.formatDate(history.createdAt),
+    ).forEach((date, histories) {
+      items..add(SubHeader(date))..add(_buildGrid(histories, orientation));
+    });
+    items.add(
+      SliverToBoxAdapter(
+        child: SizedBox(
+          height: 80.0,
+        ),
+      ),
+    );
+    return items;
+  }
+
+  Widget _buildGrid(List<History> histories, Orientation orientation) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+      sliver: SliverGrid.count(
+        crossAxisCount: (orientation == Orientation.portrait ? 3 : 5),
         mainAxisSpacing: 4.0,
         crossAxisSpacing: 4.0,
-        padding: const EdgeInsets.only(
-          left: 4.0,
-          right: 4.0,
-          top: 4.0,
-          bottom: 80.0,
-        ),
         children: histories.map<Widget>((history) {
           return HistoryItem(history);
         }).toList(),
-      );
-    });
+      ),
+    );
   }
 }

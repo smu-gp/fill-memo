@@ -16,36 +16,31 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              title: Text(
-                AppLocalizations.of(context).get('title_history'),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context).get('title_history'),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevation: 0.0,
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.sort),
+            tooltip: AppLocalizations.of(context).get('sort'),
+            onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => SortDialog(),
                 ),
-              ),
-              pinned: true,
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.sort),
-                  tooltip: AppLocalizations.of(context).get('sort'),
-                  onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) => SortDialog(),
-                      ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ];
-        },
-        body: HistoryList(),
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {},
+          ),
+        ],
       ),
+      body: HistoryList(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         tooltip: AppLocalizations.of(context).get('add_image'),

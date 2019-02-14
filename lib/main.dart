@@ -40,10 +40,13 @@ class App extends StatelessWidget {
           onGenerateTitle: (context) =>
               AppLocalizations.of(context).get('app_name'),
           theme: ThemeData(
-            brightness: Brightness.light,
-            primaryColor: Colors.white,
-            accentColor: Color(0xFFFF6F61),
-          ),
+              brightness: Brightness.light,
+              primaryColor: Colors.white,
+              accentColor: Color(0xFFFF6F61),
+              textTheme: TextTheme(
+                subtitle:
+                    TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+              )),
           localizationsDelegates: [
             const AppLocalizationsDelegate(),
             GlobalMaterialLocalizations.delegate,
