@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sp_client/bloc/history_bloc_provider.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/util/util.dart';
+import 'package:sp_client/widget/empty_history.dart';
 import 'package:sp_client/widget/history_item.dart';
 import 'package:sp_client/widget/sub_header.dart';
 
@@ -19,7 +20,7 @@ class HistoryList extends StatelessWidget {
                     slivers: _buildList(snapshot.data, orientation),
                   );
                 })
-              : Text('Empty data'),
+              : EmptyHistory(),
     );
   }
 
