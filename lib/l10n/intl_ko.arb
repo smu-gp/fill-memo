@@ -1,0 +1,76 @@
+{
+  "@@locale": "ko",
+  "@@last_modified": "2019-02-17T15:07:10.800796",
+  "appName": "sp_client",
+  "@appName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleHistory": "기록",
+  "@titleHistory": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleImageSelect": "선택한 이미지",
+  "@titleImageSelect": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleResult": "결과",
+  "@titleResult": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionAddImage": "이미지 추가",
+  "@actionAddImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSort": "정렬",
+  "@actionSort": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionUndo": "되돌리기",
+  "@actionUndo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSendImage": "이미지 보내기",
+  "@actionSendImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromGallery": "갤러리에서 선택",
+  "@imageFromGallery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromCamera": "사진 촬영",
+  "@imageFromCamera": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogSendImage": "이미지 보내는 중...",
+  "@dialogSendImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedAsc": "추가한 날짜 오름차순",
+  "@orderCreatedAsc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedDes": "추가한 날짜 내림차순",
+  "@orderCreatedDes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "itemDeleted": "{itemName} 삭제됨",
+  "@itemDeleted": {
+    "type": "text",
+    "placeholders": {
+      "itemName": {}
+    }
+  }
+}

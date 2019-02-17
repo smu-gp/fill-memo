@@ -1,0 +1,76 @@
+{
+  "@@locale": "messages",
+  "@@last_modified": "2019-02-17T15:39:14.762141",
+  "appName": "sp_client",
+  "@appName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleHistory": "History",
+  "@titleHistory": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleImageSelect": "Selected Image",
+  "@titleImageSelect": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleResult": "Result",
+  "@titleResult": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionAddImage": "Add Image",
+  "@actionAddImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSort": "Sort",
+  "@actionSort": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionUndo": "Undo",
+  "@actionUndo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSendImage": "Send Image",
+  "@actionSendImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromGallery": "Select from gallery",
+  "@imageFromGallery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromCamera": "Take from camera",
+  "@imageFromCamera": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogSendImage": "Send image...",
+  "@dialogSendImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedAsc": "Created date ascending",
+  "@orderCreatedAsc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedDes": "Created date descending",
+  "@orderCreatedDes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "itemDeleted": "{itemName} is deleted",
+  "@itemDeleted": {
+    "type": "text",
+    "placeholders": {
+      "itemName": {}
+    }
+  }
+}
