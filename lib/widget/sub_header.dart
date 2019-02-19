@@ -10,12 +10,19 @@ class SubHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      sliver: SliverToBoxAdapter(
-        child: Text(
-          content,
-          style: Theme.of(context).textTheme.subtitle,
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: 48.0,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+            child: Text(
+              content,
+              style: Theme.of(context).textTheme.subhead,
+            ),
+          ),
         ),
       ),
     );
