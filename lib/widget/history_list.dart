@@ -5,23 +5,28 @@ import 'package:sp_client/model/history.dart';
 import 'package:sp_client/util/util.dart';
 import 'package:sp_client/widget/empty_history.dart';
 import 'package:sp_client/widget/history_item.dart';
+import 'package:sp_client/widget/loading_history.dart';
 import 'package:sp_client/widget/sub_header.dart';
 
 class HistoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<History>>(
-      stream: HistoryBlocProvider.of(context).allData,
-      builder: (BuildContext context, AsyncSnapshot<List<History>> snapshot) =>
-          snapshot.hasData && snapshot.data.isNotEmpty
-              ? OrientationBuilder(
-                  builder: (BuildContext context, Orientation orientation) {
-                  return CustomScrollView(
-                    slivers: _buildList(snapshot.data, orientation),
-                  );
-                })
-              : EmptyHistory(),
-    );
+        stream: HistoryBlocProvider.of(context).allData,
+        builder: (BuildContext context, AsyncSnapshot<List<History>> snapshot) {
+          if (snapshot.hasData) {
+            return snapshot.data.isNotEmpty
+                ? OrientationBuilder(
+                    builder: (BuildContext context, Orientation orientation) {
+                    return CustomScrollView(
+                      slivers: _buildList(snapshot.data, orientation),
+                    );
+                  })
+                : EmptyHistory();
+          } else {
+            return LoadingHistory();
+          }
+        });
   }
 
   List<Widget> _buildList(List<History> histories, Orientation orientation) {
