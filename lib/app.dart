@@ -21,8 +21,7 @@ class App extends StatelessWidget {
       child: ResultBlocProvider(
         bloc: ResultBloc(resultRepository),
         child: MaterialApp(
-          onGenerateTitle: (context) =>
-              AppLocalizations.of(context).get('app_name'),
+          onGenerateTitle: (context) => AppLocalizations.of(context).appName,
           theme: ThemeData(
             brightness: Brightness.light,
             primaryColor: Colors.white,

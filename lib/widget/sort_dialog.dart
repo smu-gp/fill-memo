@@ -8,7 +8,7 @@ class SortDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     var bloc = HistoryBlocProvider.of(context);
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).get('sort')),
+      title: Text(AppLocalizations.of(context).actionSort),
       contentPadding: const EdgeInsets.symmetric(
         vertical: 24.0,
         horizontal: 0.0,
@@ -19,8 +19,8 @@ class SortDialog extends StatelessWidget {
             return Wrap(
               children: <Widget>[
                 RadioListTile<SortOrder>(
-                    title: Text(
-                        AppLocalizations.of(context).get('order_created_des')),
+                    activeColor: Theme.of(context).accentColor,
+                    title: Text(AppLocalizations.of(context).orderCreatedDes),
                     value: SortOrder.createdAtDes,
                     groupValue: snapshot.data,
                     onChanged: (value) {
@@ -28,8 +28,8 @@ class SortDialog extends StatelessWidget {
                       Navigator.pop(context);
                     }),
                 RadioListTile<SortOrder>(
-                    title: Text(
-                        AppLocalizations.of(context).get('order_created_asc')),
+                    activeColor: Theme.of(context).accentColor,
+                    title: Text(AppLocalizations.of(context).orderCreatedAsc),
                     value: SortOrder.createdAtAsc,
                     groupValue: snapshot.data,
                     onChanged: (value) {

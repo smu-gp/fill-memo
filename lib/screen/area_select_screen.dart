@@ -68,7 +68,7 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
               _writeDummyResults(newHistory.id);
               _navigationResult(newHistory.id);
             },
-            tooltip: AppLocalizations.of(context).get('send_image'),
+            tooltip: AppLocalizations.of(context).actionSendImage,
           )
         ],
         elevation: 0.0,
@@ -90,7 +90,7 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
                 SizedBox(
                   width: 24.0,
                 ),
-                Text(AppLocalizations.of(context).get('dialog_send_image'))
+                Text(AppLocalizations.of(context).dialogSendImage)
               ],
             ),
           );

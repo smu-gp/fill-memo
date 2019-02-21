@@ -20,7 +20,7 @@ class _ResultScreenState extends State<ResultScreen> {
               slivers: <Widget>[
                 SliverAppBar(
                   title: Text(
-                    AppLocalizations.of(context).get('title_result'),
+                    AppLocalizations.of(context).titleResult,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),

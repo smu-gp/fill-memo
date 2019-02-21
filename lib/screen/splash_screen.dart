@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   BoxDecoration(color: Colors.black12, shape: BoxShape.circle)),
           Padding(
             padding: const EdgeInsets.only(bottom: 72.0),
-            child: Text(AppLocalizations.of(context).get('app_name'),
+            child: Text(AppLocalizations.of(context).appName,
                 style: Theme.of(context).textTheme.title),
           )
         ],

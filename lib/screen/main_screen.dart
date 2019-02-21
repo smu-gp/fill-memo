@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).get('title_history'),
+          AppLocalizations.of(context).titleHistory,
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
