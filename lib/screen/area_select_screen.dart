@@ -66,7 +66,7 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
               _showProgressDialog();
               var newHistory = await _writeHistory();
               _writeDummyResults(newHistory.id);
-              _navigationResult(newHistory.id);
+              _navigationResult(newHistory);
             },
             tooltip: AppLocalizations.of(context).actionSendImage,
           )
@@ -121,13 +121,13 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
     _resultBloc.create(newImageResult);
   }
 
-  void _navigationResult(int historyId) {
+  void _navigationResult(History newHistory) {
     Navigator.pop(context);
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => ResultScreen(
-                  historyId: historyId,
+                  history: newHistory,
                 )));
   }
 
