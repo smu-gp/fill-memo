@@ -9,6 +9,7 @@ class SortDialog extends StatelessWidget {
     var bloc = HistoryBlocProvider.of(context);
     return AlertDialog(
       title: Text(AppLocalizations.of(context).actionSort),
+      backgroundColor: Theme.of(context).backgroundColor,
       contentPadding: const EdgeInsets.symmetric(
         vertical: 24.0,
         horizontal: 0.0,

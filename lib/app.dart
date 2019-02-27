@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sp_client/bloc/history_bloc.dart';
 import 'package:sp_client/bloc/history_bloc_provider.dart';
@@ -6,6 +7,7 @@ import 'package:sp_client/bloc/result_bloc.dart';
 import 'package:sp_client/bloc/result_bloc_provider.dart';
 import 'package:sp_client/repository/base_repository.dart';
 import 'package:sp_client/screen/main_screen.dart';
+import 'package:sp_client/util/color.dart';
 import 'package:sp_client/util/localization.dart';
 
 class App extends StatelessWidget {
@@ -16,6 +18,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle.dark.copyWith(
+        systemNavigationBarColor: AppColors.primaryColorDark,
+      ),
+    );
+
     return HistoryBlocProvider(
       bloc: HistoryBloc(historyRepository),
       child: ResultBlocProvider(
@@ -23,10 +31,12 @@ class App extends StatelessWidget {
         child: MaterialApp(
           onGenerateTitle: (context) => AppLocalizations.of(context).appName,
           theme: ThemeData(
-            brightness: Brightness.light,
-            primaryColor: Colors.white,
-            backgroundColor: Colors.white,
-            accentColor: Color(0xFFFF6F61),
+            brightness: Brightness.dark,
+            primaryColor: AppColors.primaryColor,
+            primaryColorLight: AppColors.primaryColorLight,
+            primaryColorDark: AppColors.primaryColorDark,
+            accentColor: AppColors.accentColor,
+            backgroundColor: AppColors.backgroundColor,
           ),
           localizationsDelegates: [
             const AppLocalizationsDelegate(),

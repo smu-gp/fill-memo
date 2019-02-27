@@ -15,7 +15,7 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Builder(
+      backgroundColor: Theme.of(context).backgroundColor,
         builder: (context) => CustomScrollView(
               slivers: <Widget>[
                 SliverAppBar(
