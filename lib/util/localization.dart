@@ -85,6 +85,11 @@ class AppLocalizations {
         name: 'dialogSendImage',
       );
 
+  String get dialogDeleteItem => Intl.message(
+        'Are you sure to delete?',
+        name: 'dialogDeleteItem',
+      );
+
   String get orderCreatedAsc => Intl.message(
         'Created date ascending',
         name: 'orderCreatedAsc',

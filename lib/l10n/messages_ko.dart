@@ -27,6 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),
     "actionUndo" : MessageLookupByLibrary.simpleMessage("되돌리기"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("결과를 삭제할까요?"),
     "dialogSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내는 중..."),
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("사진 촬영"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("갤러리에서 선택"),

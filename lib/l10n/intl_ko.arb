@@ -56,6 +56,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "dialogDeleteItem": "결과를 삭제할까요?",
+  "@dialogDeleteItem": {
+    "type": "text",
+    "placeholders": {}
+  },
   "orderCreatedAsc": "추가한 날짜 오름차순",
   "@orderCreatedAsc": {
     "type": "text",

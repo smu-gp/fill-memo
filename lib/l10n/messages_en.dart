@@ -27,6 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),
     "actionUndo" : MessageLookupByLibrary.simpleMessage("Undo"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("Are you sure to delete?"),
     "dialogSendImage" : MessageLookupByLibrary.simpleMessage("Send image..."),
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("Take from camera"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("Select from gallery"),
