@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/screen/area_select_screen.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/history_list.dart';
@@ -26,52 +27,62 @@ class _MainScreenState extends State<MainScreen> {
         ),
         elevation: 0.0,
         centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.sort),
-            tooltip: AppLocalizations.of(context).get('sort'),
-            onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => SortDialog(),
-                ),
-          ),
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {},
-          ),
-        ],
+        actions: _buildActions(),
       ),
       body: HistoryList(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        tooltip: AppLocalizations.of(context).get('add_image'),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        tooltip: AppLocalizations.of(context).actionAddImage,
         onPressed: () {
           showModalBottomSheet(
             context: context,
-            builder: (context) => _buildAddImageSheet(),
+            builder: _buildAddImageSheet,
           );
         },
-        icon: Icon(Icons.add),
-        label: Text(AppLocalizations.of(context).get('add_image')),
+        child: Icon(Icons.add),
       ),
     );
   }
 
-  _buildAddImageSheet() {
+  List<Widget> _buildActions() {
+    return <Widget>[
+      IconButton(
+        icon: Icon(Icons.sort),
+        tooltip: AppLocalizations.of(context).actionSort,
+        onPressed: () => showDialog(
+              context: context,
+              builder: (context) => SortDialog(),
+            ),
+      ),
+      IconButton(
+        icon: Icon(OMIcons.settings),
+        onPressed: () {},
+      ),
+    ];
+  }
+
+  Widget _buildAddImageSheet(BuildContext context) {
     return Container(
+      color: Theme.of(context).backgroundColor,
       child: Wrap(
         children: <Widget>[
           ListTile(
-            leading: Icon(Icons.image),
-            title: Text(AppLocalizations.of(context).get('image_from_gallery')),
+            leading: Icon(
+              OMIcons.image,
+              color: Theme.of(context).accentColor,
+            ),
+            title: Text(AppLocalizations.of(context).imageFromGallery),
             onTap: () {
               _pickImage(ImageSource.gallery);
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: Icon(Icons.photo_camera),
-            title: Text(AppLocalizations.of(context).get('image_from_camera')),
+            leading: Icon(
+              OMIcons.photoCamera,
+              color: Theme.of(context).accentColor,
+            ),
+            title: Text(AppLocalizations.of(context).imageFromCamera),
             onTap: () {
               _pickImage(ImageSource.camera);
               Navigator.pop(context);
@@ -82,7 +93,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  _pickImage(ImageSource src) async {
+  void _pickImage(ImageSource src) async {
     var image = await ImagePicker.pickImage(source: src);
     if (image != null) {
       Navigator.push(
