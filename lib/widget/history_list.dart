@@ -33,9 +33,15 @@ class HistoryList extends StatelessWidget {
     var items = List<Widget>();
     groupBy(
       histories,
-      (History history) => Util.formatDate(history.createdAt),
+      (History history) => Util.formatDate(history.createdAt, 'MMMMEEEEd'),
     ).forEach((date, histories) {
-      items..add(SubHeader(date))..add(_buildGrid(histories, orientation));
+      items
+        ..add(
+          SubHeader(date),
+        )
+        ..add(
+          _buildGrid(histories, orientation),
+        );
     });
     items.add(
       SliverToBoxAdapter(
