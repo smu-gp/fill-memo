@@ -55,7 +55,7 @@ class HistoryList extends StatelessWidget {
 
   Widget _buildGrid(List<History> histories, Orientation orientation) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
       sliver: SliverGrid.count(
         crossAxisCount: (orientation == Orientation.portrait ? 3 : 5),
         mainAxisSpacing: 4.0,
