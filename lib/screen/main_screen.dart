@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/model/sort_order.dart';
 import 'package:sp_client/screen/area_select_screen.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/history_list.dart';
@@ -14,6 +17,16 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  int _navigationIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<HistoryBloc>(context).dispatch(FetchHistory(
+      order: SortOrder.createdAtDes,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

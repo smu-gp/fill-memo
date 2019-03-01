@@ -1,29 +1,60 @@
-import 'package:rxdart/rxdart.dart';
-import 'package:sp_client/bloc/base_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 import 'package:sp_client/model/result.dart';
 import 'package:sp_client/repository/base_repository.dart';
 
-class ResultBloc extends BaseBloc {
-  final BaseResultRepository _resultRepository;
-  final _dataFetcher = BehaviorSubject<List<Result>>();
+class ResultBloc extends Bloc<ResultEvent, ResultState> {
+  final BaseResultRepository resultRepository;
 
-  Observable<List<Result>> get allData => _dataFetcher.stream;
-
-  ResultBloc(this._resultRepository);
-
-  Future<Result> create(Result newObject) =>
-      _resultRepository.create(newObject);
-
-  Future readByHistoryId(int historyId) async {
-    var list = await _resultRepository.readByHistoryId(historyId);
-    _dataFetcher.add(list);
-  }
-
-  Future<int> deleteByHistoryId(int historyId) =>
-      _resultRepository.deleteByHistoryId(historyId);
+  ResultBloc({@required this.resultRepository})
+      : assert(resultRepository != null);
 
   @override
-  dispose() {
-    _dataFetcher.close();
+  ResultState get initialState => ResultLoading();
+
+  @override
+  Stream<ResultState> mapEventToState(
+    ResultState currentState,
+    ResultEvent event,
+  ) async* {
+    if (event is FetchResult) {
+      var list = await resultRepository.readByHistoryId(event.historyId);
+      yield (list.isNotEmpty ? ResultLoaded(results: list) : ResultEmpty());
+    }
   }
+
+  Future<Result> createResult(Result newObject) =>
+      resultRepository.create(newObject);
+
+  Future<int> deleteResultByHistoryId(int historyId) =>
+      resultRepository.deleteByHistoryId(historyId);
+}
+
+abstract class ResultEvent extends Equatable {
+  ResultEvent([List props = const []]) : super(props);
+}
+
+class FetchResult extends ResultEvent {
+  final int historyId;
+
+  FetchResult({@required this.historyId})
+      : assert(historyId != null),
+        super([historyId]);
+}
+
+abstract class ResultState extends Equatable {
+  ResultState([List props = const []]) : super(props);
+}
+
+class ResultEmpty extends ResultState {}
+
+class ResultLoading extends ResultState {}
+
+class ResultLoaded extends ResultState {
+  final List<Result> results;
+
+  ResultLoaded({@required this.results})
+      : assert(results != null),
+        super([results]);
 }

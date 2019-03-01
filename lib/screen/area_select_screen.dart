@@ -3,10 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/history_bloc.dart';
-import 'package:sp_client/bloc/history_bloc_provider.dart';
 import 'package:sp_client/bloc/result_bloc.dart';
-import 'package:sp_client/bloc/result_bloc_provider.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/model/result.dart';
 import 'package:sp_client/screen/result_screen.dart';
@@ -36,8 +35,8 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _historyBloc = HistoryBlocProvider.of(context);
-    _resultBloc = ResultBlocProvider.of(context);
+    _historyBloc = BlocProvider.of<HistoryBloc>(context);
+    _resultBloc = BlocProvider.of<ResultBloc>(context);
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -64,6 +63,11 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
             icon: Icon(Icons.send),
             onPressed: () async {
               _showProgressDialog();
+              var history = History(
+                sourceImage: widget.selectImage.path,
+                createdAt: DateTime.now().millisecondsSinceEpoch,
+                folderId: 0,
+              );
               var newHistory = await _writeHistory();
               _writeDummyResults(newHistory.id);
               _navigationResult(newHistory);
@@ -101,8 +105,9 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
     var newHistory = History(
       sourceImage: widget.selectImage.path,
       createdAt: DateTime.now().millisecondsSinceEpoch,
+      folderId: 0,
     );
-    return _historyBloc.create(newHistory);
+    return _historyBloc.createHistory(newHistory);
   }
 
   void _writeDummyResults(int historyId) {
@@ -111,14 +116,14 @@ class _AreaSelectScreenState extends State<AreaSelectScreen> {
       type: 'text',
       content: 'Test content',
     );
-    _resultBloc.create(newTextResult);
+    _resultBloc.createResult(newTextResult);
     var newImageResult = Result(
       historyId: historyId,
       type: 'image',
       content:
           'https://cdn-images-1.medium.com/max/1200/1*5-aoK8IBmXve5whBQM90GA.png',
     );
-    _resultBloc.create(newImageResult);
+    _resultBloc.createResult(newImageResult);
   }
 
   void _navigationResult(History newHistory) {

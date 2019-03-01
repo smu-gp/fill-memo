@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:sp_client/bloc/history_bloc_provider.dart';
-import 'package:sp_client/bloc/result_bloc_provider.dart';
+import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/bloc/result_bloc.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/delete_item_dialog.dart';
@@ -73,8 +74,10 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
           );
           if (isDeleteSelected) {
-            HistoryBlocProvider.of(context).delete(widget.history.id);
-            ResultBlocProvider.of(context).deleteByHistoryId(widget.history.id);
+            BlocProvider.of<HistoryBloc>(context)
+                .deleteHistory(widget.history.id);
+            BlocProvider.of<ResultBloc>(context)
+                .deleteResultByHistoryId(widget.history.id);
             Navigator.pop(context);
           }
         },

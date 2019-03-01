@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:sp_client/bloc/history_bloc_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sp_client/bloc/history_bloc.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/util/util.dart';
 import 'package:sp_client/widget/empty_history.dart';
@@ -9,24 +10,34 @@ import 'package:sp_client/widget/loading_history.dart';
 import 'package:sp_client/widget/sub_header.dart';
 
 class HistoryList extends StatelessWidget {
+  final int folderId;
+
+  HistoryList({this.folderId});
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<History>>(
-        stream: HistoryBlocProvider.of(context).allData,
-        builder: (BuildContext context, AsyncSnapshot<List<History>> snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data.isNotEmpty
-                ? OrientationBuilder(
-                    builder: (BuildContext context, Orientation orientation) {
-                    return CustomScrollView(
-                      slivers: _buildList(snapshot.data, orientation),
-                    );
-                  })
-                : EmptyHistory();
-          } else {
-            return LoadingHistory();
-          }
-        });
+    return BlocBuilder<HistoryEvent, HistoryState>(
+      bloc: BlocProvider.of<HistoryBloc>(context),
+      builder: (BuildContext context, HistoryState state) {
+        if (state is HistoryLoaded) {
+          return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+            return CustomScrollView(
+              slivers: _buildList(
+                  state.histories
+                      .where((history) =>
+                          (folderId == null || history.folderId == folderId))
+                      .toList(),
+                  orientation),
+            );
+          });
+        } else if (state is HistoryLoading) {
+          return LoadingHistory();
+        } else if (state is HistoryEmpty) {
+          return EmptyHistory();
+        }
+      },
+    );
   }
 
   List<Widget> _buildList(List<History> histories, Orientation orientation) {
