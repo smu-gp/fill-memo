@@ -77,5 +77,15 @@
     "placeholders": {
       "itemName": {}
     }
+  },
+  "typeDate": "날짜",
+  "@typeDate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "typeFolder": "폴더",
+  "@typeFolder": {
+    "type": "text",
+    "placeholders": {}
   }
 }

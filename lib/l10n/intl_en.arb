@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-02-22T15:05:15.077175",
+  "@@last_modified": "2019-02-27T15:52:24.133231",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -77,5 +77,15 @@
     "placeholders": {
       "itemName": {}
     }
+  },
+  "typeDate": "Date",
+  "@typeDate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "typeFolder": "Folder",
+  "@typeFolder": {
+    "type": "text",
+    "placeholders": {}
   }
 }

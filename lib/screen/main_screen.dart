@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:sp_client/bloc/history_bloc.dart';
+import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/sort_order.dart';
 import 'package:sp_client/screen/area_select_screen.dart';
 import 'package:sp_client/util/localization.dart';
+import 'package:sp_client/widget/folder_list.dart';
 import 'package:sp_client/widget/history_list.dart';
 import 'package:sp_client/widget/sort_dialog.dart';
 
@@ -21,16 +22,22 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+    BlocProvider.of<HistoryBloc>(context)
+      ..dispatch(
+        FetchHistory(
+          order: SortOrder.createdAtDes,
+        ),
+      );
+    BlocProvider.of<FolderBloc>(context)
+      ..dispatch(
+        FetchFolder(),
+      );
     super.initState();
-    BlocProvider.of<HistoryBloc>(context).dispatch(FetchHistory(
-      order: SortOrder.createdAtDes,
-    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context).titleHistory,
@@ -42,17 +49,38 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
         actions: _buildActions(),
       ),
-      body: HistoryList(),
+      body: [
+        HistoryList(),
+        FolderList(),
+      ].elementAt(_navigationIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _navigationIndex,
+        onTap: _onNavigationTapped,
+        fixedColor: Theme.of(context).accentColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(OMIcons.dateRange),
+            title: Text(AppLocalizations.of(context).typeDate),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(OMIcons.folder),
+            title: Text(AppLocalizations.of(context).typeFolder),
+          ),
+        ],
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        tooltip: AppLocalizations.of(context).actionAddImage,
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: _buildAddImageSheet,
-          );
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: Visibility(
+        visible: _navigationIndex == 0,
+        child: FloatingActionButton(
+          tooltip: AppLocalizations.of(context).actionAddImage,
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: _buildAddImageSheet,
+            );
+          },
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }
@@ -104,6 +132,12 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
+  }
+
+  void _onNavigationTapped(int index) {
+    setState(() {
+      _navigationIndex = index;
+    });
   }
 
   void _pickImage(ImageSource src) async {

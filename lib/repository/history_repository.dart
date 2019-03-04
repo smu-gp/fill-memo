@@ -21,6 +21,7 @@ class HistoryRepository implements BaseHistoryRepository {
         History.columnId,
         History.columnSourceImage,
         History.columnCreatedAt,
+        History.columnFolderId,
       ],
       where: '${History.columnId} = ?',
       whereArgs: [id],
@@ -40,12 +41,24 @@ class HistoryRepository implements BaseHistoryRepository {
         History.columnId,
         History.columnSourceImage,
         History.columnCreatedAt,
+        History.columnFolderId,
       ],
       orderBy: '$sortColumn ${sortAscending ? "ASC" : "DESC"}',
     );
     return (maps.length > 0
         ? maps.map((map) => History.fromMap(map)).toList()
         : []);
+  }
+
+  @override
+  Future<bool> update(History history) async {
+    var updated = await _db.update(
+      History.tableName,
+      history.toMap(),
+      where: '${History.columnId} = ?',
+      whereArgs: [history.id],
+    );
+    return (updated > 0);
   }
 
   @override

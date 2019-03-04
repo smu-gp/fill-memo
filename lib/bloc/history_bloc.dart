@@ -32,17 +32,28 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
 
   Future<History> createHistory(History newHistory) {
     var created = historyRepository.create(newHistory);
-    if (currentState is HistoryLoaded) {
-      dispatch(FetchHistory(order: (currentState as HistoryLoaded).order));
-    }
+    var state = currentState;
+    dispatch(FetchHistory(
+      order: state is HistoryLoaded ? state.order : SortOrder.createdAtDes,
+    ));
     return created;
+  }
+
+  Future<bool> updateHistory(History history) {
+    var updated = historyRepository.update(history);
+    var state = currentState;
+    dispatch(FetchHistory(
+      order: state is HistoryLoaded ? state.order : SortOrder.createdAtDes,
+    ));
+    return updated;
   }
 
   Future<bool> deleteHistory(int id) {
     var deleted = historyRepository.delete(id);
-    if (currentState is HistoryLoaded) {
-      dispatch(FetchHistory(order: (currentState as HistoryLoaded).order));
-    }
+    var state = currentState;
+    dispatch(FetchHistory(
+      order: state is HistoryLoaded ? state.order : SortOrder.createdAtDes,
+    ));
     return deleted;
   }
 }

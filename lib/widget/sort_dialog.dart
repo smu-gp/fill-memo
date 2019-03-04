@@ -10,7 +10,6 @@ class SortDialog extends StatelessWidget {
     var bloc = BlocProvider.of<HistoryBloc>(context);
     return AlertDialog(
       title: Text(AppLocalizations.of(context).actionSort),
-      backgroundColor: Theme.of(context).backgroundColor,
       contentPadding: const EdgeInsets.symmetric(
         vertical: 24.0,
         horizontal: 0.0,
@@ -18,30 +17,32 @@ class SortDialog extends StatelessWidget {
       content: BlocBuilder<HistoryEvent, HistoryState>(
         bloc: BlocProvider.of<HistoryBloc>(context),
         builder: (BuildContext context, HistoryState state) {
-          if (state is HistoryLoaded) {
-            return Wrap(
-              children: <Widget>[
-                RadioListTile<SortOrder>(
-                    activeColor: Theme.of(context).accentColor,
-                    title: Text(AppLocalizations.of(context).orderCreatedDes),
-                    value: SortOrder.createdAtDes,
-                    groupValue: state.order,
-                    onChanged: (value) {
-                      bloc.dispatch(FetchHistory(order: value));
-                      Navigator.pop(context);
-                    }),
-                RadioListTile<SortOrder>(
-                    activeColor: Theme.of(context).accentColor,
-                    title: Text(AppLocalizations.of(context).orderCreatedAsc),
-                    value: SortOrder.createdAtAsc,
-                    groupValue: state.order,
-                    onChanged: (value) {
-                      bloc.dispatch(FetchHistory(order: value));
-                      Navigator.pop(context);
-                    }),
-              ],
-            );
-          }
+          return Wrap(
+            children: <Widget>[
+              RadioListTile<SortOrder>(
+                  activeColor: Theme.of(context).accentColor,
+                  title: Text(AppLocalizations.of(context).orderCreatedDes),
+                  value: SortOrder.createdAtDes,
+                  groupValue: (state is HistoryLoaded
+                      ? state.order
+                      : SortOrder.createdAtDes),
+                  onChanged: (value) {
+                    bloc.dispatch(FetchHistory(order: value));
+                    Navigator.pop(context);
+                  }),
+              RadioListTile<SortOrder>(
+                  activeColor: Theme.of(context).accentColor,
+                  title: Text(AppLocalizations.of(context).orderCreatedAsc),
+                  value: SortOrder.createdAtAsc,
+                  groupValue: (state is HistoryLoaded
+                      ? state.order
+                      : SortOrder.createdAtDes),
+                  onChanged: (value) {
+                    bloc.dispatch(FetchHistory(order: value));
+                    Navigator.pop(context);
+                  }),
+            ],
+          );
         },
       ),
     );

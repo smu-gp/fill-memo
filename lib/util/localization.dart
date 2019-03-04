@@ -105,6 +105,16 @@ class AppLocalizations {
         args: [itemName],
         name: 'itemDeleted',
       );
+
+  String get typeDate => Intl.message(
+        'Date',
+        name: 'typeDate',
+      );
+
+  String get typeFolder => Intl.message(
+        'Folder',
+        name: 'typeFolder',
+      );
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

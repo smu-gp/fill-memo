@@ -21,21 +21,31 @@ class MessageLookup extends MessageLookupByLibrary {
   static m0(itemName) => "${itemName} is deleted";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "actionAddImage" : MessageLookupByLibrary.simpleMessage("Add Image"),
-    "actionSendImage" : MessageLookupByLibrary.simpleMessage("Send Image"),
-    "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),
-    "actionUndo" : MessageLookupByLibrary.simpleMessage("Undo"),
-    "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
-    "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("Are you sure to delete?"),
-    "dialogSendImage" : MessageLookupByLibrary.simpleMessage("Send image..."),
-    "imageFromCamera" : MessageLookupByLibrary.simpleMessage("Take from camera"),
-    "imageFromGallery" : MessageLookupByLibrary.simpleMessage("Select from gallery"),
-    "itemDeleted" : m0,
-    "orderCreatedAsc" : MessageLookupByLibrary.simpleMessage("Created date ascending"),
-    "orderCreatedDes" : MessageLookupByLibrary.simpleMessage("Created date descending"),
-    "titleHistory" : MessageLookupByLibrary.simpleMessage("History"),
-    "titleImageSelect" : MessageLookupByLibrary.simpleMessage("Selected Image"),
-    "titleResult" : MessageLookupByLibrary.simpleMessage("Result")
-  };
+
+  static _notInlinedMessages(_) => <String, Function>{
+        "actionAddImage": MessageLookupByLibrary.simpleMessage("Add Image"),
+        "actionSendImage": MessageLookupByLibrary.simpleMessage("Send Image"),
+        "actionSort": MessageLookupByLibrary.simpleMessage("Sort"),
+        "actionUndo": MessageLookupByLibrary.simpleMessage("Undo"),
+        "appName": MessageLookupByLibrary.simpleMessage("sp_client"),
+        "dialogDeleteItem":
+            MessageLookupByLibrary.simpleMessage("Are you sure to delete?"),
+        "dialogSendImage":
+            MessageLookupByLibrary.simpleMessage("Send image..."),
+        "imageFromCamera":
+            MessageLookupByLibrary.simpleMessage("Take from camera"),
+        "imageFromGallery":
+            MessageLookupByLibrary.simpleMessage("Select from gallery"),
+        "itemDeleted": m0,
+        "orderCreatedAsc":
+            MessageLookupByLibrary.simpleMessage("Created date ascending"),
+        "orderCreatedDes":
+            MessageLookupByLibrary.simpleMessage("Created date descending"),
+        "titleHistory": MessageLookupByLibrary.simpleMessage("History"),
+        "titleImageSelect":
+            MessageLookupByLibrary.simpleMessage("Selected Image"),
+        "titleResult": MessageLookupByLibrary.simpleMessage("Result"),
+        "typeDate": MessageLookupByLibrary.simpleMessage("Date"),
+        "typeFolder": MessageLookupByLibrary.simpleMessage("Folder")
+      };
 }
