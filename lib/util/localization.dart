@@ -2,19 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sp_client/l10n/messages_all.dart';
+import 'package:sp_client/util/i10n/messages_all.dart';
 
-///
-/// Generate localization script
-/// extract:
-/// flutter packages pub run intl_translation:extract_to_arb `
-/// --locale messages `
-/// --output-dir=lib/l10n lib/util/localization.dart
-/// generate:
-/// flutter packages pub run intl_translation:generate_from_arb `
-/// --output-dir=lib/l10n --no-use-deferred-loading `
-/// lib/util/localization.dart lib\l10n\intl_en.arb lib\l10n\intl_ko.arb
-///
 class AppLocalizations {
   static Future<AppLocalizations> load(Locale locale) async {
     final String name =

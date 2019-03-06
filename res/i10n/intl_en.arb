@@ -1,89 +1,89 @@
 {
-  "@@locale": "ko",
-  "@@last_modified": "2019-02-17T15:07:10.800796",
+  "@@locale": "en",
+  "@@last_modified": "2019-03-06T23:23:24.618121",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
     "placeholders": {}
   },
-  "titleHistory": "기록",
+  "titleHistory": "History",
   "@titleHistory": {
     "type": "text",
     "placeholders": {}
   },
-  "titleImageSelect": "선택한 이미지",
+  "titleImageSelect": "Selected Image",
   "@titleImageSelect": {
     "type": "text",
     "placeholders": {}
   },
-  "titleResult": "결과",
+  "titleResult": "Result",
   "@titleResult": {
     "type": "text",
     "placeholders": {}
   },
-  "actionAddImage": "이미지 추가",
+  "actionAddImage": "Add Image",
   "@actionAddImage": {
     "type": "text",
     "placeholders": {}
   },
-  "actionSort": "정렬",
+  "actionSort": "Sort",
   "@actionSort": {
     "type": "text",
     "placeholders": {}
   },
-  "actionUndo": "되돌리기",
+  "actionUndo": "Undo",
   "@actionUndo": {
     "type": "text",
     "placeholders": {}
   },
-  "actionSendImage": "이미지 보내기",
+  "actionSendImage": "Send Image",
   "@actionSendImage": {
     "type": "text",
     "placeholders": {}
   },
-  "imageFromGallery": "갤러리에서 선택",
+  "imageFromGallery": "Select from gallery",
   "@imageFromGallery": {
     "type": "text",
     "placeholders": {}
   },
-  "imageFromCamera": "사진 촬영",
+  "imageFromCamera": "Take from camera",
   "@imageFromCamera": {
     "type": "text",
     "placeholders": {}
   },
-  "dialogSendImage": "이미지 보내는 중...",
+  "dialogSendImage": "Send image...",
   "@dialogSendImage": {
     "type": "text",
     "placeholders": {}
   },
-  "dialogDeleteItem": "결과를 삭제할까요?",
+  "dialogDeleteItem": "Are you sure to delete?",
   "@dialogDeleteItem": {
     "type": "text",
     "placeholders": {}
   },
-  "orderCreatedAsc": "추가한 날짜 오름차순",
+  "orderCreatedAsc": "Created date ascending",
   "@orderCreatedAsc": {
     "type": "text",
     "placeholders": {}
   },
-  "orderCreatedDes": "추가한 날짜 내림차순",
+  "orderCreatedDes": "Created date descending",
   "@orderCreatedDes": {
     "type": "text",
     "placeholders": {}
   },
-  "itemDeleted": "{itemName} 삭제됨",
+  "itemDeleted": "{itemName} is deleted",
   "@itemDeleted": {
     "type": "text",
     "placeholders": {
       "itemName": {}
     }
   },
-  "typeDate": "날짜",
+  "typeDate": "Date",
   "@typeDate": {
     "type": "text",
     "placeholders": {}
   },
-  "typeFolder": "폴더",
+  "typeFolder": "Folder",
   "@typeFolder": {
     "type": "text",
     "placeholders": {}
