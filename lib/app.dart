@@ -64,6 +64,7 @@ class _AppState extends State<App> {
           backgroundColor: AppColors.backgroundColor,
           scaffoldBackgroundColor: AppColors.backgroundColor,
           dialogBackgroundColor: AppColors.backgroundColor,
+          bottomAppBarColor: AppColors.primaryColorDark,
           // For BottomNavigationBar background color
           canvasColor: AppColors.primaryColorDark,
         ),
@@ -77,7 +78,6 @@ class _AppState extends State<App> {
           const Locale('ko', 'KR'),
         ],
         home: MainScreen(),
-        debugShowCheckedModeBanner: false,
       ),
     );
   }

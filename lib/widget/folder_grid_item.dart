@@ -5,10 +5,10 @@ import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/screen/folder_detail_screen.dart';
 import 'package:sp_client/widget/history_image.dart';
 
-class FolderItem extends StatelessWidget {
+class FolderGridItem extends StatelessWidget {
   final Folder folder;
 
-  const FolderItem({
+  const FolderGridItem({
     Key key,
     @required this.folder,
   }) : super(key: key);
@@ -16,10 +16,12 @@ class FolderItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var historyState = BlocProvider.of<HistoryBloc>(context).currentState;
-    if (historyState is HistoryLoaded) {
-      var histories = historyState.histories
-          .where((history) => history.folderId == folder.id)
-          .toList();
+    if (historyState is! HistoryLoading) {
+      var histories = (historyState is HistoryLoaded
+          ? historyState.histories
+              .where((history) => history.folderId == folder.id)
+              .toList()
+          : []);
       histories.sort((a, b) => -a.createdAt.compareTo(b.createdAt));
       return ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -28,10 +30,7 @@ class FolderItem extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => FolderDetailScreen(
-                        folder: folder,
-                        historyCount: histories.length,
-                      ),
+                  builder: (context) => FolderDetailScreen(folder: folder),
                 ));
           },
           child: GridTile(
@@ -57,8 +56,6 @@ class FolderItem extends StatelessWidget {
           ),
         ),
       );
-    } else {
-      return SizedBox();
     }
   }
 }

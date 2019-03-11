@@ -18,26 +18,34 @@ typedef MessageIfAbsent(String message_str, List args);
 class MessageLookup extends MessageLookupByLibrary {
   get localeName => 'en';
 
-  static m0(itemName) => "${itemName} is deleted";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-    "actionAddImage" : MessageLookupByLibrary.simpleMessage("Add Image"),
-    "actionSendImage" : MessageLookupByLibrary.simpleMessage("Send Image"),
+    "actionAdd" : MessageLookupByLibrary.simpleMessage("Add"),
+    "actionAddFolder" : MessageLookupByLibrary.simpleMessage("Add folder"),
+    "actionAddImage" : MessageLookupByLibrary.simpleMessage("Add image"),
+    "actionDelete" : MessageLookupByLibrary.simpleMessage("Delete"),
+    "actionEdit" : MessageLookupByLibrary.simpleMessage("Edit"),
+    "actionMoveFolder" : MessageLookupByLibrary.simpleMessage("Move another folder"),
+    "actionRemoveFolder" : MessageLookupByLibrary.simpleMessage("Remove folder"),
+    "actionRename" : MessageLookupByLibrary.simpleMessage("Rename"),
+    "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("Rename folder"),
+    "actionSendImage" : MessageLookupByLibrary.simpleMessage("Send image"),
+    "actionSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),
-    "actionUndo" : MessageLookupByLibrary.simpleMessage("Undo"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "dialogDeleteFolder" : MessageLookupByLibrary.simpleMessage("All the histories in the folder are moved to the default folder. Delete folder?"),
     "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("Are you sure to delete?"),
+    "dialogFolderSelect" : MessageLookupByLibrary.simpleMessage("Folder Select"),
     "dialogSendImage" : MessageLookupByLibrary.simpleMessage("Send image..."),
+    "errorEmptyName" : MessageLookupByLibrary.simpleMessage("Error: name is not empty"),
+    "folderDefault" : MessageLookupByLibrary.simpleMessage("Default"),
+    "historyEmpty" : MessageLookupByLibrary.simpleMessage("Empty history"),
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("Take from camera"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("Select from gallery"),
-    "itemDeleted" : m0,
     "orderCreatedAsc" : MessageLookupByLibrary.simpleMessage("Created date ascending"),
     "orderCreatedDes" : MessageLookupByLibrary.simpleMessage("Created date descending"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("History"),
-    "titleImageSelect" : MessageLookupByLibrary.simpleMessage("Selected Image"),
-    "titleResult" : MessageLookupByLibrary.simpleMessage("Result"),
-    "typeDate" : MessageLookupByLibrary.simpleMessage("Date"),
-    "typeFolder" : MessageLookupByLibrary.simpleMessage("Folder")
+    "titleImageSelect" : MessageLookupByLibrary.simpleMessage("Selected image"),
+    "titleResult" : MessageLookupByLibrary.simpleMessage("Result")
   };
 }

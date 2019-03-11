@@ -1,4 +1,6 @@
-class Result {
+import 'package:equatable/equatable.dart';
+
+class Result extends Equatable {
   static final String tableName = 'Result';
   static final String columnId = '_id';
   static final String columnHistoryId = 'history_id';
@@ -10,9 +12,16 @@ class Result {
   String type;
   String content;
 
-  Result({this.id, this.historyId, this.type, this.content});
+  Result({this.id, this.historyId, this.type, this.content})
+      : super([id, historyId, type, content]);
 
-  Result.fromMap(Map<String, dynamic> map) {
+  Result.fromMap(Map<String, dynamic> map)
+      : super([
+          map[columnId],
+          map[columnHistoryId],
+          map[columnType],
+          map[columnContent]
+        ]) {
     id = map[columnId];
     historyId = map[columnHistoryId];
     type = map[columnType];

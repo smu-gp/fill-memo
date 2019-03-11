@@ -26,25 +26,19 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
   Future<Folder> createFolder(Folder newObject) {
     var created = folderRepository.create(newObject);
-    if (currentState is FolderLoaded) {
-      dispatch(FetchFolder());
-    }
+    dispatch(FetchFolder());
     return created;
   }
 
   Future<bool> updateFolder(Folder folder) {
     var updated = folderRepository.update(folder);
-    if (currentState is FolderLoaded) {
-      dispatch(FetchFolder());
-    }
+    dispatch(FetchFolder());
     return updated;
   }
 
   Future<bool> deleteFolder(int id) {
     var deleted = folderRepository.delete(id);
-    if (currentState is FolderLoaded) {
-      dispatch(FetchFolder());
-    }
+    dispatch(FetchFolder());
     return deleted;
   }
 }
@@ -67,4 +61,9 @@ class FolderLoaded extends FolderState {
   FolderLoaded({@required this.folders})
       : assert(folders != null),
         super([folders]);
+
+  @override
+  String toString() {
+    return 'FolderLoaded{folders: $folders}';
+  }
 }

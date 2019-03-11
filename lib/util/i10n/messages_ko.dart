@@ -18,26 +18,34 @@ typedef MessageIfAbsent(String message_str, List args);
 class MessageLookup extends MessageLookupByLibrary {
   get localeName => 'ko';
 
-  static m0(itemName) => "${itemName} 삭제됨";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "actionAdd" : MessageLookupByLibrary.simpleMessage("추가"),
+    "actionAddFolder" : MessageLookupByLibrary.simpleMessage("폴더 추가"),
     "actionAddImage" : MessageLookupByLibrary.simpleMessage("이미지 추가"),
+    "actionDelete" : MessageLookupByLibrary.simpleMessage("삭제"),
+    "actionEdit" : MessageLookupByLibrary.simpleMessage("편집"),
+    "actionMoveFolder" : MessageLookupByLibrary.simpleMessage("다른 폴더로 이동"),
+    "actionRemoveFolder" : MessageLookupByLibrary.simpleMessage("폴더 삭제"),
+    "actionRename" : MessageLookupByLibrary.simpleMessage("이름 변경"),
+    "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("폴더 이름 변경"),
     "actionSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내기"),
+    "actionSettings" : MessageLookupByLibrary.simpleMessage("설정"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),
-    "actionUndo" : MessageLookupByLibrary.simpleMessage("되돌리기"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
-    "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("결과를 삭제할까요?"),
+    "dialogDeleteFolder" : MessageLookupByLibrary.simpleMessage("폴더 내 모든 기록들이 기본 폴더로 이동됩니다. 폴더를 삭제할까요?"),
+    "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("삭제할까요?"),
+    "dialogFolderSelect" : MessageLookupByLibrary.simpleMessage("폴더 선택"),
     "dialogSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내는 중..."),
+    "errorEmptyName" : MessageLookupByLibrary.simpleMessage("오류: 폴더 이름은 비워둘 수 없습니다"),
+    "folderDefault" : MessageLookupByLibrary.simpleMessage("기본"),
+    "historyEmpty" : MessageLookupByLibrary.simpleMessage("기록이 없습니다"),
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("사진 촬영"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("갤러리에서 선택"),
-    "itemDeleted" : m0,
     "orderCreatedAsc" : MessageLookupByLibrary.simpleMessage("추가한 날짜 오름차순"),
     "orderCreatedDes" : MessageLookupByLibrary.simpleMessage("추가한 날짜 내림차순"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("기록"),
     "titleImageSelect" : MessageLookupByLibrary.simpleMessage("선택한 이미지"),
-    "titleResult" : MessageLookupByLibrary.simpleMessage("결과"),
-    "typeDate" : MessageLookupByLibrary.simpleMessage("날짜"),
-    "typeFolder" : MessageLookupByLibrary.simpleMessage("폴더")
+    "titleResult" : MessageLookupByLibrary.simpleMessage("결과")
   };
 }

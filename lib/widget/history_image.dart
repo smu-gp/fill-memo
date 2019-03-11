@@ -6,11 +6,13 @@ import 'package:sp_client/model/history.dart';
 class HistoryImage extends StatelessWidget {
   final History history;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
   const HistoryImage({
     Key key,
     @required this.history,
     this.onTap,
+    this.onLongPress,
   }) : super(key: key);
 
   @override
@@ -25,6 +27,7 @@ class HistoryImage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           onTap: onTap,
+          onLongPress: onLongPress,
         ),
       ),
     );

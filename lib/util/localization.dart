@@ -30,7 +30,7 @@ class AppLocalizations {
       );
 
   String get titleImageSelect => Intl.message(
-        'Selected Image',
+        'Selected image',
         name: 'titleImageSelect',
       );
 
@@ -39,9 +39,19 @@ class AppLocalizations {
         name: 'titleResult',
       );
 
+  String get actionAdd => Intl.message(
+        'Add',
+        name: 'actionAdd',
+      );
+
   String get actionAddImage => Intl.message(
-        'Add Image',
+        'Add image',
         name: 'actionAddImage',
+      );
+
+  String get actionAddFolder => Intl.message(
+        'Add folder',
+        name: 'actionAddFolder',
       );
 
   String get actionSort => Intl.message(
@@ -49,14 +59,44 @@ class AppLocalizations {
         name: 'actionSort',
       );
 
-  String get actionUndo => Intl.message(
-        'Undo',
-        name: 'actionUndo',
+  String get actionEdit => Intl.message(
+        'Edit',
+        name: 'actionEdit',
+      );
+
+  String get actionDelete => Intl.message(
+        'Delete',
+        name: 'actionDelete',
+      );
+
+  String get actionMoveFolder => Intl.message(
+        'Move another folder',
+        name: 'actionMoveFolder',
       );
 
   String get actionSendImage => Intl.message(
-        'Send Image',
+        'Send image',
         name: 'actionSendImage',
+      );
+
+  String get actionSettings => Intl.message(
+        'Settings',
+        name: 'actionSettings',
+      );
+
+  String get actionRename => Intl.message(
+        'Rename',
+        name: 'actionRename',
+      );
+
+  String get actionRenameFolder => Intl.message(
+        'Rename folder',
+        name: 'actionRenameFolder',
+      );
+
+  String get actionRemoveFolder => Intl.message(
+        'Remove folder',
+        name: 'actionRemoveFolder',
       );
 
   String get imageFromGallery => Intl.message(
@@ -69,6 +109,11 @@ class AppLocalizations {
         name: 'imageFromCamera',
       );
 
+  String get dialogFolderSelect => Intl.message(
+        'Folder Select',
+        name: 'dialogFolderSelect',
+      );
+
   String get dialogSendImage => Intl.message(
         'Send image...',
         name: 'dialogSendImage',
@@ -77,6 +122,11 @@ class AppLocalizations {
   String get dialogDeleteItem => Intl.message(
         'Are you sure to delete?',
         name: 'dialogDeleteItem',
+      );
+
+  String get dialogDeleteFolder => Intl.message(
+        'All the histories in the folder are moved to the default folder. Delete folder?',
+        name: 'dialogDeleteFolder',
       );
 
   String get orderCreatedAsc => Intl.message(
@@ -89,20 +139,19 @@ class AppLocalizations {
         name: 'orderCreatedDes',
       );
 
-  String itemDeleted(itemName) => Intl.message(
-        '$itemName is deleted',
-        args: [itemName],
-        name: 'itemDeleted',
+  String get folderDefault => Intl.message(
+        'Default',
+        name: 'folderDefault',
       );
 
-  String get typeDate => Intl.message(
-        'Date',
-        name: 'typeDate',
+  String get historyEmpty => Intl.message(
+        'Empty history',
+        name: 'historyEmpty',
       );
 
-  String get typeFolder => Intl.message(
-        'Folder',
-        name: 'typeFolder',
+  String get errorEmptyName => Intl.message(
+        'Error: name is not empty',
+        name: 'errorEmptyName',
       );
 }
 

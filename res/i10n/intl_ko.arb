@@ -1,6 +1,6 @@
 {
   "@@locale": "ko",
-  "@@last_modified": "2019-03-06T23:23:24.618121",
+  "@@last_modified": "2019-03-12T00:05:01.934390",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -21,8 +21,18 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionAdd": "추가",
+  "@actionAdd": {
+    "type": "text",
+    "placeholders": {}
+  },
   "actionAddImage": "이미지 추가",
   "@actionAddImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionAddFolder": "폴더 추가",
+  "@actionAddFolder": {
     "type": "text",
     "placeholders": {}
   },
@@ -31,13 +41,43 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionUndo": "되돌리기",
-  "@actionUndo": {
+  "actionEdit": "편집",
+  "@actionEdit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDelete": "삭제",
+  "@actionDelete": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionMoveFolder": "다른 폴더로 이동",
+  "@actionMoveFolder": {
     "type": "text",
     "placeholders": {}
   },
   "actionSendImage": "이미지 보내기",
   "@actionSendImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSettings": "설정",
+  "@actionSettings": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionRename": "이름 변경",
+  "@actionRename": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionRenameFolder": "폴더 이름 변경",
+  "@actionRenameFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionRemoveFolder": "폴더 삭제",
+  "@actionRemoveFolder": {
     "type": "text",
     "placeholders": {}
   },
@@ -51,13 +91,23 @@
     "type": "text",
     "placeholders": {}
   },
+  "dialogFolderSelect": "폴더 선택",
+  "@dialogFolderSelect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "dialogSendImage": "이미지 보내는 중...",
   "@dialogSendImage": {
     "type": "text",
     "placeholders": {}
   },
-  "dialogDeleteItem": "결과를 삭제할까요?",
+  "dialogDeleteItem": "삭제할까요?",
   "@dialogDeleteItem": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogDeleteFolder": "폴더 내 모든 기록들이 기본 폴더로 이동됩니다. 폴더를 삭제할까요?",
+  "@dialogDeleteFolder": {
     "type": "text",
     "placeholders": {}
   },
@@ -71,20 +121,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "itemDeleted": "{itemName} 삭제됨",
-  "@itemDeleted": {
-    "type": "text",
-    "placeholders": {
-      "itemName": {}
-    }
-  },
-  "typeDate": "날짜",
-  "@typeDate": {
+  "folderDefault": "기본",
+  "@folderDefault": {
     "type": "text",
     "placeholders": {}
   },
-  "typeFolder": "폴더",
-  "@typeFolder": {
+  "historyEmpty": "기록이 없습니다",
+  "@historyEmpty": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorEmptyName": "오류: 폴더 이름은 비워둘 수 없습니다",
+  "@errorEmptyName": {
     "type": "text",
     "placeholders": {}
   }

@@ -1,4 +1,6 @@
-class History {
+import 'package:equatable/equatable.dart';
+
+class History extends Equatable {
   static final String tableName = 'History';
   static final String columnId = '_id';
   static final String columnSourceImage = 'source_image';
@@ -10,9 +12,16 @@ class History {
   int createdAt;
   int folderId;
 
-  History({this.id, this.sourceImage, this.createdAt, this.folderId});
+  History({this.id, this.sourceImage, this.createdAt, this.folderId})
+      : super([id, sourceImage, createdAt, folderId]);
 
-  History.fromMap(Map<String, dynamic> map) {
+  History.fromMap(Map<String, dynamic> map)
+      : super([
+          map[columnId],
+          map[columnSourceImage],
+          map[columnCreatedAt],
+          map[columnFolderId]
+        ]) {
     id = map[columnId];
     sourceImage = map[columnSourceImage];
     createdAt = map[columnCreatedAt];
