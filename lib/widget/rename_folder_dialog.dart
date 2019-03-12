@@ -38,6 +38,7 @@ class _RenameFolderDialogState extends State<RenameFolderDialog> {
               ? AppLocalizations.of(context).errorEmptyName
               : null,
         ),
+        autofocus: true,
       ),
       actions: <Widget>[
         FlatButton(

@@ -25,6 +25,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
               ? AppLocalizations.of(context).errorEmptyName
               : null,
         ),
+        autofocus: true,
       ),
       actions: <Widget>[
         FlatButton(
