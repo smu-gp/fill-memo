@@ -2,7 +2,7 @@ import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/model/result.dart';
 
-abstract class BaseHistoryRepository {
+abstract class HistoryRepository {
   Future<History> create(History newData);
 
   Future<History> readById(int id);
@@ -14,7 +14,7 @@ abstract class BaseHistoryRepository {
   Future<bool> delete(int id);
 }
 
-abstract class BaseResultRepository {
+abstract class ResultRepository {
   Future<Result> create(Result newData);
 
   Future<Result> readById(int id);
@@ -26,7 +26,7 @@ abstract class BaseResultRepository {
   Future<int> deleteByHistoryId(int historyId);
 }
 
-abstract class BaseFolderRepository {
+abstract class FolderRepository {
   Future<Folder> create(Folder newData);
 
   Future<List<Folder>> readAll();

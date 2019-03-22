@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:sp_client/model/folder.dart';
-import 'package:sp_client/repository/base_repository.dart';
+import 'package:sp_client/repository/repository.dart';
 
 class FolderBloc extends Bloc<FolderEvent, FolderState> {
-  final BaseFolderRepository folderRepository;
+  final FolderRepository folderRepository;
 
   FolderBloc({@required this.folderRepository})
       : assert(folderRepository != null);

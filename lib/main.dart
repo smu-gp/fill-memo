@@ -24,8 +24,8 @@ void main() async {
   }
   final db = await databaseProvider.database;
   runApp(App(
-    historyRepository: HistoryRepository(db),
-    resultRepository: ResultRepository(db),
-    folderRepository: FolderRepository(db),
+    historyRepository: LocalHistoryRepository(db),
+    resultRepository: LocalResultRepository(db),
+    folderRepository: LocalFolderRepository(db),
   ));
 }

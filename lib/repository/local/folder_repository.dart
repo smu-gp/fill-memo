@@ -1,11 +1,11 @@
 import 'package:sp_client/model/folder.dart';
-import 'package:sp_client/repository/base_repository.dart';
+import 'package:sp_client/repository/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class FolderRepository implements BaseFolderRepository {
+class LocalFolderRepository implements FolderRepository {
   final Database _db;
 
-  FolderRepository(this._db);
+  LocalFolderRepository(this._db);
 
   @override
   Future<Folder> create(Folder newData) async {

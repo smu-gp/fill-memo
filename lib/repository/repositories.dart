@@ -1,5 +1,5 @@
-export 'base_repository.dart';
+export './local/folder_repository.dart';
+export './local/history_repository.dart';
+export './local/result_repository.dart';
 export 'database_provider.dart';
-export 'folder_repository.dart';
-export 'history_repository.dart';
-export 'result_repository.dart';
+export 'repository.dart';

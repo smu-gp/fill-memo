@@ -7,9 +7,9 @@ import 'package:sp_client/screen/main_screen.dart';
 import 'package:sp_client/util/utils.dart';
 
 class App extends StatefulWidget {
-  final BaseHistoryRepository historyRepository;
-  final BaseResultRepository resultRepository;
-  final BaseFolderRepository folderRepository;
+  final HistoryRepository historyRepository;
+  final ResultRepository resultRepository;
+  final FolderRepository folderRepository;
 
   App({
     Key key,

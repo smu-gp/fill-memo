@@ -1,11 +1,11 @@
 import 'package:sp_client/model/history.dart';
-import 'package:sp_client/repository/base_repository.dart';
+import 'package:sp_client/repository/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class HistoryRepository implements BaseHistoryRepository {
+class LocalHistoryRepository implements HistoryRepository {
   final Database _db;
 
-  HistoryRepository(this._db);
+  LocalHistoryRepository(this._db);
 
   @override
   Future<History> create(History newData) async {

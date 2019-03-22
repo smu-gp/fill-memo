@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:sp_client/model/result.dart';
-import 'package:sp_client/repository/base_repository.dart';
+import 'package:sp_client/repository/repository.dart';
 
 class ResultBloc extends Bloc<ResultEvent, ResultState> {
-  final BaseResultRepository resultRepository;
+  final ResultRepository resultRepository;
 
   ResultBloc({@required this.resultRepository})
       : assert(resultRepository != null);

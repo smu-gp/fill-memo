@@ -1,11 +1,11 @@
 import 'package:sp_client/model/result.dart';
-import 'package:sp_client/repository/base_repository.dart';
+import 'package:sp_client/repository/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ResultRepository implements BaseResultRepository {
+class LocalResultRepository implements ResultRepository {
   final Database _db;
 
-  ResultRepository(this._db);
+  LocalResultRepository(this._db);
 
   @override
   Future<Result> create(Result newData) async {

@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/model/sort_order.dart';
-import 'package:sp_client/repository/base_repository.dart';
+import 'package:sp_client/repository/repository.dart';
 
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
-  final BaseHistoryRepository historyRepository;
+  final HistoryRepository historyRepository;
 
   HistoryBloc({@required this.historyRepository})
       : assert(historyRepository != null);
