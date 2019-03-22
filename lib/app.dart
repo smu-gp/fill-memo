@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sp_client/bloc/blocs.dart';
@@ -41,12 +40,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle.dark.copyWith(
-        systemNavigationBarColor: AppColors.primaryColorDark,
-      ),
-    );
-
     return BlocProviderTree(
       blocProviders: [
         BlocProvider<HistoryBloc>(bloc: _historyBloc),
@@ -55,19 +48,7 @@ class _AppState extends State<App> {
       ],
       child: MaterialApp(
         onGenerateTitle: (context) => AppLocalizations.of(context).appName,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColor: AppColors.primaryColor,
-          primaryColorLight: AppColors.primaryColorLight,
-          primaryColorDark: AppColors.primaryColorDark,
-          accentColor: AppColors.accentColor,
-          backgroundColor: AppColors.backgroundColor,
-          scaffoldBackgroundColor: AppColors.backgroundColor,
-          dialogBackgroundColor: AppColors.backgroundColor,
-          bottomAppBarColor: AppColors.primaryColorDark,
-          // For BottomNavigationBar background color
-          canvasColor: AppColors.primaryColorDark,
-        ),
+        theme: AppThemes.defaultTheme,
         localizationsDelegates: [
           const AppLocalizationsDelegate(),
           GlobalMaterialLocalizations.delegate,
