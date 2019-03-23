@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sp_client/util/color.dart';
 
 class AppThemes {
-  static final ThemeData defaultTheme = ThemeData.dark().copyWith(
+  static final ThemeData defaultTheme = ThemeData(
+    brightness: Brightness.dark,
     primaryColor: AppColors.primaryColor,
     primaryColorLight: AppColors.primaryColorLight,
     primaryColorDark: AppColors.primaryColorDark,
@@ -13,6 +14,7 @@ class AppThemes {
     bottomAppBarColor: AppColors.primaryColorDark,
     // For BottomNavigationBar background color
     canvasColor: AppColors.primaryColorDark,
+    toggleableActiveColor: AppColors.accentColor,
   );
 
   AppThemes._();
