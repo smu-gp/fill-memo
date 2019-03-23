@@ -6,6 +6,7 @@ import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/model/sort_order.dart';
 import 'package:sp_client/screen/add_image_screen.dart';
+import 'package:sp_client/screen/settings_screen.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/add_folder_dialog.dart';
@@ -176,6 +177,8 @@ class _MainScreenState extends State<MainScreen> {
               _historyListBloc.dispatch(Selectable());
               break;
             case MainMenuItem.actionSettings:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()));
               break;
             default:
               break;
@@ -206,6 +209,8 @@ class _MainScreenState extends State<MainScreen> {
         onSelected: (selected) {
           switch (selected) {
             case MainMenuItem.actionSettings:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()));
               break;
             default:
               break;
