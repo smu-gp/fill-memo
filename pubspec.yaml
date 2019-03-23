@@ -14,6 +14,7 @@ dependencies:
   intl_translation: ^0.17.2
   collection: ^1.14.11
   equatable: ^0.2.3
+  http: 0.12.0+1
   rxdart: ^0.20.0
   bloc: ^0.9.3
   flutter_bloc: ^0.7.0
