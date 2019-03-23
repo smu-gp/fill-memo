@@ -40,8 +40,6 @@ class HistoryList extends StatelessWidget {
           }
         } else if (state is HistoryLoading) {
           return LoadingProgress();
-        } else if (state is HistoryEmpty) {
-          return EmptyHistory();
         }
       },
     );

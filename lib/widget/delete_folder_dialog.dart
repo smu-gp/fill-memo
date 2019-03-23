@@ -30,7 +30,7 @@ class DeleteFolderDialog extends StatelessWidget {
           child: Text(MaterialLocalizations.of(context).deleteButtonTooltip),
           onPressed: () {
             _moveHistoriesToDefault(historyBloc);
-            folderBloc.deleteFolder(folder.id);
+            folderBloc.dispatch(DeleteFolder(folder.id));
             Navigator.pop(context, true);
           },
         ),
@@ -46,8 +46,8 @@ class DeleteFolderDialog extends StatelessWidget {
             .toList()
         : []);
     histories.forEach((history) {
-      var updateHistory = history..folderId = 0;
-      historyBloc.updateHistory(updateHistory);
+      var updatedHistory = history..folderId = 0;
+      historyBloc.dispatch(UpdateHistory(updatedHistory));
     });
   }
 }

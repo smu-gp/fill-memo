@@ -52,8 +52,8 @@ class _RenameFolderDialogState extends State<RenameFolderDialog> {
           onPressed: () {
             var name = _textController.text.trim();
             if (name.isNotEmpty) {
-              var updateFolder = widget.folder..name = name;
-              bloc.updateFolder(updateFolder);
+              var updatedFolder = widget.folder..name = name;
+              bloc.dispatch(UpdateFolder(updatedFolder));
               Navigator.pop(context);
             } else {
               setState(() {

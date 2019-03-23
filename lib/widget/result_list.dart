@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/result_bloc.dart';
+import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/widget/result_item.dart';
 
 class ResultList extends StatelessWidget {
@@ -14,7 +14,7 @@ class ResultList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var resultBloc = BlocProvider.of<ResultBloc>(context)
-      ..dispatch(FetchResult(
+      ..dispatch(LoadResults(
         historyId: historyId,
       ));
     return BlocBuilder<ResultEvent, ResultState>(

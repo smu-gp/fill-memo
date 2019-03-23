@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/history_bloc.dart';
-import 'package:sp_client/model/sort_order.dart';
+import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/localization.dart';
 
 class SortDialog extends StatelessWidget {
@@ -27,7 +27,7 @@ class SortDialog extends StatelessWidget {
                       ? state.order
                       : SortOrder.createdAtDes),
                   onChanged: (value) {
-                    bloc.dispatch(FetchHistory(order: value));
+                    bloc.dispatch(LoadHistory(value));
                     Navigator.pop(context);
                   }),
               RadioListTile<SortOrder>(
@@ -38,7 +38,7 @@ class SortDialog extends StatelessWidget {
                       ? state.order
                       : SortOrder.createdAtDes),
                   onChanged: (value) {
-                    bloc.dispatch(FetchHistory(order: value));
+                    bloc.dispatch(LoadHistory(value));
                     Navigator.pop(context);
                   }),
             ],

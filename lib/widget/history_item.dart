@@ -50,9 +50,8 @@ class HistoryItem extends StatelessWidget {
       ),
       onTap: () {
         if (selectable) {
-          historyListBloc.dispatch((selected
-              ? UnSelectItemEvent(unselectedItem: history)
-              : SelectItemEvent(selectedItem: history)));
+          historyListBloc.dispatch(
+              (selected ? UnSelectItem(history) : SelectItem(history)));
         } else {
           Navigator.push(
             context,
@@ -65,8 +64,8 @@ class HistoryItem extends StatelessWidget {
         }
       },
       onLongPress: () {
-        if (historyListBloc.currentState is UnselectableList) {
-          historyListBloc.dispatch(SelectItemEvent(selectedItem: history));
+        if (historyListBloc.currentState is UnSelectableList) {
+          historyListBloc.dispatch(SelectItem(history));
         }
       },
     );

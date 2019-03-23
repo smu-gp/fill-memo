@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/history_bloc.dart';
-import 'package:sp_client/model/folder.dart';
+import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/folder_detail_screen.dart';
 import 'package:sp_client/widget/history_image.dart';
 
@@ -56,6 +56,8 @@ class FolderGridItem extends StatelessWidget {
           ),
         ),
       );
+    } else {
+      return Container();
     }
   }
 }

@@ -42,8 +42,8 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       builder: (BuildContext context, HistoryListState state) {
         return WillPopScope(
           onWillPop: () async {
-            _historyListBloc.dispatch(UnselectableEvent());
-            return (state is UnselectableList);
+            _historyListBloc.dispatch(UnSelectable());
+            return (state is UnSelectableList);
           },
           child: Scaffold(
             appBar: _buildAppBar(state),
@@ -68,21 +68,21 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
 
   AppBar _buildAppBar(HistoryListState state) {
     return AppBar(
-      leading: (state is UnselectableList
+      leading: (state is UnSelectableList
           ? null
           : IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                _historyListBloc.dispatch(UnselectableEvent());
+                _historyListBloc.dispatch(UnSelectable());
               },
             )),
-      title: Text((state is UnselectableList
+      title: Text((state is UnSelectableList
           ? widget.folder.name
           : (state as SelectableList).selectedItemCount.toString())),
       backgroundColor:
-          (state is UnselectableList ? null : Theme.of(context).accentColor),
+          (state is UnSelectableList ? null : Theme.of(context).accentColor),
       elevation: 0.0,
-      actions: (state is UnselectableList
+      actions: (state is UnSelectableList
           ? _buildActions()
           : _buildSelectableActions()),
     );
@@ -121,7 +121,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         onSelected: (selected) async {
           switch (selected) {
             case FolderDetailMenuItem.actionEdit:
-              _historyListBloc.dispatch(SelectableEvent());
+              _historyListBloc.dispatch(Selectable());
               break;
             case FolderDetailMenuItem.actionRenameFolder:
               showDialog(
@@ -154,10 +154,10 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
           var state = _historyListBloc.currentState as SelectableList;
           var items = state.selectedItems;
           items.forEach((item) {
-            _historyBloc.deleteHistory(item.id);
-            _resultBloc.deleteResultByHistoryId(item.id);
+            _historyBloc.dispatch(DeleteHistory(item.id));
+            _resultBloc.deleteResults(item.id);
           });
-          _historyListBloc.dispatch(UnselectableEvent());
+          _historyListBloc.dispatch(UnSelectable());
         },
       ),
       PopupMenuButton<FolderDetailEditMenuItem>(
@@ -180,7 +180,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
               if (selectFolder != null) {
                 _moveHistoriesToFolder(selectFolder);
               }
-              _historyListBloc.dispatch(UnselectableEvent());
+              _historyListBloc.dispatch(UnSelectable());
               break;
           }
         },
@@ -192,8 +192,8 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
     var items = (_historyListBloc.currentState as SelectableList).selectedItems;
     if (items.isNotEmpty) {
       items.forEach((history) {
-        var updateHistory = history..folderId = folder.id;
-        _historyBloc.updateHistory(updateHistory);
+        var updatedHistory = history..folderId = folder.id;
+        _historyBloc.dispatch(UpdateHistory(updatedHistory));
       });
     }
   }

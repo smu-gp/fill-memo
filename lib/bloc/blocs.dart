@@ -1,4 +1,5 @@
-export 'folder_bloc.dart';
-export 'history_bloc.dart';
-export 'history_list_bloc.dart';
-export 'result_bloc.dart';
+export './folder/folder.dart';
+export './history/history.dart';
+export './history_list/history_list.dart';
+export './result/result.dart';
+export './simple_bloc_delegate.dart';

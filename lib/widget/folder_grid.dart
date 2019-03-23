@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/folder_bloc.dart';
-import 'package:sp_client/model/folder.dart';
+import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/folder_grid_item.dart';
 import 'package:sp_client/widget/loading_progress.dart';

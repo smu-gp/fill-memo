@@ -5,8 +5,9 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/model/sort_order.dart';
-import 'package:sp_client/screen/area_select_screen.dart';
+import 'package:sp_client/screen/add_image_screen.dart';
 import 'package:sp_client/util/localization.dart';
+import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/add_folder_dialog.dart';
 import 'package:sp_client/widget/folder_grid.dart';
 import 'package:sp_client/widget/history_list.dart';
@@ -22,7 +23,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final HistoryListBloc _historyListBloc = HistoryListBloc();
   HistoryBloc _historyBloc;
-  FolderBloc _folderBloc;
   ResultBloc _resultBloc;
 
   int _navigationIndex = 0;
@@ -30,27 +30,21 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     _historyBloc = BlocProvider.of<HistoryBloc>(context)
-      ..dispatch(FetchHistory(
-        order: SortOrder.createdAtDes,
-      ));
-    _folderBloc = BlocProvider.of<FolderBloc>(context)
-      ..dispatch(
-        FetchFolder(),
-      );
+      ..dispatch(LoadHistory(SortOrder.createdAtDes));
     _resultBloc = BlocProvider.of<ResultBloc>(context);
+    BlocProvider.of<FolderBloc>(context).dispatch(LoadFolder());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _historyListBloc.dispatch(UnselectableEvent());
     return BlocBuilder<HistoryListEvent, HistoryListState>(
       bloc: _historyListBloc,
       builder: (BuildContext context, HistoryListState state) {
         return WillPopScope(
           onWillPop: () async {
-            _historyListBloc.dispatch(UnselectableEvent());
-            return (state is UnselectableList);
+            _historyListBloc.dispatch(UnSelectable());
+            return (state is UnSelectableList);
           },
           child: Scaffold(
             appBar: _buildAppBar(state),
@@ -79,16 +73,16 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildAppBar(HistoryListState state) {
     return AppBar(
-      leading: (state is UnselectableList
+      leading: (state is UnSelectableList
           ? null
           : IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                _historyListBloc.dispatch(UnselectableEvent());
+                _historyListBloc.dispatch(UnSelectable());
               },
             )),
       title: Text(
-        (state is UnselectableList
+        (state is UnSelectableList
             ? AppLocalizations.of(context).titleHistory
             : (state as SelectableList).selectedItemCount.toString()),
         style: TextStyle(
@@ -96,9 +90,9 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       backgroundColor:
-          (state is UnselectableList ? null : Theme.of(context).accentColor),
+          (state is UnSelectableList ? null : Theme.of(context).accentColor),
       elevation: 0.0,
-      actions: (state is UnselectableList
+      actions: (state is UnSelectableList
           ? (_navigationIndex == 0
               ? _buildDateActions()
               : _buildFolderActions())
@@ -126,7 +120,10 @@ class _MainScreenState extends State<MainScreen> {
             disabledColor: Theme.of(context).accentColor,
             onPressed: _navigationIndex == 1
                 ? null
-                : () => setState(() => _navigationIndex = 1),
+                : () {
+                    _historyListBloc.dispatch(UnSelectable());
+                    setState(() => _navigationIndex = 1);
+                  },
           )
         ],
       ),
@@ -135,7 +132,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildFloatingActionButton(HistoryListState state) {
     return AnimatedOpacity(
-      opacity: _navigationIndex == 0 && state is UnselectableList ? 1.0 : 0.0,
+      opacity: _navigationIndex == 0 && state is UnSelectableList ? 1.0 : 0.0,
       duration: Duration(milliseconds: 200),
       child: FloatingActionButton(
         tooltip: AppLocalizations.of(context).actionAddImage,
@@ -176,7 +173,7 @@ class _MainScreenState extends State<MainScreen> {
         onSelected: (selected) {
           switch (selected) {
             case MainMenuItem.actionEdit:
-              _historyListBloc.dispatch(SelectableEvent());
+              _historyListBloc.dispatch(Selectable());
               break;
             case MainMenuItem.actionSettings:
               break;
@@ -227,10 +224,10 @@ class _MainScreenState extends State<MainScreen> {
           var state = _historyListBloc.currentState as SelectableList;
           var items = state.selectedItems;
           items.forEach((item) {
-            _historyBloc.deleteHistory(item.id);
-            _resultBloc.deleteResultByHistoryId(item.id);
+            _historyBloc.dispatch(DeleteHistory(item.id));
+            _resultBloc.deleteResults(item.id);
           });
-          _historyListBloc.dispatch(UnselectableEvent());
+          _historyListBloc.dispatch(UnSelectable());
         },
       ),
     ];
@@ -274,7 +271,7 @@ class _MainScreenState extends State<MainScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AreaSelectScreen(
+            builder: (context) => AddImageScreen(
                   selectImage: image,
                 ),
           ));

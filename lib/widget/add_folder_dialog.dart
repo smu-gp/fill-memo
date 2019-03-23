@@ -39,7 +39,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
           onPressed: () {
             var name = _textController.text.trim();
             if (name.isNotEmpty) {
-              bloc.createFolder(Folder(name: name));
+              bloc.dispatch(AddFolder(Folder(name: name)));
               Navigator.pop(context);
             } else {
               setState(() {
