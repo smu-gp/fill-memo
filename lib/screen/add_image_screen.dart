@@ -60,6 +60,12 @@ class _AddImageScreenState extends State<AddImageScreen> {
           padding: const EdgeInsets.all(16.0),
           child: ImageCropper(
             key: _cropperKey,
+            overlayHandleRange: _preferenceBloc
+                .getTypePreference<bool>(
+                  key: AppPreferences.keyOverlayHandleRange,
+                  initValue: false,
+                )
+                .value,
             image: FileImage(widget.selectImage),
           ),
         ),

@@ -12,12 +12,14 @@ class ImageCropper extends StatefulWidget {
   final ImageProvider image;
   final double minWidth;
   final double minHeight;
+  final bool overlayHandleRange;
 
   const ImageCropper({
     Key key,
     @required this.image,
     this.minWidth = _kDefaultMinimumSize,
     this.minHeight = _kDefaultMinimumSize,
+    this.overlayHandleRange,
   }) : super(key: key);
 
   @override
@@ -48,7 +50,10 @@ class ImageCropperState extends State<ImageCropper> {
       onScaleStart: _handleScaleStart,
       onScaleUpdate: _handleScaleUpdate,
       child: CustomPaint(
-        foregroundPainter: _CropGuide(guideRect: guideRect),
+        foregroundPainter: _CropGuide(
+          guideRect: guideRect,
+          overlayHandleRange: widget.overlayHandleRange,
+        ),
         child: Image(
           image: widget.image,
         ),
@@ -218,8 +223,12 @@ class ImageCropperState extends State<ImageCropper> {
 
 class _CropGuide extends CustomPainter {
   Rect guideRect;
+  bool overlayHandleRange;
 
-  _CropGuide({@required this.guideRect});
+  _CropGuide({
+    @required this.guideRect,
+    this.overlayHandleRange,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -270,6 +279,49 @@ class _CropGuide extends CustomPainter {
     canvas.drawCircle(guideRect.topRight, 5.0, handlePaint);
     canvas.drawCircle(guideRect.bottomLeft, 5.0, handlePaint);
     canvas.drawCircle(guideRect.bottomRight, 5.0, handlePaint);
+
+    // Draw overlay handle range
+    if (overlayHandleRange) {
+      var overlayHandleRangePaint = Paint()
+        ..style = PaintingStyle.fill
+        ..color = Color(0x56E57373);
+
+      canvas.drawRect(
+          Rect.fromLTWH(
+            guideRect.left - _kHandleRange,
+            guideRect.top - _kHandleRange,
+            _kHandleRange * 2,
+            _kHandleRange * 2,
+          ),
+          overlayHandleRangePaint);
+
+      canvas.drawRect(
+          Rect.fromLTWH(
+            guideRect.right - _kHandleRange,
+            guideRect.top - _kHandleRange,
+            _kHandleRange * 2,
+            _kHandleRange * 2,
+          ),
+          overlayHandleRangePaint);
+
+      canvas.drawRect(
+          Rect.fromLTWH(
+            guideRect.left - _kHandleRange,
+            guideRect.bottom - _kHandleRange,
+            _kHandleRange * 2,
+            _kHandleRange * 2,
+          ),
+          overlayHandleRangePaint);
+
+      canvas.drawRect(
+          Rect.fromLTWH(
+            guideRect.right - _kHandleRange,
+            guideRect.bottom - _kHandleRange,
+            _kHandleRange * 2,
+            _kHandleRange * 2,
+          ),
+          overlayHandleRangePaint);
+    }
   }
 
   @override

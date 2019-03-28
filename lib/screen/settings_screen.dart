@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
+import 'package:sp_client/widget/sub_header.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -38,52 +39,101 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   List<Widget> _buildPreferenceItem(PreferenceState state) {
     var items = <Widget>[];
-    var prefDebugMode = state.preferences[AppPreferences.keyDebugMode];
-    items.add(
-      SwitchListTile(
-        title: Text('Debug mode'),
-        value: prefDebugMode.value,
-        onChanged: (value) {
-          _preferenceBloc.setPreference(prefDebugMode..value = value);
-        },
-      ),
-    );
-    if (prefDebugMode.value) {
-      var prefUseLocalDummy =
-          state.preferences[AppPreferences.keyUseLocalDummy];
-      var prefServiceUrl = state.preferences[AppPreferences.keyServiceUrl];
-      items
-        ..add(
-          SwitchListTile(
-            title: Text('Use local dummy data'),
-            value: prefUseLocalDummy.value,
-            onChanged: (value) {
-              _preferenceBloc.setPreference(prefUseLocalDummy..value = value);
-            },
-          ),
-        )
-        ..add(
-          ListTile(
-            title: Text('Service url'),
-            subtitle: Text(prefServiceUrl.value),
-            enabled: !prefUseLocalDummy.value,
-            onTap: () async {
-              var value = await showDialog(
-                context: context,
-                builder: (context) => EditTextDialog(
-                      title: 'Service url',
-                      value: prefServiceUrl.value,
-                      validation: (value) => value.isNotEmpty,
-                      validationMessage: 'Error: serviceUrl is not empty',
-                    ),
-              );
-              if (value != null) {
-                _preferenceBloc.setPreference(prefServiceUrl..value = value);
-              }
-            },
-          ),
-        );
-    }
+    var prefUseLocalDummy = state.preferences[AppPreferences.keyUseLocalDummy];
+    var prefServiceUrl = state.preferences[AppPreferences.keyServiceUrl];
+    var prefOverlayHandleRange =
+        state.preferences[AppPreferences.keyOverlayHandleRange];
+    items
+      ..add(SubHeader(
+        'Debug options',
+        color: Theme.of(context).accentColor,
+        bold: true,
+      ))
+      ..add(
+        _SwitchPreference(
+          title: 'Use local dummy data',
+          preference: prefUseLocalDummy,
+        ),
+      )
+      ..add(
+        _EditTextPreference(
+          title: 'Service url',
+          preference: prefServiceUrl,
+          validation: (value) => value.isNotEmpty,
+          validationMessage: 'Error: serviceUrl is not empty',
+          enabled: !prefUseLocalDummy.value,
+        ),
+      )
+      ..add(
+        _SwitchPreference(
+          title: 'Show overlay handle range',
+          preference: prefOverlayHandleRange,
+        ),
+      );
     return items;
+  }
+}
+
+class _EditTextPreference extends StatelessWidget {
+  final String title;
+  final Preference preference;
+  final ValidationCallback validation;
+  final String validationMessage;
+  final bool enabled;
+
+  const _EditTextPreference({
+    Key key,
+    @required this.title,
+    @required this.preference,
+    this.validation,
+    this.validationMessage,
+    this.enabled,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<PreferenceBloc>(context);
+    return ListTile(
+      title: Text(title),
+      subtitle: Text(preference.value),
+      enabled: enabled,
+      onTap: () async {
+        var value = await showDialog(
+          context: context,
+          builder: (context) => EditTextDialog(
+                title: title,
+                value: preference.value,
+                validation: validation,
+                validationMessage: validationMessage,
+              ),
+        );
+        if (value != null) {
+          bloc.setPreference(preference..value = value);
+        }
+      },
+    );
+  }
+}
+
+class _SwitchPreference extends StatelessWidget {
+  final String title;
+  final Preference preference;
+
+  const _SwitchPreference({
+    Key key,
+    @required this.title,
+    @required this.preference,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<PreferenceBloc>(context);
+    return SwitchListTile(
+      title: Text(title),
+      value: preference.value,
+      onChanged: (value) {
+        bloc.setPreference(preference..value = value);
+      },
+    );
   }
 }
