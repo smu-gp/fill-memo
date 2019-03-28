@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 
+typedef ValidationCallback = bool Function(String value);
+
 class EditTextDialog extends StatefulWidget {
   final String title;
   final String value;
+  final ValidationCallback validation;
+  final String validationMessage;
 
   EditTextDialog({
     Key key,
     this.title,
     this.value,
+    this.validation,
+    this.validationMessage,
   }) : super(key: key);
 
   @override
@@ -16,6 +22,8 @@ class EditTextDialog extends StatefulWidget {
 
 class _EditTextDialogState extends State<EditTextDialog> {
   final _textController = TextEditingController();
+
+  bool _validationFailed = false;
 
   @override
   void initState() {
@@ -29,6 +37,9 @@ class _EditTextDialogState extends State<EditTextDialog> {
       title: Text(widget.title),
       content: TextField(
         controller: _textController,
+        decoration: InputDecoration(
+          errorText: _validationFailed ? widget.validationMessage : null,
+        ),
         autofocus: true,
       ),
       actions: <Widget>[
@@ -42,7 +53,13 @@ class _EditTextDialogState extends State<EditTextDialog> {
           child: Text(MaterialLocalizations.of(context).okButtonLabel),
           onPressed: () {
             var value = _textController.text.trim();
-            Navigator.pop(context, value);
+            if (widget.validation(value)) {
+              Navigator.pop(context, value);
+            } else {
+              setState(() {
+                _validationFailed = true;
+              });
+            }
           },
         )
       ],

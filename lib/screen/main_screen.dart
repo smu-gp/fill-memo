@@ -9,7 +9,7 @@ import 'package:sp_client/screen/add_image_screen.dart';
 import 'package:sp_client/screen/settings_screen.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/add_folder_dialog.dart';
+import 'package:sp_client/widget/edit_text_dialog.dart';
 import 'package:sp_client/widget/folder_grid.dart';
 import 'package:sp_client/widget/history_list.dart';
 import 'package:sp_client/widget/sort_dialog.dart';
@@ -25,6 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   final HistoryListBloc _historyListBloc = HistoryListBloc();
   HistoryBloc _historyBloc;
   ResultBloc _resultBloc;
+  FolderBloc _folderBloc;
 
   int _navigationIndex = 0;
 
@@ -33,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
     _historyBloc = BlocProvider.of<HistoryBloc>(context)
       ..dispatch(LoadHistory(SortOrder.createdAtDes));
     _resultBloc = BlocProvider.of<ResultBloc>(context);
-    BlocProvider.of<FolderBloc>(context).dispatch(LoadFolder());
+    _folderBloc = BlocProvider.of<FolderBloc>(context)..dispatch(LoadFolder());
     super.initState();
   }
 
@@ -191,13 +192,22 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> _buildFolderActions() {
     return [
       IconButton(
-        icon: Icon(OMIcons.createNewFolder),
-        tooltip: AppLocalizations.of(context).actionAddFolder,
-        onPressed: () => showDialog(
+          icon: Icon(OMIcons.createNewFolder),
+          tooltip: AppLocalizations.of(context).actionAddFolder,
+          onPressed: () async {
+            var folderName = await showDialog(
               context: context,
-              builder: (context) => AddFolderDialog(),
-            ),
-      ),
+              builder: (context) => EditTextDialog(
+                    title: AppLocalizations.of(context).actionAddFolder,
+                    validation: (value) => value.isNotEmpty,
+                    validationMessage:
+                        AppLocalizations.of(context).errorEmptyName,
+                  ),
+            );
+            if (folderName != null) {
+              _folderBloc.dispatch(AddFolder(Folder(name: folderName)));
+            }
+          }),
       PopupMenuButton<MainMenuItem>(
         itemBuilder: (context) => [
               PopupMenuItem<MainMenuItem>(

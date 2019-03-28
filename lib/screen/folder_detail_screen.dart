@@ -6,8 +6,8 @@ import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/delete_folder_dialog.dart';
+import 'package:sp_client/widget/edit_text_dialog.dart';
 import 'package:sp_client/widget/history_list.dart';
-import 'package:sp_client/widget/rename_folder_dialog.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
 import 'package:sp_client/widget/sort_dialog.dart';
 
@@ -27,11 +27,13 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
   final HistoryListBloc _historyListBloc = HistoryListBloc();
   HistoryBloc _historyBloc;
   ResultBloc _resultBloc;
+  FolderBloc _folderBloc;
 
   @override
   void initState() {
     _historyBloc = BlocProvider.of<HistoryBloc>(context);
     _resultBloc = BlocProvider.of<ResultBloc>(context);
+    _folderBloc = BlocProvider.of<FolderBloc>(context);
     super.initState();
   }
 
@@ -124,10 +126,20 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
               _historyListBloc.dispatch(Selectable());
               break;
             case FolderDetailMenuItem.actionRenameFolder:
-              showDialog(
+              var newName = await showDialog(
                 context: context,
-                builder: (context) => RenameFolderDialog(folder: widget.folder),
+                builder: (context) => EditTextDialog(
+                      title: AppLocalizations.of(context).actionRenameFolder,
+                      value: widget.folder.name,
+                      validation: (value) => value.isNotEmpty,
+                      validationMessage:
+                          AppLocalizations.of(context).errorEmptyName,
+                    ),
               );
+              if (newName != null) {
+                var updatedFolder = widget.folder..name = newName;
+                _folderBloc.dispatch(UpdateFolder(updatedFolder));
+              }
               break;
             case FolderDetailMenuItem.actionRemoveFolder:
               bool isDeleteSelected = await showDialog(

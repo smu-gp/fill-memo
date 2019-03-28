@@ -69,12 +69,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             enabled: !prefUseLocalDummy.value,
             onTap: () async {
               var value = await showDialog(
-                  context: context,
-                  builder: (context) => EditTextDialog(
-                        title: 'Service url',
-                        value: prefServiceUrl.value,
-                      ));
-              _preferenceBloc.setPreference(prefServiceUrl..value = value);
+                context: context,
+                builder: (context) => EditTextDialog(
+                      title: 'Service url',
+                      value: prefServiceUrl.value,
+                      validation: (value) => value.isNotEmpty,
+                      validationMessage: 'Error: serviceUrl is not empty',
+                    ),
+              );
+              if (value != null) {
+                _preferenceBloc.setPreference(prefServiceUrl..value = value);
+              }
             },
           ),
         );
