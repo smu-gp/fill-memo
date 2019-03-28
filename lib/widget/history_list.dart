@@ -32,7 +32,10 @@ class HistoryList extends StatelessWidget {
                 builder: (BuildContext context, Orientation orientation) {
               return CustomScrollView(
                 slivers: _buildList(
-                    historyListBloc, histories.toList(), orientation),
+                  listBloc: historyListBloc,
+                  histories: histories.toList(),
+                  orientation: orientation,
+                ),
               );
             });
           } else {
@@ -45,8 +48,11 @@ class HistoryList extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildList(HistoryListBloc listBloc, List<History> histories,
-      Orientation orientation) {
+  List<Widget> _buildList({
+    HistoryListBloc listBloc,
+    List<History> histories,
+    Orientation orientation,
+  }) {
     var items = List<Widget>();
     groupBy(
       histories,
@@ -54,18 +60,14 @@ class HistoryList extends StatelessWidget {
     ).forEach((date, histories) {
       items
         ..add(
-          SubHeader(date),
+          SliverToBoxAdapter(child: SubHeader(date)),
         )
         ..add(
           _buildGrid(listBloc, histories, orientation),
         );
     });
     items.add(
-      SliverToBoxAdapter(
-        child: SizedBox(
-          height: 80.0,
-        ),
-      ),
+      SliverToBoxAdapter(child: SizedBox(height: 80.0)),
     );
     return items;
   }
