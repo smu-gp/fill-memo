@@ -13,12 +13,8 @@ class ResultList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var resultBloc = BlocProvider.of<ResultBloc>(context)
-      ..dispatch(LoadResults(
-        historyId: historyId,
-      ));
     return BlocBuilder<ResultEvent, ResultState>(
-        bloc: resultBloc,
+        bloc: BlocProvider.of<ResultBloc>(context),
         builder: (BuildContext context, ResultState state) {
           return SliverList(
             delegate: SliverChildListDelegate(_buildList(state)),

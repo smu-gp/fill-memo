@@ -45,6 +45,7 @@ class _AddImageScreenState extends State<AddImageScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        title: Text(AppLocalizations.of(context).titleAddImage),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.send),

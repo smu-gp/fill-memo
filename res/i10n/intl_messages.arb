@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-03-12T00:27:50.127979",
+  "@@last_modified": "2019-04-01T00:10:15.612815",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -11,8 +11,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "titleImageSelect": "Selected image",
-  "@titleImageSelect": {
+  "titleAddImage": "Select image area to send",
+  "@titleAddImage": {
     "type": "text",
     "placeholders": {}
   },
@@ -130,6 +130,13 @@
   "@historyEmpty": {
     "type": "text",
     "placeholders": {}
+  },
+  "resultCountMessage": "{resultsCount} result",
+  "@resultCountMessage": {
+    "type": "text",
+    "placeholders": {
+      "resultsCount": {}
+    }
   },
   "errorEmptyName": "Error: name is not empty",
   "@errorEmptyName": {

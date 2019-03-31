@@ -15,6 +15,7 @@ class AppThemes {
     // For BottomNavigationBar background color
     canvasColor: AppColors.primaryColorDark,
     toggleableActiveColor: AppColors.accentColor,
+    textSelectionHandleColor: AppColors.accentColor,
   );
 
   AppThemes._();

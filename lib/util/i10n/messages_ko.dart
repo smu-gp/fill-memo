@@ -18,6 +18,8 @@ typedef MessageIfAbsent(String message_str, List args);
 class MessageLookup extends MessageLookupByLibrary {
   get localeName => 'ko';
 
+  static m0(resultsCount) => "${resultsCount}개의 결과";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "actionAdd" : MessageLookupByLibrary.simpleMessage("추가"),
@@ -44,8 +46,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("갤러리에서 선택"),
     "orderCreatedAsc" : MessageLookupByLibrary.simpleMessage("추가한 날짜 오름차순"),
     "orderCreatedDes" : MessageLookupByLibrary.simpleMessage("추가한 날짜 내림차순"),
+    "resultCountMessage" : m0,
+    "titleAddImage" : MessageLookupByLibrary.simpleMessage("전송할 이미지 영역 선택"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("기록"),
-    "titleImageSelect" : MessageLookupByLibrary.simpleMessage("선택한 이미지"),
     "titleResult" : MessageLookupByLibrary.simpleMessage("결과")
   };
 }

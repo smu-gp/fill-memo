@@ -29,9 +29,9 @@ class AppLocalizations {
         name: 'titleHistory',
       );
 
-  String get titleImageSelect => Intl.message(
-        'Selected image',
-        name: 'titleImageSelect',
+  String get titleAddImage => Intl.message(
+        'Select image area to send',
+        name: 'titleAddImage',
       );
 
   String get titleResult => Intl.message(
@@ -147,6 +147,12 @@ class AppLocalizations {
   String get historyEmpty => Intl.message(
         'Empty history',
         name: 'historyEmpty',
+      );
+
+  String resultCountMessage(int resultsCount) => Intl.message(
+        '$resultsCount result',
+        args: [resultsCount],
+        name: 'resultCountMessage',
       );
 
   String get errorEmptyName => Intl.message(

@@ -18,6 +18,8 @@ typedef MessageIfAbsent(String message_str, List args);
 class MessageLookup extends MessageLookupByLibrary {
   get localeName => 'en';
 
+  static m0(resultsCount) => "${resultsCount} result";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "actionAdd" : MessageLookupByLibrary.simpleMessage("Add"),
@@ -44,8 +46,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("Select from gallery"),
     "orderCreatedAsc" : MessageLookupByLibrary.simpleMessage("Created date ascending"),
     "orderCreatedDes" : MessageLookupByLibrary.simpleMessage("Created date descending"),
+    "resultCountMessage" : m0,
+    "titleAddImage" : MessageLookupByLibrary.simpleMessage("Select image area to send"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("History"),
-    "titleImageSelect" : MessageLookupByLibrary.simpleMessage("Selected image"),
     "titleResult" : MessageLookupByLibrary.simpleMessage("Result")
   };
 }

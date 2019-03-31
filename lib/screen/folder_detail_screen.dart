@@ -78,9 +78,13 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                 _historyListBloc.dispatch(UnSelectable());
               },
             )),
-      title: Text((state is UnSelectableList
-          ? widget.folder.name
-          : (state as SelectableList).selectedItemCount.toString())),
+      title: Text(
+          (state is UnSelectableList
+              ? widget.folder.name
+              : (state as SelectableList).selectedItemCount.toString()),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          )),
       backgroundColor:
           (state is UnSelectableList ? null : Theme.of(context).accentColor),
       elevation: 0.0,
