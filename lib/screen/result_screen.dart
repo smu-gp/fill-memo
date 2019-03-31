@@ -80,26 +80,30 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Container(
           color: Theme.of(context).primaryColor,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  "${Util.formatDate(widget.history.createdAt, 'MMMMEEEEd')}, "
+                _TitleRow(
+                  icon: Icons.date_range,
+                  content:
+                      "${Util.formatDate(widget.history.createdAt, 'MMMMEEEEd')}",
+                ),
+                SizedBox(height: 12.0),
+                _TitleRow(
+                  icon: Icons.access_time,
+                  content:
                       "${Util.formatDate(widget.history.createdAt, 'a hh:mm')}",
-                  style: Theme.of(context).textTheme.headline,
                 ),
-                SizedBox(
-                  height: 8.0,
-                ),
+                SizedBox(height: 12.0),
                 _buildSubtitle(),
               ],
             ),
           ),
         ),
-        minHeight: 96.0,
-        maxHeight: 96.0,
+        minHeight: 120.0,
+        maxHeight: 120.0,
       ),
     );
   }
@@ -108,12 +112,10 @@ class _ResultScreenState extends State<ResultScreen> {
     return BlocBuilder<ResultEvent, ResultState>(
       bloc: _resultBloc,
       builder: (BuildContext context, ResultState state) {
-        return Text(
-          AppLocalizations.of(context).resultCountMessage(
+        return _TitleRow(
+          icon: Icons.receipt,
+          content: AppLocalizations.of(context).resultCountMessage(
               state is ResultLoaded ? state.results.length : 0),
-          style: Theme.of(context).textTheme.subhead.copyWith(
-                color: Colors.white70,
-              ),
         );
       },
     );
@@ -163,6 +165,35 @@ class _ResultScreenState extends State<ResultScreen> {
         },
       ),
     ];
+  }
+}
+
+class _TitleRow extends StatelessWidget {
+  final IconData icon;
+  final String content;
+
+  const _TitleRow({
+    Key key,
+    this.icon,
+    @required this.content,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Icon(
+          icon,
+          size: 20.0,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        SizedBox(width: 16.0),
+        Text(
+          content,
+          style: TextStyle(fontSize: 16.0),
+        ),
+      ],
+    );
   }
 }
 
