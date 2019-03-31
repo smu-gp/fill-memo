@@ -138,12 +138,14 @@ class _MainScreenState extends State<MainScreen> {
       duration: Duration(milliseconds: 200),
       child: FloatingActionButton(
         tooltip: AppLocalizations.of(context).actionAddImage,
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: _buildAddImageSheet,
-          );
-        },
+        onPressed: _navigationIndex == 0
+            ? () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: _buildAddImageSheet,
+                );
+              }
+            : null,
         child: Icon(Icons.add),
       ),
     );
