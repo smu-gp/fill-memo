@@ -5,6 +5,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/model/sort_order.dart';
+import 'package:sp_client/repository/local/image_repository.dart';
 import 'package:sp_client/screen/add_image_screen.dart';
 import 'package:sp_client/screen/settings_screen.dart';
 import 'package:sp_client/util/localization.dart';
@@ -241,6 +242,7 @@ class _MainScreenState extends State<MainScreen> {
           var state = _historyListBloc.currentState as SelectableList;
           var items = state.selectedItems;
           items.forEach((item) {
+            LocalImageRepository.deleteImage(item.sourceImage);
             _historyBloc.dispatch(DeleteHistory(item.id));
             _resultBloc.deleteResults(item.id);
           });

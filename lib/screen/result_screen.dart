@@ -7,6 +7,7 @@ import 'package:sp_client/bloc/history/history_bloc.dart';
 import 'package:sp_client/bloc/result/result_bloc.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/model/models.dart';
+import 'package:sp_client/repository/local/image_repository.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/delete_item_dialog.dart';
 import 'package:sp_client/widget/history_image.dart';
@@ -152,6 +153,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     ),
               );
               if (isDeleteSelected) {
+                LocalImageRepository.deleteImage(widget.history.sourceImage);
                 BlocProvider.of<HistoryBloc>(context)
                     .dispatch(DeleteHistory(widget.history.id));
                 BlocProvider.of<ResultBloc>(context)

@@ -4,6 +4,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/model/models.dart';
+import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/delete_folder_dialog.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
@@ -170,6 +171,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
           var state = _historyListBloc.currentState as SelectableList;
           var items = state.selectedItems;
           items.forEach((item) {
+            LocalImageRepository.deleteImage(item.sourceImage);
             _historyBloc.dispatch(DeleteHistory(item.id));
             _resultBloc.deleteResults(item.id);
           });

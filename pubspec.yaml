@@ -21,6 +21,7 @@ dependencies:
   preference_helper: ^0.0.4
   sqflite: ^1.0.0
   image_picker: ^0.4.10
+  path_provider: ^0.5.0+1
   outline_material_icons: ^0.1.0
   cupertino_icons: ^0.1.2
 

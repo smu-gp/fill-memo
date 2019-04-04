@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/bloc/history/history_bloc.dart';
 import 'package:sp_client/bloc/result/result_bloc.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/model/result.dart';
+import 'package:sp_client/repository/local/image_repository.dart';
 import 'package:sp_client/repository/remote/processing_service.dart';
 import 'package:sp_client/screen/result_screen.dart';
 import 'package:sp_client/util/localization.dart';
@@ -76,15 +78,36 @@ class _AddImageScreenState extends State<AddImageScreen> {
 
   void _handleSendPressed() async {
     _showProgressDialog();
-    var prefUseLocalDummy = _preferenceBloc.getTypePreference<bool>(
-        key: AppPreferences.keyUseLocalDummy, initValue: false);
-    if (!prefUseLocalDummy.value) {
+    var useLocalDummy = _preferenceBloc
+        .getTypePreference<bool>(
+          key: AppPreferences.keyUseLocalDummy,
+          initValue: false,
+        )
+        .value;
+
+    if (useLocalDummy) {
+      var imagePath = await _copySourceImage();
+      var newHistory = await _writeHistory(imagePath);
+      var dummyResults = [
+        Result(type: "text", content: "Test content"),
+      ];
+      _writeResults(dummyResults, newHistory.id);
+      _navigationResult(newHistory);
+    } else {
+      var serviceUrl = _preferenceBloc
+          .getTypePreference<String>(
+            key: AppPreferences.keyServiceUrl,
+            initValue: AppPreferences.initServiceUrl,
+          )
+          .value;
+
       try {
-        var results = await _sendImage();
+        var results = await _sendImage(serviceUrl);
         if (results != null) {
-          var history = await _writeHistory();
-          _resultBloc.addResults(results, history.id);
-          _navigationResult(history);
+          var imagePath = await _copySourceImage();
+          var newHistory = await _writeHistory(imagePath);
+          _writeResults(results, newHistory.id);
+          _navigationResult(newHistory);
         } else {
           Navigator.pop(context);
           _showSendErrorDialog();
@@ -93,13 +116,6 @@ class _AddImageScreenState extends State<AddImageScreen> {
         Navigator.pop(context);
         _showSendErrorDialog(e);
       }
-    } else {
-      var history = await _writeHistory();
-      var results = [
-        Result(type: "text", content: "Test content"),
-      ];
-      _resultBloc.addResults(results, history.id);
-      _navigationResult(history);
     }
   }
 
@@ -140,16 +156,21 @@ class _AddImageScreenState extends State<AddImageScreen> {
         });
   }
 
-  Future<List<Result>> _sendImage() async {
+  void _navigationResult(History newHistory) {
+    Navigator.pop(context);
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ResultScreen(
+                  history: newHistory,
+                )));
+  }
+
+  Future<List<Result>> _sendImage(String serviceUrl) async {
     var cropRect = await _cropperKey.currentState.getActualCropRect();
-    var prefServiceUrl =
-        BlocProvider.of<PreferenceBloc>(context).getTypePreference<String>(
-      key: AppPreferences.keyServiceUrl,
-      initValue: AppPreferences.initServiceUrl,
-    );
     return ProcessingService(
       httpClient: http.Client(),
-      baseUrl: prefServiceUrl.value,
+      baseUrl: serviceUrl,
     ).sendImage(
       imageFile: widget.selectImage,
       cropLeft: cropRect.left,
@@ -159,22 +180,23 @@ class _AddImageScreenState extends State<AddImageScreen> {
     );
   }
 
-  Future<History> _writeHistory() {
+  Future<String> _copySourceImage() async {
+    var appDocDir = await getApplicationDocumentsDirectory();
+    return LocalImageRepository(
+      imageDirectory: appDocDir,
+    ).addImage(widget.selectImage);
+  }
+
+  Future<History> _writeHistory(String copiedImagePath) {
     var newHistory = History(
-      sourceImage: widget.selectImage.path,
+      sourceImage: copiedImagePath,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       folderId: 0,
     );
     return _historyBloc.createHistory(newHistory);
   }
 
-  void _navigationResult(History newHistory) {
-    Navigator.pop(context);
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ResultScreen(
-                  history: newHistory,
-                )));
+  void _writeResults(List<Result> results, int historyId) {
+    _resultBloc.addResults(results, historyId);
   }
 }
