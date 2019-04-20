@@ -35,6 +35,9 @@ class DeleteFolderDialog extends StatelessWidget {
           },
         ),
       ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
     );
   }
 

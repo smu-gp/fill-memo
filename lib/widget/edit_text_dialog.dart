@@ -63,6 +63,9 @@ class _EditTextDialogState extends State<EditTextDialog> {
           },
         )
       ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
     );
   }
 
