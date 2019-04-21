@@ -86,8 +86,9 @@ class _AddImageScreenState extends State<AddImageScreen> {
         .value;
 
     if (useLocalDummy) {
-      var imagePath = await _copySourceImage();
-      var newHistory = await _writeHistory(imagePath);
+      var currentTime = DateTime.now().millisecondsSinceEpoch;
+      var imagePath = await _copySourceImage(currentTime);
+      var newHistory = await _writeHistory(currentTime, imagePath);
       var dummyResults = [
         Result(type: "text", content: "Test content"),
       ];
@@ -104,8 +105,9 @@ class _AddImageScreenState extends State<AddImageScreen> {
       try {
         var results = await _sendImage(serviceUrl);
         if (results != null) {
-          var imagePath = await _copySourceImage();
-          var newHistory = await _writeHistory(imagePath);
+          var currentTime = DateTime.now().millisecondsSinceEpoch;
+          var imagePath = await _copySourceImage(currentTime);
+          var newHistory = await _writeHistory(currentTime, imagePath);
           _writeResults(results, newHistory.id);
           _navigationResult(newHistory);
         } else {
@@ -180,17 +182,17 @@ class _AddImageScreenState extends State<AddImageScreen> {
     );
   }
 
-  Future<String> _copySourceImage() async {
+  Future<String> _copySourceImage(int currentTime) async {
     var appDocDir = await getApplicationDocumentsDirectory();
     return LocalImageRepository(
       imageDirectory: appDocDir,
-    ).addImage(widget.selectImage);
+    ).addImage(currentTime, widget.selectImage);
   }
 
-  Future<History> _writeHistory(String copiedImagePath) {
+  Future<History> _writeHistory(int currentTime, String copiedImagePath) {
     var newHistory = History(
       sourceImage: copiedImagePath,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
+      createdAt: currentTime,
       folderId: 0,
     );
     return _historyBloc.createHistory(newHistory);

@@ -9,10 +9,9 @@ class LocalImageRepository {
     @required this.imageDirectory,
   });
 
-  Future<String> addImage(File file) async {
-    var currentDate = DateTime.now().millisecondsSinceEpoch;
+  Future<String> addImage(int currentTime, File file) async {
     var fileExt = file.path.split(".")?.last;
-    var copiedPath = "${imageDirectory.path}/$currentDate.$fileExt";
+    var copiedPath = "${imageDirectory.path}/$currentTime.$fileExt";
 
     File copiedFile = await _copyFile(file, copiedPath);
     return copiedFile.path;
