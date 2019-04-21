@@ -39,10 +39,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   List<Widget> _buildPreferenceItem(PreferenceState state) {
     var items = <Widget>[];
-    var prefUseLocalDummy = state.preferences[AppPreferences.keyUseLocalDummy];
-    var prefServiceUrl = state.preferences[AppPreferences.keyServiceUrl];
+    var prefUseLocalDummy =
+        state.preferences.get(AppPreferences.keyUseLocalDummy);
+    var prefServiceUrl = state.preferences.get(AppPreferences.keyServiceUrl);
     var prefOverlayHandleRange =
-        state.preferences[AppPreferences.keyOverlayHandleRange];
+        state.preferences.get(AppPreferences.keyOverlayHandleRange);
     items
       ..add(SubHeader(
         'Debug options',
@@ -108,7 +109,7 @@ class _EditTextPreference extends StatelessWidget {
               ),
         );
         if (value != null) {
-          bloc.setPreference(preference..value = value);
+          bloc.dispatch(UpdatePreference(preference..value = value));
         }
       },
     );
@@ -132,7 +133,7 @@ class _SwitchPreference extends StatelessWidget {
       title: Text(title),
       value: preference.value,
       onChanged: (value) {
-        bloc.setPreference(preference..value = value);
+        bloc.dispatch(UpdatePreference(preference..value = value));
       },
     );
   }

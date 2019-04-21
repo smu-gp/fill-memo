@@ -64,10 +64,7 @@ class _AddImageScreenState extends State<AddImageScreen> {
           child: ImageCropper(
             key: _cropperKey,
             overlayHandleRange: _preferenceBloc
-                .getTypePreference<bool>(
-                  key: AppPreferences.keyOverlayHandleRange,
-                  initValue: false,
-                )
+                .getPreference(AppPreferences.keyOverlayHandleRange)
                 .value,
             image: FileImage(widget.selectImage),
           ),
@@ -79,10 +76,7 @@ class _AddImageScreenState extends State<AddImageScreen> {
   void _handleSendPressed() async {
     _showProgressDialog();
     var useLocalDummy = _preferenceBloc
-        .getTypePreference<bool>(
-          key: AppPreferences.keyUseLocalDummy,
-          initValue: false,
-        )
+        .getPreference<bool>(AppPreferences.keyUseLocalDummy)
         .value;
 
     if (useLocalDummy) {
@@ -96,10 +90,7 @@ class _AddImageScreenState extends State<AddImageScreen> {
       _navigationResult(newHistory);
     } else {
       var serviceUrl = _preferenceBloc
-          .getTypePreference<String>(
-            key: AppPreferences.keyServiceUrl,
-            initValue: AppPreferences.initServiceUrl,
-          )
+          .getPreference<String>(AppPreferences.keyServiceUrl)
           .value;
 
       try {
