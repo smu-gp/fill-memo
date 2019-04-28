@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 
 enum _HandleType { topLeft, topRight, bottomLeft, bottomRight, none }
 
-const double _kHandleRange = 15.0;
+const double _kHandleRange = 20.0;
 const double _kDefaultMinimumSize = 50.0;
 
 class ImageCropper extends StatefulWidget {
