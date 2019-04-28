@@ -19,11 +19,13 @@ dependencies:
   bloc: ^0.9.3
   flutter_bloc: ^0.7.0
   preference_helper: ^0.0.4
+  outline_material_icons: ^0.1.0
+  cupertino_icons: ^0.1.2
+  # Plugins
+  share: ^0.6.0+1
   sqflite: ^1.0.0
   image_picker: ^0.4.10
   path_provider: ^0.5.0+1
-  outline_material_icons: ^0.1.0
-  cupertino_icons: ^0.1.2
 
 dev_dependencies:
   flutter_test:
