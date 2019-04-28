@@ -104,31 +104,34 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildBottomNavigation() {
-    return BottomAppBar(
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(OMIcons.dateRange),
-            color: Colors.white70,
-            disabledColor: Theme.of(context).accentColor,
-            onPressed: _navigationIndex == 0
-                ? null
-                : () => setState(() => _navigationIndex = 0),
-          ),
-          IconButton(
-            icon: Icon(OMIcons.folder),
-            color: Colors.white70,
-            disabledColor: Theme.of(context).accentColor,
-            onPressed: _navigationIndex == 1
-                ? null
-                : () {
-                    _historyListBloc.dispatch(UnSelectable());
-                    setState(() => _navigationIndex = 1);
-                  },
-          )
-        ],
+    return SizedBox(
+      height: 56.0,
+      child: BottomAppBar(
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(OMIcons.dateRange),
+              color: Theme.of(context).iconTheme.color,
+              disabledColor: Theme.of(context).accentColor,
+              onPressed: _navigationIndex == 0
+                  ? null
+                  : () => setState(() => _navigationIndex = 0),
+            ),
+            IconButton(
+              icon: Icon(OMIcons.folder),
+              color: Theme.of(context).iconTheme.color,
+              disabledColor: Theme.of(context).accentColor,
+              onPressed: _navigationIndex == 1
+                  ? null
+                  : () {
+                      _historyListBloc.dispatch(UnSelectable());
+                      setState(() => _navigationIndex = 1);
+                    },
+            )
+          ],
+        ),
       ),
     );
   }

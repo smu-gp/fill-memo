@@ -39,12 +39,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   List<Widget> _buildPreferenceItem(PreferenceState state) {
     var items = <Widget>[];
+    var prefLightTheme = state.preferences.get(AppPreferences.keyLightTheme);
     var prefUseLocalDummy =
         state.preferences.get(AppPreferences.keyUseLocalDummy);
     var prefServiceUrl = state.preferences.get(AppPreferences.keyServiceUrl);
     var prefOverlayHandleRange =
         state.preferences.get(AppPreferences.keyOverlayHandleRange);
     items
+      ..add(
+        _SwitchPreference(
+          title: 'Light theme',
+          preference: prefLightTheme,
+        ),
+      )
       ..add(SubHeader(
         'Debug options',
         color: Theme.of(context).accentColor,

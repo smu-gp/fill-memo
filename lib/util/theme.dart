@@ -18,5 +18,21 @@ class AppThemes {
     textSelectionHandleColor: AppColors.accentColor,
   );
 
+  static final ThemeData lightTheme = ThemeData(
+    brightness: Brightness.light,
+    primaryColor: AppColors.primaryLightColor,
+    primaryColorLight: AppColors.primaryLightColorLight,
+    primaryColorDark: AppColors.primaryLightColorDark,
+    accentColor: AppColors.accentColor,
+    backgroundColor: AppColors.backgroundLightColor,
+    scaffoldBackgroundColor: AppColors.backgroundLightColor,
+    dialogBackgroundColor: AppColors.backgroundLightColor,
+    bottomAppBarColor: AppColors.primaryLightColorLight,
+    // For BottomNavigationBar background color
+    canvasColor: AppColors.primaryLightColorLight,
+    toggleableActiveColor: AppColors.accentColor,
+    textSelectionHandleColor: AppColors.accentColor,
+  );
+
   AppThemes._();
 }

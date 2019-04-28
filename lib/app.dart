@@ -56,19 +56,27 @@ class _AppState extends State<App> {
         BlocProvider<FolderBloc>(bloc: _folderBloc),
         BlocProvider<PreferenceBloc>(bloc: _preferenceBloc),
       ],
-      child: MaterialApp(
-        onGenerateTitle: (context) => AppLocalizations.of(context).appName,
-        theme: AppThemes.defaultTheme,
-        localizationsDelegates: [
-          const AppLocalizationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en', 'US'),
-          const Locale('ko', 'KR'),
-        ],
-        home: MainScreen(),
+      child: BlocBuilder<PreferenceEvent, PreferenceState>(
+        bloc: _preferenceBloc,
+        builder: (context, prefState) {
+          var isLightTheme =
+              prefState.preferences.get(AppPreferences.keyLightTheme).value;
+          return MaterialApp(
+            onGenerateTitle: (context) => AppLocalizations.of(context).appName,
+            theme:
+                (!isLightTheme ? AppThemes.defaultTheme : AppThemes.lightTheme),
+            localizationsDelegates: [
+              const AppLocalizationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', 'US'),
+              const Locale('ko', 'KR'),
+            ],
+            home: MainScreen(),
+          );
+        },
       ),
     );
   }
