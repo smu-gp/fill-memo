@@ -17,20 +17,23 @@ class ResultList extends StatelessWidget {
         bloc: BlocProvider.of<ResultBloc>(context),
         builder: (BuildContext context, ResultState state) {
           return SliverList(
-            delegate: SliverChildListDelegate(_buildList(state)),
+            delegate: SliverChildListDelegate(_buildList(context, state)),
           );
         });
   }
 
-  List<Widget> _buildList(ResultState state) {
+  List<Widget> _buildList(BuildContext context, ResultState state) {
     if (state is ResultLoaded) {
       int index = 0;
-      return state.results.map((result) {
-        return ResultItem(
-          index: index++,
-          result: result,
-        );
-      }).toList();
+      return ListTile.divideTiles(
+        context: context,
+        tiles: state.results.map((result) {
+          return ResultItem(
+            index: index++,
+            result: result,
+          );
+        }).toList(),
+      ).toList();
     } else {
       return [
         CircularProgressIndicator(),
