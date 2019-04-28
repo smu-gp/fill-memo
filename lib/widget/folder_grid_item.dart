@@ -44,7 +44,12 @@ class FolderGridItem extends StatelessWidget {
             footer: GridTileBar(
               backgroundColor: Colors.black26,
               title: Center(
-                child: Text(folder.name),
+                child: Text(
+                  folder.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 4.0),

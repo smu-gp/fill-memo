@@ -18,18 +18,21 @@ class FolderGrid extends StatelessWidget {
           ]..addAll(state.folders);
           return OrientationBuilder(
               builder: (context, Orientation orientation) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.count(
-                crossAxisCount: (orientation == Orientation.portrait ? 2 : 4),
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 8.0,
-                children: folders.map<Widget>((folder) {
-                  return FolderGridItem(
-                    folder: folder,
-                  );
-                }).toList(),
+            return GridView.count(
+              padding: EdgeInsets.symmetric(
+                horizontal: Util.isTablet(context) ? 32.0 : 16.0,
+                vertical: Util.isTablet(context) ? 32.0 : 16.0,
               ),
+              crossAxisCount: (Util.isTablet(context)
+                  ? 6
+                  : orientation == Orientation.portrait ? 2 : 4),
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+              children: folders.map<Widget>((folder) {
+                return FolderGridItem(
+                  folder: folder,
+                );
+              }).toList(),
             );
           });
         } else {

@@ -27,7 +27,9 @@ class DeleteFolderDialog extends StatelessWidget {
           },
         ),
         FlatButton(
-          child: Text(MaterialLocalizations.of(context).deleteButtonTooltip),
+          child: Text(MaterialLocalizations.of(context)
+              .deleteButtonTooltip
+              .toUpperCase()),
           onPressed: () {
             _moveHistoriesToDefault(historyBloc);
             folderBloc.dispatch(DeleteFolder(folder.id));

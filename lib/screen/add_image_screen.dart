@@ -150,12 +150,31 @@ class _AddImageScreenState extends State<AddImageScreen> {
 
   void _navigationResult(History newHistory) {
     Navigator.pop(context);
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
+    if (Util.isTablet(context)) {
+      Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.all(0.0),
+            content: Container(
+              width: 512.0,
+              child: ResultScreen(
+                history: newHistory,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
             builder: (context) => ResultScreen(
                   history: newHistory,
-                )));
+                ),
+          ));
+    }
   }
 
   Future<List<Result>> _sendImage(String serviceUrl) async {

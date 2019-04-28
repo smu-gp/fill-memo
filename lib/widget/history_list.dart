@@ -32,6 +32,7 @@ class HistoryList extends StatelessWidget {
                 builder: (BuildContext context, Orientation orientation) {
               return CustomScrollView(
                 slivers: _buildList(
+                  context: context,
                   listBloc: historyListBloc,
                   histories: histories.toList(),
                   orientation: orientation,
@@ -49,18 +50,29 @@ class HistoryList extends StatelessWidget {
   }
 
   List<Widget> _buildList({
+    BuildContext context,
     HistoryListBloc listBloc,
     List<History> histories,
     Orientation orientation,
   }) {
-    var items = List<Widget>();
+    var items = List<Widget>()
+      ..add(SliverToBoxAdapter(
+        child: SizedBox(
+          height: 16.0,
+        ),
+      ));
     groupBy(
       histories,
       (History history) => Util.formatDate(history.createdAt, 'MMMMEEEEd'),
     ).forEach((date, histories) {
       items
         ..add(
-          SliverToBoxAdapter(child: SubHeader(date)),
+          SliverToBoxAdapter(
+            child: SubHeader(
+              date,
+              padding: Util.isTablet(context) ? 32.0 : 16.0,
+            ),
+          ),
         )
         ..add(
           _buildGrid(listBloc, histories, orientation),
@@ -78,11 +90,15 @@ class HistoryList extends StatelessWidget {
         bloc: listBloc,
         builder: (BuildContext context, HistoryListState state) {
           return SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: Util.isTablet(context) ? 32.0 : 16.0,
+                vertical: 0.0),
             sliver: SliverGrid.count(
-              crossAxisCount: (orientation == Orientation.portrait ? 3 : 5),
-              mainAxisSpacing: 4.0,
-              crossAxisSpacing: 4.0,
+              crossAxisCount: (Util.isTablet(context)
+                  ? 6
+                  : orientation == Orientation.portrait ? 3 : 5),
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
               children: histories.map<Widget>((history) {
                 return HistoryItem(
                   history: history,

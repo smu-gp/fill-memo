@@ -51,14 +51,27 @@ class _MainScreenState extends State<MainScreen> {
           },
           child: Scaffold(
             appBar: _buildAppBar(state),
-            body: [
-              BlocProvider<HistoryListBloc>(
-                bloc: _historyListBloc,
-                child: HistoryList(),
-              ),
-              FolderGrid(),
-            ].elementAt(_navigationIndex),
-            bottomNavigationBar: _buildBottomNavigation(),
+            body: Row(
+              children: <Widget>[
+                Visibility(
+                  visible: Util.isTablet(context),
+                  child: _buildSidebar(),
+                ),
+                Expanded(
+                  child: [
+                    BlocProvider<HistoryListBloc>(
+                      bloc: _historyListBloc,
+                      child: HistoryList(),
+                    ),
+                    FolderGrid(),
+                  ].elementAt(_navigationIndex),
+                ),
+              ],
+            ),
+            bottomNavigationBar: Visibility(
+              visible: !Util.isTablet(context),
+              child: _buildBottomNavigation(),
+            ),
             floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
             floatingActionButton: _buildFloatingActionButton(state),
             resizeToAvoidBottomPadding: false,
@@ -94,12 +107,49 @@ class _MainScreenState extends State<MainScreen> {
       ),
       backgroundColor:
           (state is UnSelectableList ? null : Theme.of(context).accentColor),
-      elevation: 0.0,
+      elevation: Util.isTablet(context) ? 4.0 : 0.0,
       actions: (state is UnSelectableList
           ? (_navigationIndex == 0
               ? _buildDateActions()
               : _buildFolderActions())
           : _buildSelectableActions()),
+    );
+  }
+
+  Widget _buildSidebar() {
+    return Material(
+      elevation: 4.0,
+      child: Container(
+        width: 80.0,
+        color: Theme.of(context).bottomAppBarColor,
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: Column(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(OMIcons.dateRange),
+              color: Theme.of(context).iconTheme.color,
+              disabledColor: Theme.of(context).accentColor,
+              onPressed: _navigationIndex == 0
+                  ? null
+                  : () => setState(() => _navigationIndex = 0),
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            IconButton(
+              icon: Icon(OMIcons.folder),
+              color: Theme.of(context).iconTheme.color,
+              disabledColor: Theme.of(context).accentColor,
+              onPressed: _navigationIndex == 1
+                  ? null
+                  : () {
+                      _historyListBloc.dispatch(UnSelectable());
+                      setState(() => _navigationIndex = 1);
+                    },
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -156,7 +206,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildDateActions() {
-    return [
+    var actions = <Widget>[
       IconButton(
         icon: Icon(Icons.sort),
         tooltip: AppLocalizations.of(context).actionSort,
@@ -165,38 +215,59 @@ class _MainScreenState extends State<MainScreen> {
               builder: (context) => SortDialog(),
             ),
       ),
-      PopupMenuButton<MainMenuItem>(
-        itemBuilder: (context) => [
-              PopupMenuItem<MainMenuItem>(
-                child: Text(AppLocalizations.of(context).actionEdit),
-                height: 56.0,
-                value: MainMenuItem.actionEdit,
-              ),
-              PopupMenuItem<MainMenuItem>(
-                child: Text(AppLocalizations.of(context).actionSettings),
-                height: 56.0,
-                value: MainMenuItem.actionSettings,
-              ),
-            ],
-        onSelected: (selected) {
-          switch (selected) {
-            case MainMenuItem.actionEdit:
-              _historyListBloc.dispatch(Selectable());
-              break;
-            case MainMenuItem.actionSettings:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()));
-              break;
-            default:
-              break;
-          }
-        },
-      ),
     ];
+
+    var actionEdit = () {
+      _historyListBloc.dispatch(Selectable());
+    };
+    var actionSettings = () {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+    };
+
+    if (Util.isTablet(context)) {
+      actions.addAll([
+        IconButton(
+          icon: Icon(OMIcons.edit),
+          tooltip: AppLocalizations.of(context).actionEdit,
+          onPressed: actionEdit,
+        ),
+        IconButton(
+          icon: Icon(OMIcons.settings),
+          tooltip: AppLocalizations.of(context).actionSettings,
+          onPressed: actionSettings,
+        )
+      ]);
+    } else {
+      actions.add(
+        PopupMenuButton<MainMenuItem>(
+          itemBuilder: (context) => [
+                PopupMenuItem<MainMenuItem>(
+                  child: Text(AppLocalizations.of(context).actionEdit),
+                  height: 56.0,
+                  value: MainMenuItem.actionEdit,
+                ),
+                PopupMenuItem<MainMenuItem>(
+                  child: Text(AppLocalizations.of(context).actionSettings),
+                  height: 56.0,
+                  value: MainMenuItem.actionSettings,
+                ),
+              ],
+          onSelected: (selected) {
+            if (selected == MainMenuItem.actionEdit) {
+              actionEdit();
+            } else if (selected == MainMenuItem.actionSettings) {
+              actionSettings();
+            }
+          },
+        ),
+      );
+    }
+    return actions;
   }
 
   List<Widget> _buildFolderActions() {
-    return [
+    var actions = <Widget>[
       IconButton(
           icon: Icon(OMIcons.createNewFolder),
           tooltip: AppLocalizations.of(context).actionAddFolder,
@@ -214,26 +285,40 @@ class _MainScreenState extends State<MainScreen> {
               _folderBloc.dispatch(AddFolder(Folder(name: folderName)));
             }
           }),
-      PopupMenuButton<MainMenuItem>(
-        itemBuilder: (context) => [
-              PopupMenuItem<MainMenuItem>(
-                child: Text(AppLocalizations.of(context).actionSettings),
-                height: 56.0,
-                value: MainMenuItem.actionSettings,
-              ),
-            ],
-        onSelected: (selected) {
-          switch (selected) {
-            case MainMenuItem.actionSettings:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()));
-              break;
-            default:
-              break;
-          }
-        },
-      ),
     ];
+
+    var actionSettings = () {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+    };
+
+    if (Util.isTablet(context)) {
+      actions.add(
+        IconButton(
+          icon: Icon(OMIcons.settings),
+          tooltip: AppLocalizations.of(context).actionSettings,
+          onPressed: actionSettings,
+        ),
+      );
+    } else {
+      actions.add(
+        PopupMenuButton<MainMenuItem>(
+          itemBuilder: (context) => [
+                PopupMenuItem<MainMenuItem>(
+                  child: Text(AppLocalizations.of(context).actionSettings),
+                  height: 56.0,
+                  value: MainMenuItem.actionSettings,
+                ),
+              ],
+          onSelected: (selected) {
+            if (selected == MainMenuItem.actionSettings) {
+              actionSettings();
+            }
+          },
+        ),
+      );
+    }
+    return actions;
   }
 
   List<Widget> _buildSelectableActions() {

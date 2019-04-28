@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/history.dart';
+import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/result_screen.dart';
+import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/history_image.dart';
 
 class HistoryItem extends StatelessWidget {
@@ -53,14 +55,31 @@ class HistoryItem extends StatelessWidget {
           historyListBloc.dispatch(
               (selected ? UnSelectItem(history) : SelectItem(history)));
         } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResultScreen(
-                    history: history,
+          if (Util.isTablet(context)) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.all(0.0),
+                  content: Container(
+                    width: 512.0,
+                    child: ResultScreen(
+                      history: history,
+                    ),
                   ),
-            ),
-          );
+                );
+              },
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResultScreen(
+                      history: history,
+                    ),
+              ),
+            );
+          }
         }
       },
       onLongPress: () {

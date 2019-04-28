@@ -29,8 +29,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(AppLocalizations.of(context).actionSettings),
             elevation: 0.0,
           ),
-          body: ListView(
-            children: _buildPreferenceItem(state),
+          body: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: Util.isTablet(context) ? 58.0 : 0,
+            ),
+            child: ListView(
+              children: _buildPreferenceItem(state),
+            ),
           ),
         );
       },
