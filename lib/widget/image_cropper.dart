@@ -248,7 +248,12 @@ class _CropGuide extends CustomPainter {
     );
     // Draw outside left
     canvas.drawRect(
-      Rect.fromLTWH(0, guideRect.top, guideRect.left, size.height),
+      Rect.fromLTWH(
+        0,
+        guideRect.top,
+        guideRect.left,
+        size.height - guideRect.top,
+      ),
       guideOutsidePaint,
     );
     // Draw outside bottom
