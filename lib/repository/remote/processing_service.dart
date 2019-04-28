@@ -24,12 +24,13 @@ class ProcessingService {
       var requestImage =
           await http.MultipartFile.fromPath('image', imageFile.path);
       var request =
-          http.MultipartRequest("POST", Uri.parse("$baseUrl/process"));
-      request.fields['cropLeft'] = cropLeft.toString();
-      request.fields['cropTop'] = cropTop.toString();
-      request.fields['cropRight'] = cropRight.toString();
-      request.fields['cropBottom'] = cropBottom.toString();
-      request.files.add(requestImage);
+          http.MultipartRequest("POST", Uri.parse("$baseUrl/process/"));
+      request
+        ..fields['cropLeft'] = cropLeft.toString()
+        ..fields['cropTop'] = cropTop.toString()
+        ..fields['cropRight'] = cropRight.toString()
+        ..fields['cropBottom'] = cropBottom.toString()
+        ..files.add(requestImage);
       var response = await request.send();
       if (response.statusCode == 200) {
         var body = await response.stream.toStringStream().single;
