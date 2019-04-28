@@ -126,9 +126,7 @@ class _ResultScreenState extends State<ResultScreen> {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Divider(
-          color: Colors.white54,
-        ),
+        child: Divider(),
       ),
     );
   }
