@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
@@ -6,6 +8,9 @@ class Util {
       DateFormat(pattern, 'ko_KR')
           .format(DateTime.fromMillisecondsSinceEpoch(milliseconds));
 
-  static bool isTablet(BuildContext context) =>
-      MediaQuery.of(context).size.width > 600;
+  static bool isTablet(BuildContext context) {
+    assert(context != null);
+    var size = MediaQuery.of(context).size;
+    return min(size.width, size.height) > 600;
+  }
 }
