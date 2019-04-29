@@ -187,19 +187,46 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
               )
             ],
         onSelected: (selected) async {
-          switch (selected) {
-            case FolderDetailEditMenuItem.actionMoveFolder:
-              var selectFolder = await Navigator.push<Folder>(
+          if (selected == FolderDetailEditMenuItem.actionMoveFolder) {
+            var selectFolder;
+            if (Util.isTablet(context)) {
+              selectFolder = await showDialog<Folder>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title:
+                        Text(AppLocalizations.of(context).dialogFolderSelect),
+                    contentPadding: EdgeInsets.all(16.0),
+                    content: Container(
+                      width: 400.0,
+                      height: 400.0,
+                      child: SelectFolderDialog(),
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text(
+                          MaterialLocalizations.of(context).cancelButtonLabel,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  );
+                },
+              );
+            } else {
+              selectFolder = await Navigator.push<Folder>(
                   context,
                   MaterialPageRoute(
                     builder: (context) => SelectFolderDialog(),
                     fullscreenDialog: true,
                   ));
-              if (selectFolder != null) {
-                _moveHistoriesToFolder(selectFolder);
-              }
-              _historyListBloc.dispatch(UnSelectable());
-              break;
+            }
+            if (selectFolder != null) {
+              _moveHistoriesToFolder(selectFolder);
+            }
+            _historyListBloc.dispatch(UnSelectable());
           }
         },
       )

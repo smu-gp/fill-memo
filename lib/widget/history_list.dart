@@ -55,12 +55,14 @@ class HistoryList extends StatelessWidget {
     List<History> histories,
     Orientation orientation,
   }) {
-    var items = List<Widget>()
-      ..add(SliverToBoxAdapter(
+    var items = <Widget>[];
+    if (Util.isTablet(context)) {
+      items.add(SliverToBoxAdapter(
         child: SizedBox(
           height: 16.0,
         ),
       ));
+    }
     groupBy(
       histories,
       (History history) => Util.formatDate(history.createdAt, 'MMMMEEEEd'),

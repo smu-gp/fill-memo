@@ -31,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           body: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: Util.isTablet(context) ? 58.0 : 0,
+              horizontal: Util.isTablet(context) ? 56.0 : 0,
             ),
             child: ListView(
               children: _buildPreferenceItem(state),

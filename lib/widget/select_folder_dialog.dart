@@ -6,10 +6,12 @@ class SelectFolderDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).dialogFolderSelect),
-        elevation: 0.0,
-      ),
+      appBar: Util.isTablet(context)
+          ? null
+          : AppBar(
+              title: Text(AppLocalizations.of(context).dialogFolderSelect),
+              elevation: 0.0,
+            ),
       body: FolderList(
         onSelectFolder: (folder) {
           Navigator.pop(context, folder);
