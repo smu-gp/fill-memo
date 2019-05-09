@@ -1,0 +1,3 @@
+[submodule "protobuf"]
+	path = lib/repository/remote/protobuf
+	url = https://github.com/smu-gp/sp-protobuf.git
