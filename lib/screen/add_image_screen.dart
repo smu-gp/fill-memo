@@ -89,7 +89,7 @@ class _AddImageScreenState extends State<AddImageScreen> {
       _navigationResult(newHistory);
     } else {
       var serviceUrl = _preferenceBloc
-          .getPreference<String>(AppPreferences.keyServiceUrl)
+          .getPreference<String>(AppPreferences.keyServiceHost)
           .value;
 
       try {
@@ -177,11 +177,11 @@ class _AddImageScreenState extends State<AddImageScreen> {
     }
   }
 
-  Future<List<Result>> _sendImage(String serviceUrl) async {
+  Future<List<Result>> _sendImage(String serviceHost) async {
     var cropRect = await _cropperKey.currentState.getActualCropRect();
     return ProcessingService(
       httpClient: http.Client(),
-      baseUrl: serviceUrl,
+      baseUrl: 'http://$serviceHost:8000',
     ).sendImage(
       imageFile: widget.selectImage,
       cropLeft: cropRect.left,

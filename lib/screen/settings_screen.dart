@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preference_helper/preference_helper.dart';
+import 'package:sp_client/screen/host_connection_screen.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
+import 'package:sp_client/widget/guest_connection_dialog.dart';
 import 'package:sp_client/widget/sub_header.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -43,47 +45,119 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   List<Widget> _buildPreferenceItem(PreferenceState state) {
-    var items = <Widget>[];
     var prefLightTheme = state.preferences.get(AppPreferences.keyLightTheme);
+    var prefUserId = state.preferences.get(AppPreferences.keyUserId);
     var prefUseLocalDummy =
         state.preferences.get(AppPreferences.keyUseLocalDummy);
-    var prefServiceUrl = state.preferences.get(AppPreferences.keyServiceUrl);
+    var prefServiceHost = state.preferences.get(AppPreferences.keyServiceHost);
     var prefOverlayHandleRange =
         state.preferences.get(AppPreferences.keyOverlayHandleRange);
-    items
-      ..add(
-        _SwitchPreference(
-          title: 'Light theme',
-          preference: prefLightTheme,
-        ),
-      )
-      ..add(SubHeader(
+
+    return <Widget>[
+      _buildHostConnectionPreference(),
+      if (Util.isTablet(context)) _buildGuestConnectionPreference(),
+      _SwitchPreference(
+        title: AppLocalizations.of(context).labelLightTheme,
+        preference: prefLightTheme,
+      ),
+      SubHeader(
         'Debug options',
         color: Theme.of(context).accentColor,
         bold: true,
-      ))
-      ..add(
-        _SwitchPreference(
-          title: 'Use local dummy data',
-          preference: prefUseLocalDummy,
-        ),
-      )
-      ..add(
-        _EditTextPreference(
-          title: 'Service url',
-          preference: prefServiceUrl,
-          validation: (value) => value.isNotEmpty,
-          validationMessage: 'Error: serviceUrl is not empty',
-          enabled: !prefUseLocalDummy.value,
-        ),
-      )
-      ..add(
-        _SwitchPreference(
-          title: 'Show overlay handle range',
-          preference: prefOverlayHandleRange,
-        ),
-      );
-    return items;
+      ),
+      ListTile(
+        title: Text('Current User ID'),
+        subtitle: Text(prefUserId.value ?? 'null'),
+      ),
+      _SwitchPreference(
+        title: 'Use local dummy data',
+        preference: prefUseLocalDummy,
+      ),
+      _EditTextPreference(
+        title: 'Service host',
+        preference: prefServiceHost,
+        validation: (value) => value.isNotEmpty,
+        validationMessage: 'Error: service host is not empty',
+        enabled: !prefUseLocalDummy.value,
+      ),
+      _SwitchPreference(
+        title: 'Show overlay handle range',
+        preference: prefOverlayHandleRange,
+      ),
+    ];
+  }
+
+  _Preference _buildHostConnectionPreference() {
+    return _Preference(
+      title: AppLocalizations.of(context).titleHostConnection,
+      onTap: () {
+        if (Util.isTablet(context)) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text(AppLocalizations.of(context).titleHostConnection),
+                  contentPadding: EdgeInsets.all(0),
+                  content: Container(
+                    width: 480.0,
+                    height: 240.0,
+                    child: HostConnectionScreen(),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        MaterialLocalizations.of(context).cancelButtonLabel,
+                      ),
+                    )
+                  ],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                ),
+          );
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HostConnectionScreen(),
+              ));
+        }
+      },
+    );
+  }
+
+  _Preference _buildGuestConnectionPreference() {
+    return _Preference(
+      title: AppLocalizations.of(context).titleGuestConnection,
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => GuestConnectionDialog(),
+        );
+      },
+    );
+  }
+}
+
+class _Preference extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+  final bool enabled;
+
+  const _Preference({
+    Key key,
+    this.title,
+    this.onTap,
+    this.enabled = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      enabled: enabled,
+      onTap: onTap,
+    );
   }
 }
 

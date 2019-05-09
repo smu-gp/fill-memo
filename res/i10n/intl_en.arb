@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-04-01T00:10:15.612815",
+  "@@last_modified": "2019-05-10T01:15:13.503581",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -18,6 +18,16 @@
   },
   "titleResult": "Result",
   "@titleResult": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleHostConnection": "Get connection code",
+  "@titleHostConnection": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleGuestConnection": "Connect another device",
+  "@titleGuestConnection": {
     "type": "text",
     "placeholders": {}
   },
@@ -81,6 +91,16 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionRetry": "Retry",
+  "@actionRetry": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnect": "Connect",
+  "@actionConnect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "imageFromGallery": "Select from gallery",
   "@imageFromGallery": {
     "type": "text",
@@ -118,6 +138,31 @@
   },
   "orderCreatedDes": "Created date descending",
   "@orderCreatedDes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelLightTheme": "Light theme",
+  "@labelLightTheme": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWaitHostResponse": "Waiting host response",
+  "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectSuccess": "Connect success",
+  "@labelConnectSuccess": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectFailed": "Connect failed",
+  "@labelConnectFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectionCode": "Connection code",
+  "@labelConnectionCode": {
     "type": "text",
     "placeholders": {}
   },

@@ -22,10 +22,10 @@ class ResultItem extends StatelessWidget {
     bool isText = result.type == 'text';
     String itemContent = result.content;
     if (!isText) {
-      var serviceUrl = BlocProvider.of<PreferenceBloc>(context)
-          .getPreference<String>(AppPreferences.keyServiceUrl)
+      var serviceHost = BlocProvider.of<PreferenceBloc>(context)
+          .getPreference<String>(AppPreferences.keyServiceHost)
           .value;
-      itemContent = serviceUrl + result.content;
+      itemContent = 'http://$serviceHost:8000${result.content}';
     }
 
     return ListTile(

@@ -39,6 +39,16 @@ class AppLocalizations {
         name: 'titleResult',
       );
 
+  String get titleHostConnection => Intl.message(
+        'Get connection code',
+        name: 'titleHostConnection',
+      );
+
+  String get titleGuestConnection => Intl.message(
+        'Connect another device',
+        name: 'titleGuestConnection',
+      );
+
   String get actionAdd => Intl.message(
         'Add',
         name: 'actionAdd',
@@ -99,6 +109,16 @@ class AppLocalizations {
         name: 'actionRemoveFolder',
       );
 
+  String get actionRetry => Intl.message(
+        'Retry',
+        name: 'actionRetry',
+      );
+
+  String get actionConnect => Intl.message(
+        'Connect',
+        name: 'actionConnect',
+      );
+
   String get imageFromGallery => Intl.message(
         'Select from gallery',
         name: 'imageFromGallery',
@@ -137,6 +157,31 @@ class AppLocalizations {
   String get orderCreatedDes => Intl.message(
         'Created date descending',
         name: 'orderCreatedDes',
+      );
+
+  String get labelLightTheme => Intl.message(
+        'Light theme',
+        name: 'labelLightTheme',
+      );
+
+  String get labelWaitHostResponse => Intl.message(
+        'Waiting host response',
+        name: 'labelWaitHostResponse',
+      );
+
+  String get labelConnectSuccess => Intl.message(
+        'Connect success',
+        name: 'labelConnectSuccess',
+      );
+
+  String get labelConnectFailed => Intl.message(
+        'Connect failed',
+        name: 'labelConnectFailed',
+      );
+
+  String get labelConnectionCode => Intl.message(
+        'Connection code',
+        name: 'labelConnectionCode',
       );
 
   String get folderDefault => Intl.message(

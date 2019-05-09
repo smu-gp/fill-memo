@@ -1,6 +1,6 @@
 {
   "@@locale": "ko",
-  "@@last_modified": "2019-04-01T00:10:15.612815",
+  "@@last_modified": "2019-05-10T01:15:13.503581",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -11,13 +11,23 @@
     "type": "text",
     "placeholders": {}
   },
-  "titleAddImage": "전송할 이미지 영역 선택",
+  "titleAddImage": "이미지 영역 선택",
   "@titleAddImage": {
     "type": "text",
     "placeholders": {}
   },
   "titleResult": "결과",
   "@titleResult": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleHostConnection": "연결코드 생성",
+  "@titleHostConnection": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleGuestConnection": "다른 기기에 연결",
+  "@titleGuestConnection": {
     "type": "text",
     "placeholders": {}
   },
@@ -81,6 +91,16 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionRetry": "재시도",
+  "@actionRetry": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnect": "연결",
+  "@actionConnect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "imageFromGallery": "갤러리에서 선택",
   "@imageFromGallery": {
     "type": "text",
@@ -118,6 +138,31 @@
   },
   "orderCreatedDes": "추가한 날짜 내림차순",
   "@orderCreatedDes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelLightTheme": "밝은 테마",
+  "@labelLightTheme": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWaitHostResponse": "호스트의 응답을 기다리는 중",
+  "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectSuccess": "연결 성공",
+  "@labelConnectSuccess": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectFailed": "연결 실패",
+  "@labelConnectFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectionCode": "연결코드",
+  "@labelConnectionCode": {
     "type": "text",
     "placeholders": {}
   },
