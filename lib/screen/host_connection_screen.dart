@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grpc/grpc.dart';
 import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/repository/remote/grpc_service.dart';
 import 'package:sp_client/repository/remote/protobuf/build/connection.pbgrpc.dart';
@@ -22,14 +23,19 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
   String _connectionCode;
   int _timeLeft = 0;
 
+  StreamController<WaitAuthRequest> _waitAuthRequestController =
+      StreamController();
+
   @override
   void initState() {
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
     _grpcService = GrpcService(
       host: _preferenceBloc.getPreference(AppPreferences.keyServiceHost).value,
     );
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _requestConnection();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      var userId = await _getUserId();
+      _waitAuth(userId);
+      _requestConnection(userId);
       _startTimer();
     });
     SchedulerBinding.instance.ensureVisualUpdate();
@@ -81,10 +87,7 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
                     color: Colors.transparent,
                     child: IconButton(
                       icon: Icon(Icons.refresh),
-                      onPressed: () {
-                        _requestConnection();
-                        _startTimer();
-                      },
+                      onPressed: _refreshConnectionCode,
                     ),
                   ),
                 ],
@@ -105,10 +108,14 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
     if (_timer != null) {
       _timer.cancel();
     }
+    if (_waitAuthRequestController != null &&
+        !_waitAuthRequestController.isClosed) {
+      _waitAuthRequestController.close();
+    }
     super.dispose();
   }
 
-  void _requestConnection() async {
+  Future<String> _getUserId() async {
     var userIdPref = _preferenceBloc.getPreference(AppPreferences.keyUserId);
     var userId = userIdPref.value;
     if (userId == null) {
@@ -117,6 +124,77 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
       userId = userIdResponse.userId;
       _preferenceBloc.dispatch(UpdatePreference(userIdPref..value = userId));
     }
+    return userId;
+  }
+
+  void _refreshConnectionCode() async {
+    var userId = await _getUserId();
+    _requestConnection(userId);
+    _startTimer();
+  }
+
+  void _waitAuth(String userId) async {
+    var responseStream = _grpcService.connectionServiceClient.waitAuth(
+      _waitAuthRequestController.stream,
+      options: CallOptions(
+        timeout: Duration(minutes: 30),
+      ),
+    );
+    _waitAuthRequestController.add(WaitAuthRequest()..userId = userId);
+    await for (var response in responseStream) {
+      _showAuthDevice(userId, response.authDevice);
+    }
+  }
+
+  void _showAuthDevice(String userId, AuthDeviceInfo deviceInfo) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context).dialogConnectionWithDevice),
+          contentPadding: EdgeInsets.all(8.0),
+          content: ListTile(
+            leading: Icon(
+              deviceInfo.deviceType == AuthDeviceInfo_DeviceType.DEVICE_TABLET
+                  ? Icons.tablet
+                  : Icons.desktop_windows,
+            ),
+            title: Text(deviceInfo.deviceName),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(AppLocalizations.of(context).actionReject),
+              onPressed: () {
+                _waitAuthRequestController.add(WaitAuthRequest()
+                  ..userId = userId
+                  ..authDevice = deviceInfo
+                  ..acceptDevice = false);
+                _refreshConnectionCode();
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text(AppLocalizations.of(context).actionAccept),
+              onPressed: () {
+                _waitAuthRequestController.add(WaitAuthRequest()
+                  ..userId = userId
+                  ..authDevice = deviceInfo
+                  ..acceptDevice = true);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          ),
+        );
+      },
+    );
+  }
+
+  void _requestConnection(String userId) async {
     var connectionResponse =
         await _grpcService.connectionServiceClient.connection(
       ConnectionRequest()..userId = userId,
@@ -138,10 +216,11 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
     });
   }
 
-  void _updateProgress() {
+  void _updateProgress() async {
+    var userId = await _getUserId();
     setState(() {
       if (_timeLeft == 0) {
-        _requestConnection();
+        _requestConnection(userId);
         _startTimer();
       } else {
         _timeLeft--;

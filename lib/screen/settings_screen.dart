@@ -94,6 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (Util.isTablet(context)) {
           showDialog(
             context: context,
+            barrierDismissible: false,
             builder: (context) => AlertDialog(
                   title: Text(AppLocalizations.of(context).titleHostConnection),
                   contentPadding: EdgeInsets.all(0),
@@ -132,6 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onTap: () {
         showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (context) => GuestConnectionDialog(),
         );
       },

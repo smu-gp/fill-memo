@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "actionAccept" : MessageLookupByLibrary.simpleMessage("Accept"),
     "actionAdd" : MessageLookupByLibrary.simpleMessage("Add"),
     "actionAddFolder" : MessageLookupByLibrary.simpleMessage("Add folder"),
     "actionAddImage" : MessageLookupByLibrary.simpleMessage("Add image"),
@@ -29,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionDelete" : MessageLookupByLibrary.simpleMessage("Delete"),
     "actionEdit" : MessageLookupByLibrary.simpleMessage("Edit"),
     "actionMoveFolder" : MessageLookupByLibrary.simpleMessage("Move another folder"),
+    "actionReject" : MessageLookupByLibrary.simpleMessage("Reject"),
     "actionRemoveFolder" : MessageLookupByLibrary.simpleMessage("Remove folder"),
     "actionRename" : MessageLookupByLibrary.simpleMessage("Rename"),
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("Rename folder"),
@@ -37,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "dialogConnectionWithDevice" : MessageLookupByLibrary.simpleMessage("Connection with device?"),
     "dialogDeleteFolder" : MessageLookupByLibrary.simpleMessage("All the histories in the folder are moved to the default folder. Delete folder?"),
     "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("Are you sure to delete?"),
     "dialogFolderSelect" : MessageLookupByLibrary.simpleMessage("Folder Select"),

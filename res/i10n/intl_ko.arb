@@ -1,6 +1,6 @@
 {
   "@@locale": "ko",
-  "@@last_modified": "2019-05-10T01:15:13.503581",
+  "@@last_modified": "2019-05-12T00:21:03.710342",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -101,6 +101,16 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionAccept": "허용",
+  "@actionAccept": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionReject": "거부",
+  "@actionReject": {
+    "type": "text",
+    "placeholders": {}
+  },
   "imageFromGallery": "갤러리에서 선택",
   "@imageFromGallery": {
     "type": "text",
@@ -128,6 +138,11 @@
   },
   "dialogDeleteFolder": "폴더 내 모든 기록들이 기본 폴더로 이동됩니다. 폴더를 삭제할까요?",
   "@dialogDeleteFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogConnectionWithDevice": "이 기기와 연결할까요?",
+  "@dialogConnectionWithDevice": {
     "type": "text",
     "placeholders": {}
   },

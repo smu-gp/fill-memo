@@ -119,6 +119,16 @@ class AppLocalizations {
         name: 'actionConnect',
       );
 
+  String get actionAccept => Intl.message(
+        'Accept',
+        name: 'actionAccept',
+      );
+
+  String get actionReject => Intl.message(
+        'Reject',
+        name: 'actionReject',
+      );
+
   String get imageFromGallery => Intl.message(
         'Select from gallery',
         name: 'imageFromGallery',
@@ -147,6 +157,11 @@ class AppLocalizations {
   String get dialogDeleteFolder => Intl.message(
         'All the histories in the folder are moved to the default folder. Delete folder?',
         name: 'dialogDeleteFolder',
+      );
+
+  String get dialogConnectionWithDevice => Intl.message(
+        'Connection with device?',
+        name: 'dialogConnectionWithDevice',
       );
 
   String get orderCreatedAsc => Intl.message(

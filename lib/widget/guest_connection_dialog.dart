@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grpc/grpc.dart';
 import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/repository/remote/grpc_service.dart';
 import 'package:sp_client/repository/remote/protobuf/build/connection.pbgrpc.dart';
@@ -45,7 +49,7 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
         FlatButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            MaterialLocalizations.of(context).cancelButtonLabel,
+            MaterialLocalizations.of(context).closeButtonLabel,
           ),
         ),
         if (_authState == _AuthState.none)
@@ -61,6 +65,7 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
               AppLocalizations.of(context).actionRetry.toUpperCase(),
             ),
             onPressed: () {
+              _textController.clear();
               setState(() {
                 _authState = _AuthState.none;
               });
@@ -156,8 +161,32 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
       return;
     }
 
+    var deviceName;
+    var deviceType;
+    if (Platform.isAndroid) {
+      var info = await DeviceInfoPlugin().androidInfo;
+      deviceName = info.model;
+      deviceType = AuthDeviceInfo_DeviceType.DEVICE_TABLET;
+    } else if (Platform.isIOS) {
+      var info = await DeviceInfoPlugin().iosInfo;
+      deviceName = info.utsname.machine;
+      deviceType = AuthDeviceInfo_DeviceType.DEVICE_TABLET;
+    } else {
+      deviceName = 'Unknown';
+      deviceType = AuthDeviceInfo_DeviceType.DEVICE_WEB;
+    }
+
+    var deviceInfo = AuthDeviceInfo()
+      ..deviceName = deviceName
+      ..deviceType = deviceType;
+
     var authResponse = await _grpcService.connectionServiceClient.auth(
-      AuthRequest()..connectionCode = connectionCode,
+      AuthRequest()
+        ..connectionCode = connectionCode
+        ..deviceInfo = deviceInfo,
+      options: CallOptions(
+        timeout: Duration(minutes: 10),
+      ),
     );
 
     if (authResponse.message == AuthResponse_ResultMessage.MESSAGE_SUCCESS) {

@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "actionAccept" : MessageLookupByLibrary.simpleMessage("허용"),
     "actionAdd" : MessageLookupByLibrary.simpleMessage("추가"),
     "actionAddFolder" : MessageLookupByLibrary.simpleMessage("폴더 추가"),
     "actionAddImage" : MessageLookupByLibrary.simpleMessage("이미지 추가"),
@@ -29,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionDelete" : MessageLookupByLibrary.simpleMessage("삭제"),
     "actionEdit" : MessageLookupByLibrary.simpleMessage("편집"),
     "actionMoveFolder" : MessageLookupByLibrary.simpleMessage("다른 폴더로 이동"),
+    "actionReject" : MessageLookupByLibrary.simpleMessage("거부"),
     "actionRemoveFolder" : MessageLookupByLibrary.simpleMessage("폴더 삭제"),
     "actionRename" : MessageLookupByLibrary.simpleMessage("이름 변경"),
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("폴더 이름 변경"),
@@ -37,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionSettings" : MessageLookupByLibrary.simpleMessage("설정"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "dialogConnectionWithDevice" : MessageLookupByLibrary.simpleMessage("이 기기와 연결할까요?"),
     "dialogDeleteFolder" : MessageLookupByLibrary.simpleMessage("폴더 내 모든 기록들이 기본 폴더로 이동됩니다. 폴더를 삭제할까요?"),
     "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("삭제할까요?"),
     "dialogFolderSelect" : MessageLookupByLibrary.simpleMessage("폴더 선택"),
