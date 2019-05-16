@@ -5,6 +5,8 @@ import 'package:flutter/scheduler.dart';
 
 enum _HandleType { topLeft, topRight, bottomLeft, bottomRight, none }
 
+const double _kHandleOffset = 5.0;
+const double _kHandleSize = 5.0;
 const double _kHandleRange = 20.0;
 const double _kDefaultMinimumSize = 50.0;
 
@@ -29,8 +31,8 @@ class ImageCropper extends StatefulWidget {
 class ImageCropperState extends State<ImageCropper> {
   ImageStream _imageStream;
 
-  double _left = 0;
-  double _top = 0;
+  double _left = _kHandleOffset;
+  double _top = _kHandleOffset;
   double _right = 0;
   double _bottom = 0;
   double _widgetWidth = 0;
@@ -54,8 +56,11 @@ class ImageCropperState extends State<ImageCropper> {
           guideRect: guideRect,
           overlayHandleRange: widget.overlayHandleRange,
         ),
-        child: Image(
-          image: widget.image,
+        child: Padding(
+          padding: EdgeInsets.all(_kHandleOffset),
+          child: Image(
+            image: widget.image,
+          ),
         ),
       ),
     );
@@ -92,10 +97,10 @@ class ImageCropperState extends State<ImageCropper> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         var size = context.size;
-        _right = size.width;
-        _bottom = size.height;
-        _widgetWidth = size.width;
-        _widgetHeight = size.height;
+        _right = size.width - _kHandleOffset;
+        _bottom = size.height - _kHandleOffset;
+        _widgetWidth = size.width - (_kHandleOffset * 2);
+        _widgetHeight = size.height - (_kHandleOffset * 2);
       });
     });
     SchedulerBinding.instance.ensureVisualUpdate();
@@ -151,15 +156,20 @@ class ImageCropperState extends State<ImageCropper> {
         case _HandleType.none:
           var guideWidth = _right - _left;
           var guideHeight = _bottom - _top;
-          if (updatedOffset.dx - (guideWidth / 2) >= 0 &&
-              updatedOffset.dx + (guideWidth / 2) <= _widgetWidth) {
-            _left = updatedOffset.dx - (guideWidth / 2);
-            _right = updatedOffset.dx + (guideWidth / 2);
+
+          var newLeft = updatedOffset.dx - (guideWidth / 2);
+          var newRight = updatedOffset.dx + (guideWidth / 2);
+          if (newLeft >= _kHandleOffset &&
+              newRight <= _widgetWidth + _kHandleOffset) {
+            _left = newLeft;
+            _right = newRight;
           }
-          if (updatedOffset.dy - (guideHeight / 2) >= 0 &&
-              updatedOffset.dy + (guideHeight / 2) <= _widgetHeight) {
-            _top = updatedOffset.dy - (guideHeight / 2);
-            _bottom = updatedOffset.dy + (guideHeight / 2);
+          var newTop = updatedOffset.dy - (guideHeight / 2);
+          var newBottom = updatedOffset.dy + (guideHeight / 2);
+          if (newTop >= _kHandleOffset &&
+              newBottom <= _widgetHeight + _kHandleOffset) {
+            _top = newTop;
+            _bottom = newBottom;
           }
           break;
       }
@@ -195,8 +205,8 @@ class ImageCropperState extends State<ImageCropper> {
   }
 
   bool _isOffsetInWidget(Offset offset) =>
-      _isInRange(0, offset.dx, _widgetWidth) &&
-      _isInRange(0, offset.dy, _widgetHeight);
+      _isInRange(_kHandleOffset, offset.dx, _widgetWidth + _kHandleOffset) &&
+      _isInRange(_kHandleOffset, offset.dy, _widgetHeight + _kHandleOffset);
 
   bool _isInRange(dynamic start, dynamic target, dynamic end) =>
       start <= target && target <= end;
@@ -213,11 +223,16 @@ class ImageCropperState extends State<ImageCropper> {
     var imageInfo = await _getImageInfo(widget.image);
     var widthRatio = imageInfo.image.width / widgetRect.width;
     var heightRatio = imageInfo.image.height / widgetRect.height;
-    var actualLeft = guideRect.left * widthRatio;
-    var actualTop = guideRect.top * heightRatio;
+    var actualLeft = (guideRect.left - _kHandleOffset) * widthRatio;
+    var actualTop = (guideRect.top - _kHandleOffset) * heightRatio;
     var actualWidth = guideRect.width * widthRatio;
     var actualHeight = guideRect.height * heightRatio;
-    return Rect.fromLTWH(actualLeft, actualTop, actualWidth, actualHeight);
+    return Rect.fromLTWH(
+      actualLeft.roundToDouble(),
+      actualTop.roundToDouble(),
+      actualWidth.roundToDouble(),
+      actualHeight.roundToDouble(),
+    );
   }
 }
 
@@ -280,10 +295,10 @@ class _CropGuide extends CustomPainter {
     var handlePaint = Paint()
       ..style = PaintingStyle.fill
       ..color = Colors.white;
-    canvas.drawCircle(guideRect.topLeft, 5.0, handlePaint);
-    canvas.drawCircle(guideRect.topRight, 5.0, handlePaint);
-    canvas.drawCircle(guideRect.bottomLeft, 5.0, handlePaint);
-    canvas.drawCircle(guideRect.bottomRight, 5.0, handlePaint);
+    canvas.drawCircle(guideRect.topLeft, _kHandleSize, handlePaint);
+    canvas.drawCircle(guideRect.topRight, _kHandleSize, handlePaint);
+    canvas.drawCircle(guideRect.bottomLeft, _kHandleSize, handlePaint);
+    canvas.drawCircle(guideRect.bottomRight, _kHandleSize, handlePaint);
 
     // Draw overlay handle range
     if (overlayHandleRange) {
