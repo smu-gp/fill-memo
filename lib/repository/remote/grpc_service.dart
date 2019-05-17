@@ -1,6 +1,6 @@
 import 'package:grpc/grpc.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/repository/remote/protobuf/build/connection.pbgrpc.dart';
+import 'package:sp_client/repository/remote/protobuf/connection.pbgrpc.dart';
 
 class GrpcService {
   final String host;

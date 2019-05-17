@@ -23,6 +23,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   grpc: ^1.0.2
   protobuf: ^0.13.11
+  uuid: ^2.0.1
   # Plugins
   share: ^0.6.0+1
   sqflite: ^1.0.0

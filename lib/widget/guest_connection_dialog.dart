@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/repository/remote/grpc_service.dart';
-import 'package:sp_client/repository/remote/protobuf/build/connection.pbgrpc.dart';
+import 'package:sp_client/repository/remote/protobuf/connection.pbgrpc.dart';
 import 'package:sp_client/util/utils.dart';
 
 enum _AuthState { none, waitResponse, success, failed }

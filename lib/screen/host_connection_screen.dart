@@ -7,8 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/repository/remote/grpc_service.dart';
-import 'package:sp_client/repository/remote/protobuf/build/connection.pbgrpc.dart';
+import 'package:sp_client/repository/remote/protobuf/connection.pbgrpc.dart';
 import 'package:sp_client/util/utils.dart';
+import 'package:uuid/uuid.dart';
 
 class HostConnectionScreen extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
 
   StreamController<WaitAuthRequest> _waitAuthRequestController =
       StreamController();
+  ResponseStream<WaitAuthResponse> _waitAuthResponseStream;
 
   @override
   void initState() {
@@ -112,6 +114,9 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
         !_waitAuthRequestController.isClosed) {
       _waitAuthRequestController.close();
     }
+    if (_waitAuthResponseStream != null) {
+      _waitAuthResponseStream.cancel();
+    }
     super.dispose();
   }
 
@@ -119,10 +124,8 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
     var userIdPref = _preferenceBloc.getPreference(AppPreferences.keyUserId);
     var userId = userIdPref.value;
     if (userId == null) {
-      var userIdResponse =
-          await _grpcService.connectionServiceClient.requestUserId(Empty());
-      userId = userIdResponse.userId;
-      _preferenceBloc.dispatch(UpdatePreference(userIdPref..value = userId));
+      var uuid = Uuid();
+      _preferenceBloc.dispatch(UpdatePreference(userIdPref..value = uuid.v4()));
     }
     return userId;
   }
@@ -134,16 +137,18 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
   }
 
   void _waitAuth(String userId) async {
-    var responseStream = _grpcService.connectionServiceClient.waitAuth(
+    _waitAuthResponseStream = _grpcService.connectionServiceClient.waitAuth(
       _waitAuthRequestController.stream,
       options: CallOptions(
         timeout: Duration(minutes: 30),
       ),
     );
     _waitAuthRequestController.add(WaitAuthRequest()..userId = userId);
-    await for (var response in responseStream) {
-      _showAuthDevice(userId, response.authDevice);
-    }
+    try {
+      await for (var response in _waitAuthResponseStream) {
+        _showAuthDevice(userId, response.authDevice);
+      }
+    } catch (e) {}
   }
 
   void _showAuthDevice(String userId, AuthDeviceInfo deviceInfo) {
