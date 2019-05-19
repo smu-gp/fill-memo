@@ -17,7 +17,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
 
   @override
   Stream<HistoryState> mapEventToState(
-    HistoryState currentState,
     HistoryEvent event,
   ) async* {
     if (event is LoadHistory) {

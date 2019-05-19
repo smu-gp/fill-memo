@@ -9,7 +9,6 @@ class HistoryListBloc extends Bloc<HistoryListEvent, HistoryListState> {
 
   @override
   Stream<HistoryListState> mapEventToState(
-    HistoryListState currentState,
     HistoryListEvent event,
   ) async* {
     if (event is UnSelectable) {

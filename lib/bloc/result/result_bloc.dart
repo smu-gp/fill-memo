@@ -16,7 +16,6 @@ class ResultBloc extends Bloc<ResultEvent, ResultState> {
 
   @override
   Stream<ResultState> mapEventToState(
-    ResultState currentState,
     ResultEvent event,
   ) async* {
     if (event is LoadResults) {

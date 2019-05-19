@@ -16,7 +16,6 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
   @override
   Stream<FolderState> mapEventToState(
-    FolderState currentState,
     FolderEvent event,
   ) async* {
     if (event is LoadFolder) {
