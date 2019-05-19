@@ -5,10 +5,10 @@ import 'package:flutter/scheduler.dart';
 
 enum _HandleType { topLeft, topRight, bottomLeft, bottomRight, none }
 
-const double _kHandleOffset = 5.0;
-const double _kHandleSize = 5.0;
-const double _kHandleRange = 20.0;
-const double _kDefaultMinimumSize = 50.0;
+const double _kHandleOffset = 4.0;
+const double _kHandleSize = 6.0;
+const double _kHandleRange = 24.0;
+const double _kDefaultMinimumSize = 48.0;
 
 class ImageCropper extends StatefulWidget {
   final ImageProvider image;
@@ -217,6 +217,10 @@ class ImageCropperState extends State<ImageCropper> {
         .resolve(createLocalImageConfiguration(context))
         .addListener((ImageInfo info, _) => completer.complete(info));
     return completer.future;
+  }
+
+  Rect getWidgetCropRect() {
+    return guideRect;
   }
 
   Future<Rect> getActualCropRect() async {
