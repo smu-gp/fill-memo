@@ -16,6 +16,11 @@ class AppThemes {
     canvasColor: AppColors.primaryColorDark,
     toggleableActiveColor: AppColors.accentColor,
     textSelectionHandleColor: AppColors.accentColor,
+    dialogTheme: DialogTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+    ),
   );
 
   static final ThemeData lightTheme = ThemeData(
@@ -32,6 +37,11 @@ class AppThemes {
     canvasColor: AppColors.primaryLightColorLight,
     toggleableActiveColor: AppColors.accentColor,
     textSelectionHandleColor: AppColors.accentColor,
+    dialogTheme: DialogTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+    ),
   );
 
   AppThemes._();

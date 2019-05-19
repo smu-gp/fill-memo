@@ -111,9 +111,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     )
                   ],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
                 ),
           );
         } else {
