@@ -33,6 +33,7 @@ class _AppState extends State<App> {
   HistoryBloc _historyBloc;
   ResultBloc _resultBloc;
   FolderBloc _folderBloc;
+  ThemeBloc _themeBloc;
   PreferenceBloc _preferenceBloc;
 
   @override
@@ -45,6 +46,13 @@ class _AppState extends State<App> {
       sharedPreferences: widget.sharedPreferences,
       usagePreferences: AppPreferences.preferences,
     );
+    var lightTheme = _preferenceBloc
+        .getPreference<bool>(
+          AppPreferences.keyLightTheme,
+        )
+        .value;
+    var initTheme = !lightTheme ? AppThemes.defaultTheme : AppThemes.lightTheme;
+    _themeBloc = ThemeBloc(initTheme);
   }
 
   @override
@@ -55,29 +63,28 @@ class _AppState extends State<App> {
         BlocProvider<ResultBloc>(bloc: _resultBloc),
         BlocProvider<FolderBloc>(bloc: _folderBloc),
         BlocProvider<PreferenceBloc>(bloc: _preferenceBloc),
+        BlocProvider<ThemeBloc>(bloc: _themeBloc),
       ],
-      child: BlocBuilder<PreferenceEvent, PreferenceState>(
-        bloc: _preferenceBloc,
-        builder: (context, prefState) {
-          var isLightTheme =
-              prefState.preferences.get(AppPreferences.keyLightTheme).value;
-          return MaterialApp(
-            onGenerateTitle: (context) => AppLocalizations.of(context).appName,
-            theme:
-                (!isLightTheme ? AppThemes.defaultTheme : AppThemes.lightTheme),
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', 'US'),
-              const Locale('ko', 'KR'),
-            ],
-            home: MainScreen(),
-          );
-        },
-      ),
+      child: BlocBuilder<ThemeData, ThemeData>(
+          bloc: _themeBloc,
+          builder: (context, snapshot) {
+            return MaterialApp(
+              onGenerateTitle: (context) =>
+                  AppLocalizations.of(context).appName,
+              theme: snapshot,
+              darkTheme: AppThemes.defaultTheme,
+              localizationsDelegates: [
+                const AppLocalizationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', 'US'),
+                const Locale('ko', 'KR'),
+              ],
+              home: MainScreen(),
+            );
+          }),
     );
   }
 

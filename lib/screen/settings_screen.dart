@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preference_helper/preference_helper.dart';
+import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/screen/host_connection_screen.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
@@ -14,11 +15,13 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   PreferenceBloc _preferenceBloc;
+  ThemeBloc _themeBloc;
 
   @override
   void initState() {
     super.initState();
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
+    _themeBloc = BlocProvider.of<ThemeBloc>(context);
   }
 
   @override
@@ -56,10 +59,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       _buildHostConnectionPreference(),
       if (Util.isTablet(context)) _buildGuestConnectionPreference(),
-      _SwitchPreference(
-        title: AppLocalizations.of(context).labelLightTheme,
-        preference: prefLightTheme,
-      ),
+      if (MediaQuery.platformBrightnessOf(context) == Brightness.light)
+        _SwitchPreference(
+          title: AppLocalizations.of(context).labelLightTheme,
+          preference: prefLightTheme,
+          onChanged: (value) {
+            _themeBloc.dispatch(
+              value ? AppThemes.lightTheme : AppThemes.defaultTheme,
+            );
+          },
+        ),
       SubHeader(
         'Debug options',
         color: Theme.of(context).accentColor,
@@ -204,11 +213,13 @@ class _EditTextPreference extends StatelessWidget {
 class _SwitchPreference extends StatelessWidget {
   final String title;
   final Preference preference;
+  final ValueChanged<bool> onChanged;
 
   const _SwitchPreference({
     Key key,
     @required this.title,
     @required this.preference,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -218,6 +229,7 @@ class _SwitchPreference extends StatelessWidget {
       title: Text(title),
       value: preference.value,
       onChanged: (value) {
+        if (onChanged != null) onChanged(value);
         bloc.dispatch(UpdatePreference(preference..value = value));
       },
     );
