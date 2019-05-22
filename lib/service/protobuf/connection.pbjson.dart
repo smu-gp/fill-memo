@@ -31,8 +31,9 @@ const AuthResponse$json = const {
   '2': const [
     const {'1': 'message', '3': 1, '4': 1, '5': 14, '6': '.connection_grpc.AuthResponse.ResultMessage', '10': 'message'},
     const {'1': 'userId', '3': 2, '4': 1, '5': 9, '10': 'userId'},
+    const {'1': 'failedReason', '3': 3, '4': 1, '5': 14, '6': '.connection_grpc.AuthResponse.FailedReason', '10': 'failedReason'},
   ],
-  '4': const [AuthResponse_ResultMessage$json],
+  '4': const [AuthResponse_ResultMessage$json, AuthResponse_FailedReason$json],
 };
 
 const AuthResponse_ResultMessage$json = const {
@@ -40,6 +41,18 @@ const AuthResponse_ResultMessage$json = const {
   '2': const [
     const {'1': 'MESSAGE_FAILED', '2': 0},
     const {'1': 'MESSAGE_SUCCESS', '2': 1},
+  ],
+};
+
+const AuthResponse_FailedReason$json = const {
+  '1': 'FailedReason',
+  '2': const [
+    const {'1': 'NONE', '2': 0},
+    const {'1': 'AUTH_FAILED', '2': 1},
+    const {'1': 'INTERNAL_ERR', '2': 2},
+    const {'1': 'REJECT_HOST', '2': 3},
+    const {'1': 'NO_HOST_WAITED', '2': 4},
+    const {'1': 'RESPONSE_TIMEOUT', '2': 5},
   ],
 };
 

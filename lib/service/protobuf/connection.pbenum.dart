@@ -23,6 +23,29 @@ class AuthResponse_ResultMessage extends $pb.ProtobufEnum {
   const AuthResponse_ResultMessage._($core.int v, $core.String n) : super(v, n);
 }
 
+class AuthResponse_FailedReason extends $pb.ProtobufEnum {
+  static const AuthResponse_FailedReason NONE = AuthResponse_FailedReason._(0, 'NONE');
+  static const AuthResponse_FailedReason AUTH_FAILED = AuthResponse_FailedReason._(1, 'AUTH_FAILED');
+  static const AuthResponse_FailedReason INTERNAL_ERR = AuthResponse_FailedReason._(2, 'INTERNAL_ERR');
+  static const AuthResponse_FailedReason REJECT_HOST = AuthResponse_FailedReason._(3, 'REJECT_HOST');
+  static const AuthResponse_FailedReason NO_HOST_WAITED = AuthResponse_FailedReason._(4, 'NO_HOST_WAITED');
+  static const AuthResponse_FailedReason RESPONSE_TIMEOUT = AuthResponse_FailedReason._(5, 'RESPONSE_TIMEOUT');
+
+  static const $core.List<AuthResponse_FailedReason> values = <AuthResponse_FailedReason> [
+    NONE,
+    AUTH_FAILED,
+    INTERNAL_ERR,
+    REJECT_HOST,
+    NO_HOST_WAITED,
+    RESPONSE_TIMEOUT,
+  ];
+
+  static final $core.Map<$core.int, AuthResponse_FailedReason> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static AuthResponse_FailedReason valueOf($core.int value) => _byValue[value];
+
+  const AuthResponse_FailedReason._($core.int v, $core.String n) : super(v, n);
+}
+
 class AuthDeviceInfo_DeviceType extends $pb.ProtobufEnum {
   static const AuthDeviceInfo_DeviceType DEVICE_TABLET = AuthDeviceInfo_DeviceType._(0, 'DEVICE_TABLET');
   static const AuthDeviceInfo_DeviceType DEVICE_WEB = AuthDeviceInfo_DeviceType._(1, 'DEVICE_WEB');

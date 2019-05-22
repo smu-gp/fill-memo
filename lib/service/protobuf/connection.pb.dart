@@ -94,6 +94,7 @@ class AuthResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthResponse', package: const $pb.PackageName('connection_grpc'))
     ..e<AuthResponse_ResultMessage>(1, 'message', $pb.PbFieldType.OE, AuthResponse_ResultMessage.MESSAGE_FAILED, AuthResponse_ResultMessage.valueOf, AuthResponse_ResultMessage.values)
     ..aOS(2, 'userId')
+    ..e<AuthResponse_FailedReason>(3, 'failedReason', $pb.PbFieldType.OE, AuthResponse_FailedReason.NONE, AuthResponse_FailedReason.valueOf, AuthResponse_FailedReason.values)
     ..hasRequiredFields = false
   ;
 
@@ -118,6 +119,11 @@ class AuthResponse extends $pb.GeneratedMessage {
   set userId($core.String v) { $_setString(1, v); }
   $core.bool hasUserId() => $_has(1);
   void clearUserId() => clearField(2);
+
+  AuthResponse_FailedReason get failedReason => $_getN(2);
+  set failedReason(AuthResponse_FailedReason v) { setField(3, v); }
+  $core.bool hasFailedReason() => $_has(2);
+  void clearFailedReason() => clearField(3);
 }
 
 class WaitAuthRequest extends $pb.GeneratedMessage {
