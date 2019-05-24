@@ -18,6 +18,6 @@ void main() async {
     historyRepository: LocalHistoryRepository(db),
     resultRepository: LocalResultRepository(db),
     folderRepository: LocalFolderRepository(db),
-    sharedPreferences: sharedPreferences,
+    preferenceRepository: LocalPreferenceRepository(sharedPreferences),
   ));
 }

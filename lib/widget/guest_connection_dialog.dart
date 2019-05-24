@@ -4,7 +4,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grpc/grpc.dart';
-import 'package:preference_helper/preference_helper.dart';
+import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/service/grpc_service.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
 import 'package:sp_client/service/protobuf/connection.pbenum.dart';

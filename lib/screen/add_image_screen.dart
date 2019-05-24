@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/bloc/history/history_bloc.dart';
 import 'package:sp_client/bloc/result/result_bloc.dart';
@@ -80,9 +79,8 @@ class _AddImageScreenState extends State<AddImageScreen> {
           return ImageCropper(
             key: _cropperKey,
             image: FileImage(File(state.imagePath)),
-            overlayHandleRange: _preferenceBloc
-                .getPreference(AppPreferences.keyOverlayHandleRange)
-                .value,
+            overlayHandleRange: _preferenceBloc.repository
+                .getBool(AppPreferences.keyOverlayHandleRange),
           );
         }
       },
@@ -135,17 +133,14 @@ class _AddImageScreenState extends State<AddImageScreen> {
   void _handleSendPressed() async {
     _showProgressDialog();
 
-    var useLocalDummy = _preferenceBloc
-        .getPreference<bool>(AppPreferences.keyUseLocalDummy)
-        .value;
-
+    var useLocalDummy =
+        _preferenceBloc.repository.getBool(AppPreferences.keyUseLocalDummy);
     var currentTime = DateTime.now().millisecondsSinceEpoch;
 
     var results;
     if (!useLocalDummy) {
-      var serviceUrl = _preferenceBloc
-          .getPreference<String>(AppPreferences.keyServiceHost)
-          .value;
+      var serviceUrl =
+          _preferenceBloc.repository.getString(AppPreferences.keyServiceHost);
       try {
         results = await _sendImage(serviceUrl);
       } catch (e) {

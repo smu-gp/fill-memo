@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:preference_helper/preference_helper.dart';
 import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/host_connection_screen.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';

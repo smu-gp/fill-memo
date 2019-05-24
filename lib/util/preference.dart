@@ -1,4 +1,4 @@
-import 'package:preference_helper/preference_helper.dart';
+import 'package:sp_client/model/models.dart';
 
 class AppPreferences {
   static final String keyUserId = "pref_user_id";
