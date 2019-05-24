@@ -6,10 +6,9 @@ import 'package:sp_client/model/result.dart';
 import 'package:sp_client/repository/repository.dart';
 
 class ResultBloc extends Bloc<ResultEvent, ResultState> {
-  final ResultRepository resultRepository;
+  final ResultRepository repository;
 
-  ResultBloc({@required this.resultRepository})
-      : assert(resultRepository != null);
+  ResultBloc({@required this.repository}) : assert(repository != null);
 
   @override
   ResultState get initialState => ResultLoading();
@@ -25,7 +24,7 @@ class ResultBloc extends Bloc<ResultEvent, ResultState> {
 
   Stream<ResultState> _mapLoadResultsToState(LoadResults event) async* {
     try {
-      final results = await resultRepository.readByHistoryId(event.historyId);
+      final results = await repository.readByHistoryId(event.historyId);
       yield ResultLoaded(results);
     } catch (_) {
       yield ResultNotLoaded();
@@ -33,11 +32,11 @@ class ResultBloc extends Bloc<ResultEvent, ResultState> {
   }
 
   void addResults(List<Result> results, int historyId) {
-    results.forEach(
-        (result) => resultRepository.create(result..historyId = historyId));
+    results
+        .forEach((result) => repository.create(result..historyId = historyId));
   }
 
   void deleteResults(int historyId) {
-    resultRepository.deleteByHistoryId(historyId);
+    repository.deleteByHistoryId(historyId);
   }
 }

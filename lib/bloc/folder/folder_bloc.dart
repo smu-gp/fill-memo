@@ -6,10 +6,9 @@ import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/repository/repository.dart';
 
 class FolderBloc extends Bloc<FolderEvent, FolderState> {
-  final FolderRepository folderRepository;
+  final FolderRepository repository;
 
-  FolderBloc({@required this.folderRepository})
-      : assert(folderRepository != null);
+  FolderBloc({@required this.repository}) : assert(repository != null);
 
   @override
   FolderState get initialState => FolderLoading();
@@ -31,7 +30,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
   Stream<FolderState> _mapLoadFolderToState() async* {
     try {
-      final folders = await folderRepository.readAll();
+      final folders = await repository.readAll();
       yield FolderLoaded(folders);
     } catch (_) {
       yield FolderNotLoaded();
@@ -46,7 +45,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
       final List<Folder> updatedFolders = List.from(currentState.folders)
         ..add(event.folder);
       yield FolderLoaded(updatedFolders);
-      folderRepository.create(event.folder);
+      repository.create(event.folder);
     }
   }
 
@@ -61,7 +60,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
             : folder;
       }).toList();
       yield FolderLoaded(updatedFolders);
-      folderRepository.update(event.updatedFolder);
+      repository.update(event.updatedFolder);
     }
   }
 
@@ -74,7 +73,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
           .where((folder) => folder.id != event.folderId)
           .toList();
       yield FolderLoaded(updatedFolders);
-      folderRepository.delete(event.folderId);
+      repository.delete(event.folderId);
     }
   }
 }

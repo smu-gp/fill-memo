@@ -7,10 +7,9 @@ import 'package:sp_client/model/sort_order.dart';
 import 'package:sp_client/repository/repository.dart';
 
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
-  final HistoryRepository historyRepository;
+  final HistoryRepository repository;
 
-  HistoryBloc({@required this.historyRepository})
-      : assert(historyRepository != null);
+  HistoryBloc({@required this.repository}) : assert(repository != null);
 
   @override
   HistoryState get initialState => HistoryLoading();
@@ -37,7 +36,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     UpdateHistory event,
   ) async* {
     if (currentState is HistoryLoaded) {
-      historyRepository.update(event.updatedHistory);
+      repository.update(event.updatedHistory);
       yield* _loadHistory(currentState.order);
     }
   }
@@ -47,14 +46,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     DeleteHistory event,
   ) async* {
     if (currentState is HistoryLoaded) {
-      historyRepository.delete(event.id);
+      repository.delete(event.id);
       yield* _loadHistory(currentState.order);
     }
   }
 
   Stream<HistoryState> _loadHistory(SortOrder order) async* {
     try {
-      var histories = await historyRepository.readAll(
+      var histories = await repository.readAll(
         sortColumn: History.columnCreatedAt,
         sortAscending: order == SortOrder.createdAtAsc,
       );
@@ -67,7 +66,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   Future<History> createHistory(History newHistory) {
     var state = currentState;
     if (state is HistoryLoaded) {
-      var created = historyRepository.create(newHistory);
+      var created = repository.create(newHistory);
       dispatch(LoadHistory(state.order));
       return created;
     } else {
