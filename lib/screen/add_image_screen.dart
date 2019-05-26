@@ -79,8 +79,9 @@ class _AddImageScreenState extends State<AddImageScreen> {
           return ImageCropper(
             key: _cropperKey,
             image: FileImage(File(state.imagePath)),
-            overlayHandleRange: _preferenceBloc.repository
-                .getBool(AppPreferences.keyOverlayHandleRange),
+            overlayHandleRange: _preferenceBloc
+                .getPreference<bool>(AppPreferences.keyOverlayHandleRange)
+                .value,
           );
         }
       },
@@ -133,14 +134,16 @@ class _AddImageScreenState extends State<AddImageScreen> {
   void _handleSendPressed() async {
     _showProgressDialog();
 
-    var useLocalDummy =
-        _preferenceBloc.repository.getBool(AppPreferences.keyUseLocalDummy);
+    var useLocalDummy = _preferenceBloc
+        .getPreference<bool>(AppPreferences.keyUseLocalDummy)
+        .value;
     var currentTime = DateTime.now().millisecondsSinceEpoch;
 
     var results;
     if (!useLocalDummy) {
-      var serviceUrl =
-          _preferenceBloc.repository.getString(AppPreferences.keyServiceHost);
+      var serviceUrl = _preferenceBloc
+          .getPreference<String>(AppPreferences.keyServiceHost)
+          .value;
       try {
         results = await _sendImage(serviceUrl);
       } catch (e) {

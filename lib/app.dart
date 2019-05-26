@@ -47,7 +47,7 @@ class _AppState extends State<App> {
     );
 
     var lightTheme =
-        widget.preferenceRepository.getBool(AppPreferences.keyLightTheme);
+        _preferenceBloc.getPreference<bool>(AppPreferences.keyLightTheme).value;
     var initTheme = !lightTheme ? AppThemes.defaultTheme : AppThemes.lightTheme;
     _themeBloc = ThemeBloc(initTheme);
   }

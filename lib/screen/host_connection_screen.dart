@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grpc/grpc.dart';
+import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/bloc/preference/preference_bloc.dart';
 import 'package:sp_client/service/grpc_service.dart';
 import 'package:sp_client/service/protobuf/connection.pbgrpc.dart';
@@ -32,8 +33,9 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
   void initState() {
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
     _grpcService = GrpcService(
-        host: _preferenceBloc.repository
-            .getString(AppPreferences.keyServiceHost));
+        host: _preferenceBloc
+            .getPreference<String>(AppPreferences.keyServiceHost)
+            .value);
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       var userId = await _getUserId();
       _waitAuth(userId);
@@ -121,12 +123,14 @@ class _HostConnectionScreenState extends State<HostConnectionScreen> {
   }
 
   Future<String> _getUserId() async {
-    var userId = _preferenceBloc.repository.getString(AppPreferences.keyUserId);
-    if (userId == null) {
+    var userIdPref =
+        _preferenceBloc.getPreference<String>(AppPreferences.keyUserId);
+    if (userIdPref.value == null) {
       var uuid = Uuid();
-      _preferenceBloc.repository.setString(AppPreferences.keyUserId, uuid.v4());
+      userIdPref.value = uuid.v4();
+      _preferenceBloc.dispatch(UpdatePreference(userIdPref));
     }
-    return userId;
+    return userIdPref.value;
   }
 
   void _refreshConnectionCode() async {
