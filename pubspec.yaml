@@ -25,10 +25,10 @@ dependencies:
   protobuf: ^0.13.11
   uuid: ^2.0.1
   # Plugins
-  share: ^0.6.0+1
-  sqflite: ^1.0.0
-  image_picker: ^0.4.10
-  path_provider: ^0.5.0+1
+  share: ^0.6.1+1
+  sqflite: ^1.1.5
+  image_picker: ^0.6.0+3
+  path_provider: ^1.1.0
   device_info: ^0.4.0+1
 
 dev_dependencies:
