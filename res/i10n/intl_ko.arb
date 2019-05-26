@@ -181,6 +181,36 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelNone": "없음",
+  "@labelNone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAuthFailed": "인증 실패",
+  "@labelAuthFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelInternalErr": "서버 내부 오류",
+  "@labelInternalErr": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelRejectHost": "호스트에 의해 거부됨",
+  "@labelRejectHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNoHostWaited": "기다리는 호스트가 없음",
+  "@labelNoHostWaited": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelResponseTimeout": "호스트 응답시간 만료",
+  "@labelResponseTimeout": {
+    "type": "text",
+    "placeholders": {}
+  },
   "folderDefault": "기본",
   "@folderDefault": {
     "type": "text",

@@ -9,6 +9,7 @@ import 'package:sp_client/service/grpc_service.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
 import 'package:sp_client/service/protobuf/connection.pbenum.dart';
 import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/timer_text.dart';
 
 enum _AuthState { none, waitResponse, success, failed }
 
@@ -18,6 +19,7 @@ class GuestConnectionDialog extends StatefulWidget {
 }
 
 class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
+  final _timerTextKey = GlobalKey<TimerTextState>();
   final _textController = TextEditingController();
 
   PreferenceBloc _preferenceBloc;
@@ -25,6 +27,7 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
 
   String _connectUserId;
   _AuthState _authState = _AuthState.none;
+  AuthResponse_FailedReason _failedReason;
 
   @override
   void initState() {
@@ -100,7 +103,11 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(AppLocalizations.of(context).labelWaitHostResponse),
-          )
+          ),
+          TimerText(
+            key: _timerTextKey,
+            duration: Duration(minutes: 1),
+          ),
         ],
       );
     } else if (_authState == _AuthState.success) {
@@ -140,7 +147,9 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
                 fontSize: 20.0,
               ),
             ),
-          )
+          ),
+          if (_failedReason != null)
+            Text(_getFailedReasonMessage(_failedReason)),
         ],
       );
     }
@@ -179,13 +188,16 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
       ..deviceType = deviceType;
 
     var authResponse = await _grpcService.connectionServiceClient.auth(
-      AuthRequest()
-        ..connectionCode = connectionCode
-        ..deviceInfo = deviceInfo,
-      options: CallOptions(
-        timeout: Duration(minutes: 10),
-      ),
-    );
+        AuthRequest()
+          ..connectionCode = connectionCode
+          ..deviceInfo = deviceInfo,
+        options: CallOptions(
+          timeout: Duration(seconds: 70),
+        ));
+
+    if (_timerTextKey.currentState != null) {
+      _timerTextKey.currentState.cancelTimer();
+    }
 
     if (authResponse.message == AuthResponse_ResultMessage.MESSAGE_SUCCESS) {
       var preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
@@ -209,7 +221,27 @@ class _GuestConnectionDialogState extends State<GuestConnectionDialog> {
     } else {
       setState(() {
         _authState = _AuthState.failed;
+        _failedReason = authResponse.failedReason;
       });
+    }
+  }
+
+  String _getFailedReasonMessage(AuthResponse_FailedReason failedReason) {
+    switch (failedReason) {
+      case AuthResponse_FailedReason.NONE:
+        return AppLocalizations.of(context).labelNone;
+      case AuthResponse_FailedReason.AUTH_FAILED:
+        return AppLocalizations.of(context).labelAuthFailed;
+      case AuthResponse_FailedReason.INTERNAL_ERR:
+        return AppLocalizations.of(context).labelInternalErr;
+      case AuthResponse_FailedReason.REJECT_HOST:
+        return AppLocalizations.of(context).labelRejectHost;
+      case AuthResponse_FailedReason.NO_HOST_WAITED:
+        return AppLocalizations.of(context).labelNoHostWaited;
+      case AuthResponse_FailedReason.RESPONSE_TIMEOUT:
+        return AppLocalizations.of(context).labelResponseTimeout;
+      default:
+        return "";
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-05-12T00:21:03.710342",
+  "@@last_modified": "2019-05-26T22:53:00.531546",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -178,6 +178,36 @@
   },
   "labelConnectionCode": "Connection code",
   "@labelConnectionCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNone": "None",
+  "@labelNone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAuthFailed": "Auth failed",
+  "@labelAuthFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelInternalErr": "Internal server error",
+  "@labelInternalErr": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelRejectHost": "Reject by host",
+  "@labelRejectHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNoHostWaited": "No host waited",
+  "@labelNoHostWaited": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelResponseTimeout": "Host Response timeout",
+  "@labelResponseTimeout": {
     "type": "text",
     "placeholders": {}
   },

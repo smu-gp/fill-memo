@@ -199,6 +199,36 @@ class AppLocalizations {
         name: 'labelConnectionCode',
       );
 
+  String get labelNone => Intl.message(
+        'None',
+        name: 'labelNone',
+      );
+
+  String get labelAuthFailed => Intl.message(
+        'Auth failed',
+        name: 'labelAuthFailed',
+      );
+
+  String get labelInternalErr => Intl.message(
+        'Internal server error',
+        name: 'labelInternalErr',
+      );
+
+  String get labelRejectHost => Intl.message(
+        'Reject by host',
+        name: 'labelRejectHost',
+      );
+
+  String get labelNoHostWaited => Intl.message(
+        'No host waited',
+        name: 'labelNoHostWaited',
+      );
+
+  String get labelResponseTimeout => Intl.message(
+        'Host Response timeout',
+        name: 'labelResponseTimeout',
+      );
+
   String get folderDefault => Intl.message(
         'Default',
         name: 'folderDefault',
