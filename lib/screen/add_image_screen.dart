@@ -270,9 +270,11 @@ class _AddImageScreenState extends State<AddImageScreen> {
 
   Future<ImageInfo> _getImageInfo(ImageProvider imageProvider) {
     Completer<ImageInfo> completer = Completer<ImageInfo>();
-    imageProvider
-        .resolve(createLocalImageConfiguration(context))
-        .addListener((ImageInfo info, _) => completer.complete(info));
+    imageProvider.resolve(createLocalImageConfiguration(context)).addListener(
+          ImageStreamListener(
+            (ImageInfo info, bool synchronousCall) => completer.complete(info),
+          ),
+        );
     return completer.future;
   }
 

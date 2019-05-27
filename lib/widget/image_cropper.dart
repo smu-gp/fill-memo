@@ -30,6 +30,7 @@ class ImageCropper extends StatefulWidget {
 
 class ImageCropperState extends State<ImageCropper> {
   ImageStream _imageStream;
+  ImageStreamListener _imageStreamListener;
 
   double _left = _kHandleOffset;
   double _top = _kHandleOffset;
@@ -43,6 +44,7 @@ class ImageCropperState extends State<ImageCropper> {
   @override
   void initState() {
     super.initState();
+    _imageStreamListener = ImageStreamListener(_initRect);
   }
 
   @override
@@ -82,15 +84,15 @@ class ImageCropperState extends State<ImageCropper> {
 
   @override
   void dispose() {
-    _imageStream?.removeListener(_initRect);
+    _imageStream?.removeListener(_imageStreamListener);
     super.dispose();
   }
 
   void _updateImage() {
     var oldImageStream = _imageStream;
     _imageStream = widget.image.resolve(createLocalImageConfiguration(context));
-    oldImageStream?.removeListener(_initRect);
-    _imageStream.addListener(_initRect);
+    oldImageStream?.removeListener(_imageStreamListener);
+    _imageStream.addListener(_imageStreamListener);
   }
 
   void _initRect(ImageInfo imageInfo, bool synchronousCall) {
@@ -213,9 +215,11 @@ class ImageCropperState extends State<ImageCropper> {
 
   Future<ImageInfo> _getImageInfo(ImageProvider imageProvider) {
     Completer<ImageInfo> completer = Completer<ImageInfo>();
-    imageProvider
-        .resolve(createLocalImageConfiguration(context))
-        .addListener((ImageInfo info, _) => completer.complete(info));
+    imageProvider.resolve(createLocalImageConfiguration(context)).addListener(
+          ImageStreamListener(
+            (ImageInfo info, bool synchronousCall) => completer.complete(info),
+          ),
+        );
     return completer.future;
   }
 
