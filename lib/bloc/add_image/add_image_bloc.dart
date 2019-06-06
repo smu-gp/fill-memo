@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:sp_client/bloc/add_image/add_image.dart';
-import 'package:sp_client/bloc/blocs.dart';
+
+import './add_image_event.dart';
+import './add_image_state.dart';
 
 class AddImageBloc extends Bloc<AddImageEvent, AddImageState> {
   final String initImage;

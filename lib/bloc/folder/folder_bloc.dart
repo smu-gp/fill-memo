@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/bloc/folder/folder_event.dart';
-import 'package:sp_client/bloc/folder/folder_state.dart';
 import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/repository/repository.dart';
+
+import './folder_event.dart';
+import './folder_state.dart';
 
 class FolderBloc extends Bloc<FolderEvent, FolderState> {
   final FolderRepository repository;

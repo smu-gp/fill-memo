@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/bloc/history/history_event.dart';
-import 'package:sp_client/bloc/history/history_state.dart';
 import 'package:sp_client/model/history.dart';
 import 'package:sp_client/model/sort_order.dart';
 import 'package:sp_client/repository/repository.dart';
+
+import './history_event.dart';
+import './history_state.dart';
 
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   final HistoryRepository repository;

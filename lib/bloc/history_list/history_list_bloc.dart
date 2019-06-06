@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:sp_client/bloc/history_list/history_list_event.dart';
-import 'package:sp_client/bloc/history_list/history_list_state.dart';
 import 'package:sp_client/model/models.dart';
+
+import './history_list_event.dart';
+import './history_list_state.dart';
 
 class HistoryListBloc extends Bloc<HistoryListEvent, HistoryListState> {
   @override

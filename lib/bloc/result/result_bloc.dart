@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/bloc/result/result_event.dart';
-import 'package:sp_client/bloc/result/result_state.dart';
 import 'package:sp_client/model/result.dart';
 import 'package:sp_client/repository/repository.dart';
+
+import './result_event.dart';
+import './result_state.dart';
 
 class ResultBloc extends Bloc<ResultEvent, ResultState> {
   final ResultRepository repository;
