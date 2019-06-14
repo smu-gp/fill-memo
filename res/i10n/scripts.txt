@@ -1,9 +1,0 @@
-extract:
-flutter packages pub run intl_translation:extract_to_arb `
---locale en `
---output-dir=res/i10n lib/util/localization.dart
-
-generate:
-flutter packages pub run intl_translation:generate_from_arb `
---output-dir=lib/util/i10n --no-use-deferred-loading `
-lib/util/localization.dart res\i10n\intl_en.arb res\i10n\intl_ko.arb
