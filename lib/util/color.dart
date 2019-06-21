@@ -9,9 +9,9 @@ class AppColors {
 
   static final Color primaryLightColor = Color(0xFFFAFAFA);
   static final Color primaryLightColorLight = Colors.white;
-  static final Color primaryLightColorDark = Color(0xFFE0E0E0);
+  static final Color primaryLightColorDark = Color(0xFFC7C7C7);
 
-  static final Color accentColor = Color(0xffee534f);
+  static final Color accentColor = Color(0xfff8790a);
   static final Color backgroundColor = primaryColor;
   static final Color backgroundLightColor = primaryLightColor;
 

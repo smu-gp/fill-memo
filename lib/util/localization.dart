@@ -129,6 +129,31 @@ class AppLocalizations {
         name: 'actionReject',
       );
 
+  String get actionDate => Intl.message(
+        'Date',
+        name: 'actionDate',
+      );
+
+  String get actionFolder => Intl.message(
+        'Folder',
+        name: 'actionFolder',
+      );
+
+  String get actionConnection => Intl.message(
+        'Connection',
+        name: 'actionConnection',
+      );
+
+  String get actionDarkMode => Intl.message(
+        'Dark mode',
+        name: 'actionDarkMode',
+      );
+
+  String get actionSecretFolder => Intl.message(
+        'Secret folder',
+        name: 'actionSecretFolder',
+      );
+
   String get imageFromGallery => Intl.message(
         'Select from gallery',
         name: 'imageFromGallery',

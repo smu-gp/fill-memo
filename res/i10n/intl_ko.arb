@@ -111,6 +111,31 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionDate": "날짜",
+  "@actionDate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionFolder": "폴더",
+  "@actionFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnection": "연결",
+  "@actionConnection": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDarkMode": "야간 모드",
+  "@actionDarkMode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSecretFolder": "비밀 폴더",
+  "@actionSecretFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
   "imageFromGallery": "갤러리에서 선택",
   "@imageFromGallery": {
     "type": "text",

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/screen/main_screen.dart';
-import 'package:sp_client/util/utils.dart';
+import 'package:uuid/uuid.dart';
+
+import 'bloc/blocs.dart';
+import 'repository/repositories.dart';
+import 'screen/main_screen.dart';
+import 'util/utils.dart';
 
 class App extends StatefulWidget {
   final HistoryRepository historyRepository;
@@ -29,68 +32,84 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  HistoryBloc _historyBloc;
-  ResultBloc _resultBloc;
-  FolderBloc _folderBloc;
-  ThemeBloc _themeBloc;
   PreferenceBloc _preferenceBloc;
+  ThemeBloc _themeBloc;
+
+  SystemUiOverlayStyle _latestStyle;
 
   @override
   void initState() {
     super.initState();
-    _historyBloc = HistoryBloc(repository: widget.historyRepository);
-    _resultBloc = ResultBloc(repository: widget.resultRepository);
-    _folderBloc = FolderBloc(repository: widget.folderRepository);
     _preferenceBloc = PreferenceBloc(
       repository: widget.preferenceRepository,
       usagePreferences: AppPreferences.preferences,
     );
 
-    var lightTheme =
-        _preferenceBloc.getPreference<bool>(AppPreferences.keyLightTheme).value;
-    var initTheme = !lightTheme ? AppThemes.defaultTheme : AppThemes.lightTheme;
+    var darkMode =
+        _preferenceBloc.getPreference<bool>(AppPreferences.keyDarkMode).value;
+    var initTheme = darkMode ? AppThemes.darkTheme : AppThemes.lightTheme;
     _themeBloc = ThemeBloc(initTheme);
+
+    _latestStyle = SystemUiOverlayStyle.light;
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProviderTree(
       blocProviders: [
-        BlocProvider<HistoryBloc>(bloc: _historyBloc),
-        BlocProvider<ResultBloc>(bloc: _resultBloc),
-        BlocProvider<FolderBloc>(bloc: _folderBloc),
-        BlocProvider<PreferenceBloc>(bloc: _preferenceBloc),
-        BlocProvider<ThemeBloc>(bloc: _themeBloc),
+        BlocProvider<HistoryBloc>(
+          builder: (context) {
+            return HistoryBloc(repository: widget.historyRepository);
+          },
+          dispose: (context, bloc) => bloc.dispose(),
+        ),
+        BlocProvider<ResultBloc>(
+          builder: (context) {
+            return ResultBloc(repository: widget.resultRepository);
+          },
+          dispose: (context, bloc) => bloc.dispose(),
+        ),
+        BlocProvider<FolderBloc>(
+          builder: (context) {
+            return FolderBloc(repository: widget.folderRepository);
+          },
+          dispose: (context, bloc) => bloc.dispose(),
+        ),
+        BlocProvider<PreferenceBloc>(
+          builder: (context) => _preferenceBloc,
+          dispose: (context, bloc) => bloc.dispose(),
+        ),
       ],
-      child: BlocBuilder<ThemeData, ThemeData>(
-        bloc: _themeBloc,
-        builder: (context, snapshot) {
-          return MaterialApp(
-            onGenerateTitle: (context) => AppLocalizations.of(context).appName,
-            theme: snapshot,
-            darkTheme: AppThemes.defaultTheme,
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', 'US'),
-              const Locale('ko', 'KR'),
-            ],
-            home: MainScreen(),
-          );
-        },
+      child: BlocProvider<ThemeBloc>(
+        builder: (context) => _themeBloc,
+        child: BlocBuilder<ThemeData, ThemeData>(
+          bloc: _themeBloc,
+          builder: (context, state) {
+            _latestStyle = _latestStyle.copyWith(
+              systemNavigationBarColor: state.accentColor,
+            );
+            SystemChrome.setSystemUIOverlayStyle(_latestStyle);
+
+            return MaterialApp(
+              onGenerateTitle: (context) =>
+                  AppLocalizations.of(context).appName,
+              theme: state,
+              darkTheme: AppThemes.darkTheme,
+              localizationsDelegates: [
+                const AppLocalizationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', 'US'),
+                const Locale('ko', 'KR'),
+              ],
+              home: MainScreen(),
+            );
+          },
+        ),
+        dispose: (context, bloc) => bloc.dispose(),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _historyBloc.dispose();
-    _resultBloc.dispose();
-    _folderBloc.dispose();
-    _preferenceBloc.dispose();
-    super.dispose();
   }
 }

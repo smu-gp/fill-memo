@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-05-26T22:53:00.531546",
+  "@@last_modified": "2019-06-12T20:21:13.992569",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -108,6 +108,31 @@
   },
   "actionReject": "Reject",
   "@actionReject": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDate": "Date",
+  "@actionDate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionFolder": "Folder",
+  "@actionFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnection": "Connection",
+  "@actionConnection": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDarkMode": "Dark mode",
+  "@actionDarkMode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSecretFolder": "Secret folder",
+  "@actionSecretFolder": {
     "type": "text",
     "placeholders": {}
   },

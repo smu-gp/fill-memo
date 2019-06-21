@@ -3,6 +3,8 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
@@ -27,14 +29,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionAddFolder" : MessageLookupByLibrary.simpleMessage("Add folder"),
     "actionAddImage" : MessageLookupByLibrary.simpleMessage("Add image"),
     "actionConnect" : MessageLookupByLibrary.simpleMessage("Connect"),
+    "actionConnection" : MessageLookupByLibrary.simpleMessage("Connection"),
+    "actionDarkMode" : MessageLookupByLibrary.simpleMessage("Dark mode"),
+    "actionDate" : MessageLookupByLibrary.simpleMessage("Date"),
     "actionDelete" : MessageLookupByLibrary.simpleMessage("Delete"),
     "actionEdit" : MessageLookupByLibrary.simpleMessage("Edit"),
+    "actionFolder" : MessageLookupByLibrary.simpleMessage("Folder"),
     "actionMoveFolder" : MessageLookupByLibrary.simpleMessage("Move another folder"),
     "actionReject" : MessageLookupByLibrary.simpleMessage("Reject"),
     "actionRemoveFolder" : MessageLookupByLibrary.simpleMessage("Remove folder"),
     "actionRename" : MessageLookupByLibrary.simpleMessage("Rename"),
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("Rename folder"),
     "actionRetry" : MessageLookupByLibrary.simpleMessage("Retry"),
+    "actionSecretFolder" : MessageLookupByLibrary.simpleMessage("Secret folder"),
     "actionSendImage" : MessageLookupByLibrary.simpleMessage("Send image"),
     "actionSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),

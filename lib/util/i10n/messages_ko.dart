@@ -3,6 +3,8 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
@@ -27,14 +29,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionAddFolder" : MessageLookupByLibrary.simpleMessage("폴더 추가"),
     "actionAddImage" : MessageLookupByLibrary.simpleMessage("이미지 추가"),
     "actionConnect" : MessageLookupByLibrary.simpleMessage("연결"),
+    "actionConnection" : MessageLookupByLibrary.simpleMessage("연결"),
+    "actionDarkMode" : MessageLookupByLibrary.simpleMessage("야간 모드"),
+    "actionDate" : MessageLookupByLibrary.simpleMessage("날짜"),
     "actionDelete" : MessageLookupByLibrary.simpleMessage("삭제"),
     "actionEdit" : MessageLookupByLibrary.simpleMessage("편집"),
+    "actionFolder" : MessageLookupByLibrary.simpleMessage("폴더"),
     "actionMoveFolder" : MessageLookupByLibrary.simpleMessage("다른 폴더로 이동"),
     "actionReject" : MessageLookupByLibrary.simpleMessage("거부"),
     "actionRemoveFolder" : MessageLookupByLibrary.simpleMessage("폴더 삭제"),
     "actionRename" : MessageLookupByLibrary.simpleMessage("이름 변경"),
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("폴더 이름 변경"),
     "actionRetry" : MessageLookupByLibrary.simpleMessage("재시도"),
+    "actionSecretFolder" : MessageLookupByLibrary.simpleMessage("비밀 폴더"),
     "actionSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내기"),
     "actionSettings" : MessageLookupByLibrary.simpleMessage("설정"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),

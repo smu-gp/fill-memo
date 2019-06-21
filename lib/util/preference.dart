@@ -3,7 +3,7 @@ import 'package:sp_client/model/models.dart';
 class AppPreferences {
   static final String keyUserId = "pref_user_id";
 
-  static final String keyLightTheme = "pref_light_theme";
+  static final String keyDarkMode = "pref_dark_mode";
 
   // For debug options
   static final String keyUseLocalDummy = "pref_use_local_dummy";
@@ -18,7 +18,7 @@ class AppPreferences {
       initValue: null,
     ),
     Preference<bool>(
-      key: keyLightTheme,
+      key: keyDarkMode,
       initValue: false,
     ),
     Preference<bool>(

@@ -16,8 +16,8 @@ dependencies:
   equatable: ^0.2.3
   http: 0.12.0+1
   rxdart: ^0.22.0
-  bloc: ^0.13.0
-  flutter_bloc: ^0.13.0
+  bloc: ^0.14.2
+  flutter_bloc: ^0.16.0
   shared_preferences: ^0.5.2+1
   outline_material_icons: ^0.1.0
   cupertino_icons: ^0.1.2
@@ -33,6 +33,7 @@ dependencies:
   sqflite: ^1.1.5
   image_picker: ^0.6.0+3
   path_provider: ^1.1.0
+  package_info: ^0.4.0+3
   device_info: ^0.4.0+1
 
 dev_dependencies:
