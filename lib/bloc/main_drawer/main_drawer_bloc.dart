@@ -17,7 +17,7 @@ class MainDrawerBloc extends Bloc<MainDrawerEvent, MainDrawerState> {
     MainDrawerEvent event,
   ) async* {
     if (event is SelectMenu) {
-      yield MainDrawerState(event.menu);
+      yield MainDrawerState(event.menu, folderId: event.folderId);
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-06-12T20:21:13.992569",
+  "@@last_modified": "2019-06-26T10:39:37.904811",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -36,8 +36,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionAddImage": "Add image",
-  "@actionAddImage": {
+  "actionAddMemo": "Add memo",
+  "@actionAddMemo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionCreateNewFolder": "Create new folder",
+  "@actionCreateNewFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionManageFolder": "Manage folder",
+  "@actionManageFolder": {
     "type": "text",
     "placeholders": {}
   },
@@ -136,6 +146,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionNotes": "Notes",
+  "@actionNotes": {
+    "type": "text",
+    "placeholders": {}
+  },
   "imageFromGallery": "Select from gallery",
   "@imageFromGallery": {
     "type": "text",
@@ -161,7 +176,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "dialogDeleteFolder": "All the histories in the folder are moved to the default folder. Delete folder?",
+  "dialogDeleteFolder": "All the notes in the folder are moved to the default folder. Delete folder?",
   "@dialogDeleteFolder": {
     "type": "text",
     "placeholders": {}
@@ -236,13 +251,28 @@
     "type": "text",
     "placeholders": {}
   },
+  "hintInputTitle": "Title",
+  "@hintInputTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintInputNote": "Note",
+  "@hintInputNote": {
+    "type": "text",
+    "placeholders": {}
+  },
   "folderDefault": "Default",
   "@folderDefault": {
     "type": "text",
     "placeholders": {}
   },
-  "historyEmpty": "Empty history",
-  "@historyEmpty": {
+  "memoEmpty": "Empty memo",
+  "@memoEmpty": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memoError": "Error occurred",
+  "@memoError": {
     "type": "text",
     "placeholders": {}
   },

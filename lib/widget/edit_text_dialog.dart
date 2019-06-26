@@ -5,6 +5,7 @@ typedef ValidationCallback = bool Function(String value);
 class EditTextDialog extends StatefulWidget {
   final String title;
   final String value;
+  final String positiveText;
   final ValidationCallback validation;
   final String validationMessage;
 
@@ -12,6 +13,7 @@ class EditTextDialog extends StatefulWidget {
     Key key,
     this.title,
     this.value,
+    this.positiveText,
     this.validation,
     this.validationMessage,
   }) : super(key: key);
@@ -40,17 +42,28 @@ class _EditTextDialogState extends State<EditTextDialog> {
         decoration: InputDecoration(
           errorText: _validationFailed ? widget.validationMessage : null,
         ),
+        onSubmitted: (text) {
+          var value = text.trim();
+          if (widget.validation(value)) {
+            Navigator.pop(context, value);
+          } else {
+            setState(() {
+              _validationFailed = true;
+            });
+          }
+        },
         autofocus: true,
       ),
       actions: <Widget>[
-        FlatButton(
+        MaterialButton(
           child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        FlatButton(
-          child: Text(MaterialLocalizations.of(context).okButtonLabel),
+        MaterialButton(
+          child: Text(widget.positiveText ??
+              MaterialLocalizations.of(context).okButtonLabel),
           onPressed: () {
             var value = _textController.text.trim();
             if (widget.validation(value)) {

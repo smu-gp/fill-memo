@@ -24,10 +24,11 @@ dependencies:
   grpc: ^1.0.2
   protobuf: ^0.13.11
   uuid: ^2.0.1
+  flutter_staggered_grid_view: ^0.3.0
   # Firebase
   firebase_core: ^0.4.0+3
-  firebase_database: ^3.0.2
   firebase_analytics: ^3.0.2
+  cloud_firestore: ^0.12.5+2
   # Plugins
   share: ^0.6.1+1
   sqflite: ^1.1.5

@@ -54,9 +54,19 @@ class AppLocalizations {
         name: 'actionAdd',
       );
 
-  String get actionAddImage => Intl.message(
-        'Add image',
-        name: 'actionAddImage',
+  String get actionAddMemo => Intl.message(
+        'Add memo',
+        name: 'actionAddMemo',
+      );
+
+  String get actionCreateNewFolder => Intl.message(
+        'Create new folder',
+        name: 'actionCreateNewFolder',
+      );
+
+  String get actionManageFolder => Intl.message(
+        'Manage folder',
+        name: 'actionManageFolder',
       );
 
   String get actionAddFolder => Intl.message(
@@ -154,6 +164,11 @@ class AppLocalizations {
         name: 'actionSecretFolder',
       );
 
+  String get actionNotes => Intl.message(
+        'Notes',
+        name: 'actionNotes',
+      );
+
   String get imageFromGallery => Intl.message(
         'Select from gallery',
         name: 'imageFromGallery',
@@ -180,7 +195,7 @@ class AppLocalizations {
       );
 
   String get dialogDeleteFolder => Intl.message(
-        'All the histories in the folder are moved to the default folder. Delete folder?',
+        'All the notes in the folder are moved to the default folder. Delete folder?',
         name: 'dialogDeleteFolder',
       );
 
@@ -254,14 +269,29 @@ class AppLocalizations {
         name: 'labelResponseTimeout',
       );
 
+  String get hintInputTitle => Intl.message(
+        'Title',
+        name: 'hintInputTitle',
+      );
+
+  String get hintInputNote => Intl.message(
+        'Note',
+        name: 'hintInputNote',
+      );
+
   String get folderDefault => Intl.message(
         'Default',
         name: 'folderDefault',
       );
 
-  String get historyEmpty => Intl.message(
-        'Empty history',
-        name: 'historyEmpty',
+  String get memoEmpty => Intl.message(
+        'Empty memo',
+        name: 'memoEmpty',
+      );
+
+  String get memoError => Intl.message(
+        'Error occurred',
+        name: 'memoError',
       );
 
   String resultCountMessage(int resultsCount) => Intl.message(

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info/package_info.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/host_connection_screen.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
-import 'package:sp_client/widget/guest_connection_dialog.dart';
 import 'package:sp_client/widget/sub_header.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -15,156 +14,229 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   PreferenceBloc _preferenceBloc;
-  ThemeBloc _themeBloc;
 
   @override
   void initState() {
     super.initState();
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
-    _themeBloc = BlocProvider.of<ThemeBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PreferenceEvent, PreferenceState>(
-      bloc: _preferenceBloc,
-      builder: (BuildContext context, PreferenceState state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context).actionSettings),
-            elevation: 0.0,
-          ),
-          body: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: Util.isTablet(context) ? 56.0 : 0,
-            ),
-            child: ListView(
-              children: _buildPreferenceItem(state),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  List<Widget> _buildPreferenceItem(PreferenceState state) {
-    var prefLightTheme = state.preferences.get(AppPreferences.keyLightTheme);
-    var prefUserId = state.preferences.get(AppPreferences.keyUserId);
-    var prefUseLocalDummy =
-        state.preferences.get(AppPreferences.keyUseLocalDummy);
-    var prefServiceHost = state.preferences.get(AppPreferences.keyServiceHost);
-    var prefOverlayHandleRange =
-        state.preferences.get(AppPreferences.keyOverlayHandleRange);
-
-    return <Widget>[
-      _buildHostConnectionPreference(),
-      if (Util.isTablet(context)) _buildGuestConnectionPreference(),
-      if (MediaQuery.platformBrightnessOf(context) == Brightness.light)
-        _SwitchPreference(
-          title: AppLocalizations.of(context).labelLightTheme,
-          preference: prefLightTheme,
-          onChanged: (value) {
-            _themeBloc.dispatch(
-              value ? AppThemes.lightTheme : AppThemes.defaultTheme,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).actionSettings),
+        elevation: 0.0,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: Util.isTablet(context) ? 56.0 : 0,
+        ),
+        child: BlocBuilder<PreferenceEvent, PreferenceState>(
+          bloc: _preferenceBloc,
+          builder: (context, state) {
+            return ListView(
+              children: _buildItems(state.preferences),
             );
           },
         ),
+      ),
+    );
+  }
+
+  List<Widget> _buildItems(Preferences preferences) {
+    return <Widget>[
+      ..._buildNoteItems(preferences),
+      ..._buildSecurityItems(preferences),
+      if (!bool.fromEnvironment('dart.vm.product'))
+        ..._buildDebugItems(preferences),
       SubHeader(
-        'Debug options',
+        'Info',
         color: Theme.of(context).accentColor,
         bold: true,
       ),
-      ListTile(
-        title: Text('Current User ID'),
-        subtitle: Text(prefUserId.value ?? 'null'),
-      ),
-      _SwitchPreference(
-        title: 'Use local dummy data',
-        preference: prefUseLocalDummy,
-      ),
-      _EditTextPreference(
-        title: 'Service host',
-        preference: prefServiceHost,
-        validation: (value) => value.isNotEmpty,
-        validationMessage: 'Error: service host is not empty',
-        enabled: !prefUseLocalDummy.value,
-      ),
-      _SwitchPreference(
-        title: 'Show overlay handle range',
-        preference: prefOverlayHandleRange,
+      FutureBuilder<PackageInfo>(
+        future: PackageInfo.fromPlatform(),
+        builder: (context, snapshot) {
+          var subtitle;
+          if (snapshot.hasData) {
+            subtitle =
+                "ver ${snapshot.data.version} (build. ${snapshot.data.buildNumber})";
+          }
+          return _Preference(
+            title: "Version",
+            subtitle: subtitle,
+          );
+        },
       ),
     ];
   }
 
-  _Preference _buildHostConnectionPreference() {
-    return _Preference(
-      title: AppLocalizations.of(context).titleHostConnection,
-      onTap: () {
-        if (Util.isTablet(context)) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-                  title: Text(AppLocalizations.of(context).titleHostConnection),
-                  contentPadding: EdgeInsets.all(0),
-                  content: Container(
-                    width: 480.0,
-                    height: 240.0,
-                    child: HostConnectionScreen(),
-                  ),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        MaterialLocalizations.of(context).cancelButtonLabel,
-                      ),
-                    )
-                  ],
-                ),
-          );
-        } else {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HostConnectionScreen(),
-              ));
-        }
-      },
-    );
+  List<Widget> _buildSecurityItems(Preferences preferences) {
+    return <Widget>[
+      SubHeader(
+        'Security',
+        color: Theme.of(context).accentColor,
+        bold: true,
+      ),
+      _Preference(
+        title: "Change pin code",
+        onTap: () {},
+      ),
+      _SwitchPreference(
+        title: "Use fingerprint scanner",
+        value: false,
+        onChanged: (bool value) {},
+      ),
+      _SwitchPreference(
+        title: "Use iris scanner",
+        value: false,
+        onChanged: (bool value) {},
+      ),
+    ];
   }
 
-  _Preference _buildGuestConnectionPreference() {
-    return _Preference(
-      title: AppLocalizations.of(context).titleGuestConnection,
-      onTap: () {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => GuestConnectionDialog(),
-        );
-      },
-    );
+  List<Widget> _buildNoteItems(Preferences preferences) {
+    return <Widget>[
+      SubHeader(
+        'Note',
+        color: Theme.of(context).accentColor,
+        bold: true,
+      ),
+      _SwitchPreference(
+        title: "Write new note when app open",
+        value: false,
+        onChanged: (bool value) {},
+      ),
+      _SwitchPreference(
+        title: "Quick folder classification",
+        subtitle: "Folder classification on write new note title",
+        value: true,
+        onChanged: (bool value) {},
+      ),
+    ];
+  }
+
+  List<Widget> _buildDebugItems(Preferences preferences) {
+    return <Widget>[
+      SubHeader(
+        'Debug',
+        color: Theme.of(context).accentColor,
+        bold: true,
+      ),
+      _EditTextPreference(
+        title: 'Service host',
+        preference: preferences.get(AppPreferences.keyServiceHost),
+        validation: (value) => value.isNotEmpty,
+        validationMessage: 'Error: service host is not empty',
+      ),
+    ];
   }
 }
 
 class _Preference extends StatelessWidget {
   final String title;
+  final String subtitle;
+  final Widget leading;
+  final Widget trailing;
   final VoidCallback onTap;
   final bool enabled;
 
   const _Preference({
     Key key,
-    this.title,
+    @required this.title,
+    this.leading,
+    this.trailing,
+    this.subtitle,
     this.onTap,
     this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      enabled: enabled,
+    bool twoLine = subtitle != null;
+    return InkWell(
       onTap: onTap,
+      child: Container(
+        height: twoLine ? 64.0 : 48.0,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          children: <Widget>[
+            if (leading != null) leading,
+            if (leading != null) SizedBox(width: 32.0),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.subhead.copyWith(
+                          fontSize: 16.0,
+                        ),
+                  ),
+                  if (twoLine)
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.caption.copyWith(
+                            fontSize: 14.0,
+                          ),
+                    ),
+                ],
+              ),
+            ),
+            if (trailing != null) trailing,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SwitchPreference extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final Widget leading;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const _SwitchPreference({
+    Key key,
+    @required this.title,
+    this.subtitle,
+    this.leading,
+    @required this.value,
+    @required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _SwitchPreferenceState createState() => _SwitchPreferenceState();
+}
+
+class _SwitchPreferenceState extends State<_SwitchPreference> {
+  bool _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _Preference(
+      title: widget.title,
+      subtitle: widget.subtitle,
+      leading: widget.leading,
+      onTap: () {
+        setState(() {
+          _value = !_value;
+        });
+      },
+      trailing: Switch(
+        value: _value,
+        onChanged: widget.onChanged,
+      ),
     );
   }
 }
@@ -182,55 +254,29 @@ class _EditTextPreference extends StatelessWidget {
     @required this.preference,
     this.validation,
     this.validationMessage,
-    this.enabled,
+    this.enabled = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var bloc = BlocProvider.of<PreferenceBloc>(context);
-    return ListTile(
-      title: Text(title),
-      subtitle: Text(preference.value),
+    return _Preference(
+      title: title,
+      subtitle: preference.value,
       enabled: enabled,
       onTap: () async {
         var value = await showDialog(
           context: context,
           builder: (context) => EditTextDialog(
-                title: title,
-                value: preference.value,
-                validation: validation,
-                validationMessage: validationMessage,
-              ),
+            title: title,
+            value: preference.value,
+            validation: validation,
+            validationMessage: validationMessage,
+          ),
         );
         if (value != null) {
           bloc.dispatch(UpdatePreference(preference..value = value));
         }
-      },
-    );
-  }
-}
-
-class _SwitchPreference extends StatelessWidget {
-  final String title;
-  final Preference preference;
-  final ValueChanged<bool> onChanged;
-
-  const _SwitchPreference({
-    Key key,
-    @required this.title,
-    @required this.preference,
-    this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var bloc = BlocProvider.of<PreferenceBloc>(context);
-    return SwitchListTile(
-      title: Text(title),
-      value: preference.value,
-      onChanged: (value) {
-        if (onChanged != null) onChanged(value);
-        bloc.dispatch(UpdatePreference(preference..value = value));
       },
     );
   }

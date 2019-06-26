@@ -20,6 +20,12 @@ class FolderLoaded extends FolderState {
 }
 
 class FolderNotLoaded extends FolderState {
+  final Exception exception;
+
+  FolderNotLoaded(this.exception) : super([exception]);
+
   @override
-  String toString() => 'FolderNotLoaded';
+  String toString() {
+    return 'FolderNotLoaded{exception: $exception}';
+  }
 }

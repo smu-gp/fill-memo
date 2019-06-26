@@ -1,39 +1,35 @@
-import 'package:sp_client/model/folder.dart';
-import 'package:sp_client/model/history.dart';
-import 'package:sp_client/model/result.dart';
+import '../model/models.dart';
 
-abstract class HistoryRepository {
-  Future<History> create(History newData);
+abstract class MemoRepository {
+  Future<Memo> create(Memo newMemo);
 
-  Future<History> readById(int id);
+  Future<List<Memo>> readAll();
 
-  Future<List<History>> readAll({String sortColumn, bool sortAscending = true});
+  Stream<List<Memo>> readAllAsStream();
 
-  Future<bool> update(History history);
+  Future<List<Memo>> readByFolderId(String folderId);
 
-  Future<bool> delete(int id);
-}
+  Stream<List<Memo>> readByFolderIdAsStream(String folderId);
 
-abstract class ResultRepository {
-  Future<Result> create(Result newData);
+  Future<Memo> readById(String id);
 
-  Future<Result> readById(int id);
+  Stream<Memo> readByIdAsStream(String id);
 
-  Future<List<Result>> readByHistoryId(int historyId);
+  Future<bool> update(Memo memo);
 
-  Future<bool> delete(int id);
-
-  Future<int> deleteByHistoryId(int historyId);
+  Future<bool> delete(String id);
 }
 
 abstract class FolderRepository {
-  Future<Folder> create(Folder newData);
+  Future<Folder> create(Folder newFolder);
 
   Future<List<Folder>> readAll();
 
+  Stream<List<Folder>> readAllAsStream();
+
   Future<bool> update(Folder folder);
 
-  Future<bool> delete(int id);
+  Future<bool> delete(String id);
 }
 
 abstract class PreferenceRepository {

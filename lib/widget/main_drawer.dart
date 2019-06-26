@@ -4,11 +4,14 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:package_info/package_info.dart';
+import 'package:sp_client/model/models.dart';
+import 'package:sp_client/screen/folder_manage_screen.dart';
 import 'package:sp_client/screen/settings_screen.dart';
+import 'package:sp_client/widget/loading_progress.dart';
 
 import '../bloc/blocs.dart';
 import '../util/utils.dart';
+import 'edit_text_dialog.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -18,22 +21,17 @@ class MainDrawer extends StatelessWidget {
         child: Column(
           children: <Widget>[
             SessionInfoHeader(),
-            MainDrawerMenu(),
-            ThemeSwitchItem(),
-            _buildPackageInfo(),
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  MainDrawerMenu(),
+                  if (MediaQuery.of(context).platformBrightness ==
+                      Brightness.light)
+                    ThemeSwitchItem(),
+                ],
+              ),
+            )
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPackageInfo() {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: PackageInfoText(),
         ),
       ),
     );
@@ -44,33 +42,28 @@ class MainDrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var drawerBloc = BlocProvider.of<MainDrawerBloc>(context);
-    var historyListBloc = BlocProvider.of<HistoryListBloc>(context);
     return BlocBuilder<MainDrawerEvent, MainDrawerState>(
       bloc: drawerBloc,
       builder: (context, state) {
         return Column(
           children: <Widget>[
             _DrawerSelectableItem(
-              icon: OMIcons.accessTime,
-              title: AppLocalizations.of(context).actionDate,
+              icon: (state.selectedMenu == 0)
+                  ? Icons.description
+                  : OMIcons.description,
+              title: AppLocalizations.of(context).actionNotes,
               selected: state.selectedMenu == 0,
               onTap: () {
                 drawerBloc.dispatch(SelectMenu(0));
                 Navigator.pop(context);
               },
             ),
-            _DrawerSelectableItem(
-              icon: OMIcons.folder,
-              title: AppLocalizations.of(context).actionFolder,
-              selected: state.selectedMenu == 1,
-              onTap: () {
-                drawerBloc.dispatch(SelectMenu(1));
-                historyListBloc.dispatch(UnSelectable());
-                Navigator.pop(context);
-              },
+            _FolderExpansionTile(
+              initiallyExpanded: state.folderId != null,
+              selectedFolder: state.folderId,
             ),
             _DrawerSelectableItem(
-              icon: OMIcons.lock,
+              icon: (state.selectedMenu == 2) ? Icons.lock : OMIcons.lock,
               title: AppLocalizations.of(context).actionSecretFolder,
               selected: false,
               onTap: () {},
@@ -160,42 +153,29 @@ class ThemeSwitchItem extends StatelessWidget {
   }
 }
 
-class PackageInfoText extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<PackageInfo>(
-      future: PackageInfo.fromPlatform(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Text(
-            "ver ${snapshot.data.version} (build. ${snapshot.data.buildNumber})",
-            style: TextStyle(color: Theme.of(context).disabledColor),
-          );
-        } else {
-          return Text('Unknown package info');
-        }
-      },
-    );
-  }
-}
-
 class _DrawerSelectableItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final VoidCallback onTap;
   final bool selected;
+  final EdgeInsets padding;
+  final EdgeInsets contentPadding;
 
   const _DrawerSelectableItem({
     @required this.icon,
     @required this.title,
     this.selected = false,
     this.onTap,
+    this.padding,
+    this.contentPadding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: padding != null
+          ? padding
+          : const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
       child: Container(
         decoration: BoxDecoration(
           color:
@@ -213,7 +193,9 @@ class _DrawerSelectableItem extends StatelessWidget {
               color: selected ? Theme.of(context).accentColor : null,
             ),
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+          contentPadding: contentPadding != null
+              ? contentPadding
+              : EdgeInsets.symmetric(horizontal: 16.0),
           onTap: onTap,
           selected: selected,
         ),
@@ -244,5 +226,133 @@ class _DrawerItem extends StatelessWidget {
       title: title,
       onTap: onTap,
     );
+  }
+}
+
+class _FolderExpansionTile extends StatefulWidget {
+  final bool initiallyExpanded;
+  final String selectedFolder;
+
+  _FolderExpansionTile({
+    Key key,
+    this.initiallyExpanded = false,
+    this.selectedFolder,
+  }) : super(key: key);
+
+  @override
+  _FolderExpansionTileState createState() => _FolderExpansionTileState();
+}
+
+class _FolderExpansionTileState extends State<_FolderExpansionTile> {
+  FolderBloc _folderBloc;
+  MemoBloc _memoBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _folderBloc = BlocProvider.of<FolderBloc>(context);
+    _memoBloc = BlocProvider.of<MemoBloc>(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: BlocBuilder<FolderEvent, FolderState>(
+        bloc: _folderBloc,
+        builder: (context, folderState) {
+          return BlocBuilder<MemoEvent, MemoState>(
+            bloc: _memoBloc,
+            builder: (context, snapshot) {
+              return ExpansionTile(
+                title: Text(AppLocalizations.of(context).actionFolder),
+                leading: Icon(OMIcons.folder),
+                initiallyExpanded: widget.initiallyExpanded,
+                children: <Widget>[
+                  if (folderState is FolderLoading)
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: LoadingProgress(),
+                    ),
+                  if (folderState is FolderLoaded)
+                    ..._buildFolderItems(
+                      folderState.folders,
+                      widget.selectedFolder,
+                    ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  List<Widget> _buildFolderItems(
+    List<Folder> folders,
+    String selectedFolderId,
+  ) {
+    return <Widget>[
+      _buildFolderItem(
+        Folder(
+          id: kDefaultFolderId,
+          name: AppLocalizations.of(context).folderDefault,
+        ),
+        selectedFolderId,
+      ),
+      ...folders
+          .map((folder) => _buildFolderItem(folder, selectedFolderId))
+          .toList(),
+      ListTile(
+        leading: Icon(OMIcons.createNewFolder),
+        title: Text(AppLocalizations.of(context).actionCreateNewFolder),
+        onTap: _createNewFolder,
+      ),
+      if (folders.isNotEmpty)
+        ListTile(
+          leading: Icon(OMIcons.edit),
+          title: Text(AppLocalizations.of(context).actionManageFolder),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FolderManageScreen(),
+              ),
+            );
+          },
+        ),
+    ];
+  }
+
+  Widget _buildFolderItem(Folder folder, String selectedFolderId) {
+    var selected = folder.id == selectedFolderId;
+    return _DrawerSelectableItem(
+      selected: selected,
+      icon: selected ? Icons.folder : OMIcons.folder,
+      title: folder.name,
+      padding: EdgeInsets.only(bottom: 4.0),
+      onTap: () {
+        BlocProvider.of<MainDrawerBloc>(context).dispatch(
+          SelectMenu(1, folderId: folder.id),
+        );
+        BlocProvider.of<ListBloc>(context).dispatch(UnSelectable());
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  void _createNewFolder() async {
+    var folderName = await showDialog(
+      context: context,
+      builder: (context) => EditTextDialog(
+        title: AppLocalizations.of(context).actionAddFolder,
+        positiveText: AppLocalizations.of(context).actionAdd,
+        validation: (value) => value.isNotEmpty,
+        validationMessage: AppLocalizations.of(context).errorEmptyName,
+      ),
+    );
+    if (folderName != null) {
+      _folderBloc.createFolder(Folder(name: folderName));
+    }
   }
 }

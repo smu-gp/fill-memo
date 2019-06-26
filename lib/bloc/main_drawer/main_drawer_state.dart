@@ -8,9 +8,13 @@ abstract class _MainDrawerState extends Equatable {
 
 class MainDrawerState extends _MainDrawerState {
   final int selectedMenu;
+  final String folderId;
 
-  MainDrawerState(this.selectedMenu) : super([selectedMenu]);
+  MainDrawerState(this.selectedMenu, {this.folderId})
+      : super([selectedMenu, folderId]);
 
   @override
-  String toString() => "MainDrawerState{selectedMenu: $selectedMenu}";
+  String toString() {
+    return 'MainDrawerState{selectedMenu: $selectedMenu, folderId: $folderId}';
+  }
 }

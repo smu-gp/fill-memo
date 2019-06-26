@@ -10,15 +10,12 @@ import 'repository/repositories.dart';
 void main() async {
   bool isProduction = bool.fromEnvironment('dart.vm.product');
   if (!isProduction) {
+    // ignore: deprecated_member_use
     await Sqflite.devSetDebugModeOn(true);
     BlocSupervisor.delegate = SimpleBlocDelegate();
   }
-  final db = await databaseProvider.database;
   final sharedPreferences = await SharedPreferences.getInstance();
   runApp(App(
-    historyRepository: LocalHistoryRepository(db),
-    resultRepository: LocalResultRepository(db),
-    folderRepository: LocalFolderRepository(db),
     preferenceRepository: LocalPreferenceRepository(sharedPreferences),
   ));
 }

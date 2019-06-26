@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/loading_progress.dart';
 
 typedef FolderSelectCallback = void Function(Folder);
 
@@ -21,7 +22,10 @@ class FolderList extends StatelessWidget {
       builder: (BuildContext context, FolderState state) {
         if (state is FolderLoaded) {
           var folders = [
-            Folder(id: 0, name: AppLocalizations.of(context).folderDefault),
+            Folder(
+              id: kDefaultFolderId,
+              name: AppLocalizations.of(context).folderDefault,
+            ),
           ]..addAll(state.folders);
           return ListView.builder(
             itemBuilder: (BuildContext context, int index) {
@@ -39,6 +43,8 @@ class FolderList extends StatelessWidget {
             itemCount: folders.length,
             shrinkWrap: true,
           );
+        } else {
+          return LoadingProgress();
         }
       },
     );

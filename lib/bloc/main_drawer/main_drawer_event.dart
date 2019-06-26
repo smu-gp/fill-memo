@@ -8,9 +8,12 @@ abstract class MainDrawerEvent extends Equatable {
 
 class SelectMenu extends MainDrawerEvent {
   final int menu;
+  final String folderId;
 
-  SelectMenu(this.menu) : super([menu]);
+  SelectMenu(this.menu, {this.folderId}) : super([menu, folderId]);
 
   @override
-  String toString() => "SelectMenu{menu: $menu}";
+  String toString() {
+    return 'SelectMenu{menu: $menu, folderId: $folderId}';
+  }
 }

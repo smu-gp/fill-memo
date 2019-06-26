@@ -36,8 +36,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionAddImage": "이미지 추가",
-  "@actionAddImage": {
+  "actionAddMemo": "메모 추가",
+  "@actionAddMemo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionCreateNewFolder": "새 폴더 생성",
+  "@actionCreateNewFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionManageFolder": "폴더 관리",
+  "@actionManageFolder": {
     "type": "text",
     "placeholders": {}
   },
@@ -133,6 +143,11 @@
   },
   "actionSecretFolder": "비밀 폴더",
   "@actionSecretFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionNotes": "메모",
+  "@actionNotes": {
     "type": "text",
     "placeholders": {}
   },
@@ -241,8 +256,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "historyEmpty": "기록이 없습니다",
-  "@historyEmpty": {
+  "memoEmpty": "메모가 비어있습니다",
+  "@memoEmpty": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memoError": "Error occurred",
+  "@memoError": {
     "type": "text",
     "placeholders": {}
   },
