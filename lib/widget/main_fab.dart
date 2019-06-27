@@ -14,10 +14,7 @@ class MainFloatingActionButton extends StatelessWidget {
           bloc: BlocProvider.of<ListBloc>(context),
           builder: (context, listState) {
             return AnimatedOpacity(
-              opacity: mainDrawerState.selectedMenu == 0 &&
-                      listState is UnSelectableList
-                  ? 1.0
-                  : 0.0,
+              opacity: listState is UnSelectableList ? 1.0 : 0.0,
               duration: Duration(milliseconds: 200),
               child: FloatingActionButton(
                 tooltip: AppLocalizations.of(context).actionAddMemo,

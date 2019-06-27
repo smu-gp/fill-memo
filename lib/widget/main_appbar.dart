@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:sp_client/model/models.dart';
 
 import '../bloc/blocs.dart';
 import '../util/utils.dart';
@@ -136,7 +137,8 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.merge_type),
           onPressed: () {
-            memoBloc.mergeMemo(selectedItems);
+            var selectedMemo = List.castFrom<dynamic, Memo>(selectedItems);
+            memoBloc.mergeMemo(selectedMemo);
             listBloc.dispatch(UnSelectable());
           },
         ),
