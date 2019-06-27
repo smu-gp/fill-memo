@@ -61,7 +61,7 @@ class MemoItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        _formatDate(memo.createdAt),
+                        Util.formatDate(memo.createdAt),
                         style: Theme.of(context)
                             .textTheme
                             .caption
@@ -87,6 +87,8 @@ class MemoItem extends StatelessWidget {
   }
 
   String _clipContent(String content, int limit) {
+    if (content == null) return "";
+
     var lines = content.split("\n");
     if (lines.length < limit)
       return content;
@@ -97,14 +99,5 @@ class MemoItem extends StatelessWidget {
       clipContent += "…";
       return clipContent;
     }
-  }
-
-  String _formatDate(int timestamp) {
-    var timestampDay = DateTime.fromMillisecondsSinceEpoch(timestamp).day;
-    var currentDay = DateTime.now().day;
-    return Util.formatDate(
-      timestamp,
-      (timestampDay == currentDay) ? "a hh:mm" : "MMMMEEEEd",
-    );
   }
 }

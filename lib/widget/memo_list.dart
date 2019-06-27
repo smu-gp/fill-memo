@@ -105,10 +105,7 @@ class MemoList extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MemoScreen(
-                    id: memo.id,
-                    title: memo.title,
-                  ),
+                  builder: (context) => MemoScreen(memo),
                 ),
               );
             }

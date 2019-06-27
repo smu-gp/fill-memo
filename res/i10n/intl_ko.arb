@@ -251,6 +251,16 @@
     "type": "text",
     "placeholders": {}
   },
+  "hintInputTitle": "제목",
+  "@hintInputTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintInputNote": "메모",
+  "@hintInputNote": {
+    "type": "text",
+    "placeholders": {}
+  },
   "folderDefault": "기본",
   "@folderDefault": {
     "type": "text",

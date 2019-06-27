@@ -10,6 +10,7 @@ class Memo extends Equatable {
   static final String columnContent = "content";
   static final String columnType = "type";
   static final String columnCreatedAt = "createdAt";
+  static final String columnUpdatedAt = "updatedAt";
   static final String columnFolderId = "folderId";
 
   // Cloud firestore field constants
@@ -23,6 +24,7 @@ class Memo extends Equatable {
   String content;
   String type;
   int createdAt;
+  int updatedAt;
 
   Memo({
     this.id,
@@ -32,7 +34,9 @@ class Memo extends Equatable {
     @required this.content,
     @required this.type,
     @required this.createdAt,
-  }) : super([id, title, content, type, createdAt, folderId]);
+    this.updatedAt,
+  }) : super(
+            [id, userId, folderId, title, content, type, createdAt, updatedAt]);
 
   Memo.fromMap(Map<String, dynamic> map)
       : super([
@@ -43,6 +47,7 @@ class Memo extends Equatable {
           map[columnContent],
           map[columnType],
           map[columnCreatedAt],
+          map[columnUpdatedAt],
         ]) {
     id = map[columnId];
     userId = map[columnUserId];
@@ -51,6 +56,7 @@ class Memo extends Equatable {
     content = map[columnContent];
     type = map[columnType];
     createdAt = map[columnCreatedAt];
+    updatedAt = map[columnUpdatedAt];
   }
 
   Map<String, dynamic> toMap() {
@@ -62,11 +68,12 @@ class Memo extends Equatable {
     map[columnType] = type;
     map[columnCreatedAt] = createdAt;
     map[columnFolderId] = folderId;
+    map[columnUpdatedAt] = updatedAt;
     return map;
   }
 
   @override
   String toString() {
-    return 'Memo{id: $id, userId: $userId, title: $title, content: $content, type: $type, createdAt: $createdAt, folderId: $folderId}';
+    return 'Memo{id: $id, userId: $userId, folderId: $folderId, title: $title, content: $content, type: $type, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

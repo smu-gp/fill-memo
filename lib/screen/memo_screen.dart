@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/localization.dart';
+import 'package:sp_client/util/utils.dart';
 
 class MemoScreen extends StatefulWidget {
-  final String id;
-  final String title;
-  final Folder folder;
+  final Memo memo;
 
-  MemoScreen({
-    this.id,
-    this.title,
-    this.folder,
+  MemoScreen(
+    this.memo, {
     Key key,
   }) : super(key: key);
 
@@ -25,13 +23,13 @@ class _MemoScreenState extends State<MemoScreen> {
   final _editContentTextController = TextEditingController();
 
   MemoBloc _memoBloc;
-  Memo _currentMemo;
 
   @override
   void initState() {
     super.initState();
     _memoBloc = BlocProvider.of<MemoBloc>(context);
-    _editTitleTextController.text = widget.title;
+    _editTitleTextController.text = widget.memo.title ?? "";
+    _editContentTextController.text = widget.memo.content ?? "";
   }
 
   @override
@@ -42,39 +40,53 @@ class _MemoScreenState extends State<MemoScreen> {
         bottom: PreferredSize(
           child: Container(
             height: kToolbarHeight,
-            padding: const EdgeInsets.only(left: 4.0),
+            padding: const EdgeInsets.only(left: 16.0),
             child: _TitleEditText(controller: _editTitleTextController),
           ),
           preferredSize: Size.fromHeight(kToolbarHeight),
         ),
         elevation: 0.0,
       ),
-      body: StreamBuilder<Memo>(
-        stream: _memoBloc.readMemo(widget.id),
-        builder: (context, snapshot) {
-          _currentMemo = (snapshot.hasData ? snapshot.data : null);
-          if (_currentMemo != null) {
-            _editContentTextController.text = _currentMemo.content;
-          }
-          return Theme(
-            data: Theme.of(context).copyWith(splashColor: Colors.transparent),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: TextField(
-                autofocus: widget.id == null,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  fillColor: Colors.transparent,
-                  hintText: AppLocalizations.of(context).hintInputNote,
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: _ContentEditText(
+              autofocus: widget.memo.id == null,
+              controller: _editContentTextController,
+            ),
+          ),
+          Material(
+            elevation: 4.0,
+            child: Container(
+              height: 48.0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(OMIcons.addBox),
+                      onPressed: () {},
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        Util.formatDate(widget.memo.updatedAt),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.more_vert),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                controller: _editContentTextController,
-                onChanged: (value) {},
               ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -82,19 +94,15 @@ class _MemoScreenState extends State<MemoScreen> {
   void _updateMemo() {
     var titleText = _editTitleTextController.text;
     var contentText = _editContentTextController.text;
-    if (widget.id != null) {
-      _currentMemo.title = titleText.isNotEmpty ? titleText : null;
-      _currentMemo.content = contentText;
-      _memoBloc.updateMemo(_currentMemo);
+
+    var memo = widget.memo;
+    memo.title = titleText.isNotEmpty ? titleText : null;
+    memo.content = contentText.isNotEmpty ? contentText : null;
+    memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
+    if (widget.memo.id != null) {
+      _memoBloc.updateMemo(memo);
     } else {
-      var newMemo = Memo(
-        folderId: widget.folder != null ? widget.folder.id : null,
-        title: titleText.isNotEmpty ? titleText : null,
-        content: contentText.isNotEmpty ? contentText : "",
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        type: "plainText",
-      );
-      _memoBloc.createMemo(newMemo);
+      _memoBloc.createMemo(memo);
     }
   }
 
@@ -111,8 +119,9 @@ class _TitleEditText extends StatelessWidget {
   final TextEditingController controller;
 
   _TitleEditText({
+    Key key,
     this.controller,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -126,12 +135,42 @@ class _TitleEditText extends StatelessWidget {
           fillColor: Colors.transparent,
           hintText: AppLocalizations.of(context).hintInputTitle,
         ),
-        style: Theme.of(context)
-            .textTheme
-            .headline
-            .copyWith(fontWeight: FontWeight.bold),
+        style: Theme.of(context).textTheme.headline,
         maxLines: 1,
         onChanged: (value) {},
+      ),
+    );
+  }
+}
+
+class _ContentEditText extends StatelessWidget {
+  final TextEditingController controller;
+  final bool autofocus;
+
+  _ContentEditText({
+    Key key,
+    this.autofocus = false,
+    this.controller,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(splashColor: Colors.transparent),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: TextField(
+          autofocus: autofocus,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            fillColor: Colors.transparent,
+            hintText: AppLocalizations.of(context).hintInputNote,
+          ),
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          controller: controller,
+          onChanged: (value) {},
+        ),
       ),
     );
   }

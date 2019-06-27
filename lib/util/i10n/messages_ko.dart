@@ -56,6 +56,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "dialogSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내는 중..."),
     "errorEmptyName" : MessageLookupByLibrary.simpleMessage("오류: 폴더 이름은 비워둘 수 없습니다"),
     "folderDefault" : MessageLookupByLibrary.simpleMessage("기본"),
+    "hintInputNote" : MessageLookupByLibrary.simpleMessage("메모"),
+    "hintInputTitle" : MessageLookupByLibrary.simpleMessage("제목"),
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("사진 촬영"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("갤러리에서 선택"),
     "labelAuthFailed" : MessageLookupByLibrary.simpleMessage("인증 실패"),

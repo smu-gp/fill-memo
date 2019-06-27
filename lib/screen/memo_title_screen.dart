@@ -16,7 +16,6 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
 
   FolderBloc _folderBloc;
 
-  bool _backgroundTextVisible = false;
   Folder _currentFolder;
 
   @override
@@ -40,7 +39,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
         elevation: 0.0,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +47,6 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
             SizedBox(),
             _MemoTitleEditText(
               controller: _editTextController,
-              backgroundTextVisible: _backgroundTextVisible,
               onSubmitted: (text) => _navigateMemoScreen(),
             ),
             Row(
@@ -56,11 +54,11 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0, bottom: 16.0),
+                  padding: const EdgeInsets.only(bottom: 16.0),
                   child: _FolderChip(_currentFolder),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
+                  padding: const EdgeInsets.only(bottom: 16.0, right: 0.0),
                   child: FloatingActionButton(
                     child: Icon(Icons.arrow_forward),
                     onPressed: _navigateMemoScreen,
@@ -99,26 +97,28 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
   }
 
   void _navigateMemoScreen() async {
-    setState(() {
-      _backgroundTextVisible = true;
-    });
-
     var title = _editTextController.text;
     if (_currentFolder != null) {
-      if (title.length > _currentFolder.name.length + 1) {
+      if (title.length > _currentFolder.name.length) {
         title = title.substring(_currentFolder.name.length + 1);
       } else {
-        title = null;
+        title = "";
       }
     }
+
+    var newMemo = Memo(
+      folderId: _currentFolder?.id ?? null,
+      title: title.isNotEmpty ? title : null,
+      content: null,
+      type: "plainText",
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
 
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => MemoScreen(
-          title: title,
-          folder: _currentFolder,
-        ),
+        builder: (context) => MemoScreen(newMemo),
       ),
     );
   }
@@ -127,13 +127,11 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
 class _MemoTitleEditText extends StatefulWidget {
   final TextEditingController controller;
   final ValueChanged<String> onSubmitted;
-  final bool backgroundTextVisible;
 
   _MemoTitleEditText({
     Key key,
     @required this.controller,
     this.onSubmitted,
-    this.backgroundTextVisible,
   }) : super(key: key);
 
   @override
@@ -141,53 +139,19 @@ class _MemoTitleEditText extends StatefulWidget {
 }
 
 class _MemoTitleEditTextState extends State<_MemoTitleEditText> {
-  String _currentText = "";
-
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.centerLeft,
-      children: <Widget>[
-        Visibility(
-          visible: !widget.backgroundTextVisible,
-          child: TextField(
-            textInputAction: TextInputAction.go,
-            controller: widget.controller,
-            onChanged: (text) {
-              setState(() {
-                _currentText = text;
-              });
-            },
-            onSubmitted: widget.onSubmitted,
-            autofocus: true,
-            style: Theme.of(context)
-                .textTheme
-                .headline
-                .copyWith(fontWeight: FontWeight.bold),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              fillColor: Colors.transparent,
-              hintText: AppLocalizations.of(context).hintInputTitle,
-            ),
-          ),
-        ),
-        Visibility(
-          visible: widget.backgroundTextVisible,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Hero(
-              tag: "memoTitle",
-              child: Material(
-                color: Colors.transparent,
-                child: Text(
-                  _currentText,
-                  style: Theme.of(context).textTheme.subhead,
-                ),
-              ),
-            ),
-          ),
-        )
-      ],
+    return TextField(
+      textInputAction: TextInputAction.go,
+      controller: widget.controller,
+      onSubmitted: widget.onSubmitted,
+      autofocus: true,
+      style: Theme.of(context).textTheme.headline,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        fillColor: Colors.transparent,
+        hintText: AppLocalizations.of(context).hintInputTitle,
+      ),
     );
   }
 }
