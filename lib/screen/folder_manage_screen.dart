@@ -24,11 +24,17 @@ class _FolderManageScreenState extends State<FolderManageScreen> {
           Navigator.pop(context);
         }
       },
-      child: BlocProvider<ListBloc>(
-        builder: (context) => _listBloc,
-        child: Scaffold(
-          appBar: _FolderManageAppBar(),
-          body: _FolderList(),
+      child: WillPopScope(
+        onWillPop: () async {
+          _listBloc.dispatch(UnSelectable());
+          return (_listBloc.currentState is UnSelectableList);
+        },
+        child: BlocProvider<ListBloc>(
+          builder: (context) => _listBloc,
+          child: Scaffold(
+            appBar: _FolderManageAppBar(),
+            body: _FolderList(),
+          ),
         ),
       ),
     );
