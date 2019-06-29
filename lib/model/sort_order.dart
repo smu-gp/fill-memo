@@ -1,1 +1,3 @@
-enum SortOrder { createdAtAsc, createdAtDes }
+enum SortOrderBy { createdAt, updatedAt }
+
+enum SortOrderType { Asc, Des }

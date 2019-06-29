@@ -58,8 +58,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleNote,
-        color: Theme.of(context).accentColor,
-        bold: true,
       ),
       _SwitchPreference(
         title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
@@ -80,8 +78,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleSecurity,
-        color: Theme.of(context).accentColor,
-        bold: true,
       ),
       _Preference(
         title: AppLocalizations.of(context).labelChangePinCode,
@@ -99,8 +95,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleDebug,
-        color: Theme.of(context).accentColor,
-        bold: true,
       ),
       _EditTextPreference(
         title: AppLocalizations.of(context).labelServiceHost,
@@ -115,8 +109,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleInfo,
-        color: Theme.of(context).accentColor,
-        bold: true,
       ),
       FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),

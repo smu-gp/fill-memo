@@ -8,14 +8,17 @@ import 'memo_sort_state.dart';
 
 class MemoSortBloc extends Bloc<MemoSortEvent, MemoSortState> {
   @override
-  MemoSortState get initialState => MemoSortState(SortOrder.createdAtDes);
+  MemoSortState get initialState => MemoSortState(
+        SortOrderBy.updatedAt,
+        SortOrderType.Des,
+      );
 
   @override
   Stream<MemoSortState> mapEventToState(
     MemoSortEvent event,
   ) async* {
     if (event is ChangeSort) {
-      yield MemoSortState(event.order);
+      yield MemoSortState(event.orderBy, event.sortType);
     }
   }
 }

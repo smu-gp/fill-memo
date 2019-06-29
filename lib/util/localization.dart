@@ -204,6 +204,31 @@ class AppLocalizations {
         name: 'dialogConnectionWithDevice',
       );
 
+  String get orderByCreated => Intl.message(
+        'Created date',
+        name: 'orderByCreated',
+      );
+
+  String get orderByUpdated => Intl.message(
+        'Updated date',
+        name: 'orderByUpdated',
+      );
+
+  String get orderType => Intl.message(
+        'Order type',
+        name: 'orderType',
+      );
+
+  String get orderTypeAsc => Intl.message(
+        'Ascending',
+        name: 'orderTypeAsc',
+      );
+
+  String get orderTypeDes => Intl.message(
+        'Descending',
+        name: 'orderTypeDes',
+      );
+
   String get orderCreatedAsc => Intl.message(
         'Created date ascending',
         name: 'orderCreatedAsc',

@@ -11,7 +11,7 @@ class SubHeader extends StatelessWidget {
     Key key,
     this.color,
     this.padding = 16.0,
-    this.bold = false,
+    this.bold = true,
   }) : super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class SubHeader extends StatelessWidget {
           child: Text(
             content,
             style: Theme.of(context).textTheme.subhead.copyWith(
-                  color: color ?? null,
+                  color: color ?? Theme.of(context).accentColor,
                   fontWeight: bold ? FontWeight.bold : null,
                 ),
           ),

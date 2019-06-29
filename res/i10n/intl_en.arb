@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-06-29T10:21:45.525109",
+  "@@last_modified": "2019-06-29T20:14:03.034011",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -183,6 +183,31 @@
   },
   "dialogConnectionWithDevice": "Connection with device?",
   "@dialogConnectionWithDevice": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderByCreated": "Created date",
+  "@orderByCreated": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderByUpdated": "Updated date",
+  "@orderByUpdated": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderType": "Order type",
+  "@orderType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderTypeAsc": "Ascending",
+  "@orderTypeAsc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderTypeDes": "Descending",
+  "@orderTypeDes": {
     "type": "text",
     "placeholders": {}
   },

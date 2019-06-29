@@ -186,6 +186,31 @@
     "type": "text",
     "placeholders": {}
   },
+  "orderByCreated": "만든 날짜 순",
+  "@orderByCreated": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderByUpdated": "수정 날짜 순",
+  "@orderByUpdated": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderType": "순서",
+  "@orderType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderTypeAsc": "오름차순",
+  "@orderTypeAsc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderTypeDes": "내림차순",
+  "@orderTypeDes": {
+    "type": "text",
+    "placeholders": {}
+  },
   "orderCreatedAsc": "추가한 날짜 오름차순",
   "@orderCreatedAsc": {
     "type": "text",

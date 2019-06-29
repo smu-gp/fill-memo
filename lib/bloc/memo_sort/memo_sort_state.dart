@@ -8,12 +8,13 @@ abstract class _MemoSortState extends Equatable {
 }
 
 class MemoSortState extends _MemoSortState {
-  final SortOrder order;
+  final SortOrderBy orderBy;
+  final SortOrderType sortType;
 
-  MemoSortState(this.order) : super([order]);
+  MemoSortState(this.orderBy, this.sortType) : super([orderBy, sortType]);
 
   @override
   String toString() {
-    return 'MemoSortState{order: $order}';
+    return 'MemoSortState{orderBy: $orderBy, sortType: $sortType}';
   }
 }

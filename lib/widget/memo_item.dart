@@ -5,13 +5,15 @@ import 'package:sp_client/util/utils.dart';
 
 class MemoItem extends StatelessWidget {
   final Memo memo;
+  final int date;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
   final bool selected;
 
-  MemoItem({
+  MemoItem(
+    this.memo, {
     Key key,
-    @required this.memo,
+    this.date,
     this.onTap,
     this.onLongPress,
     this.selected,
@@ -56,27 +58,13 @@ class MemoItem extends StatelessWidget {
                   if (memo.title != null) SizedBox(height: 4.0),
                   Text(_clipContent(memo.content, 7)),
                   SizedBox(height: 8.0),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        Util.formatDate(memo.createdAt),
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            .copyWith(fontSize: 10.0),
-                      ),
-                      Container(
-                        width: 8.0,
-                        height: 8.0,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          shape: BoxShape.circle,
-                        ),
-                      )
-                    ],
-                  )
+                  Text(
+                    Util.formatDate(date ?? memo.createdAt),
+                    style: Theme.of(context)
+                        .textTheme
+                        .caption
+                        .copyWith(fontSize: 10.0),
+                  ),
                 ],
               ),
             ),

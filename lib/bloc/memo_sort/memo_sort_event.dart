@@ -8,12 +8,13 @@ abstract class MemoSortEvent extends Equatable {
 }
 
 class ChangeSort extends MemoSortEvent {
-  final SortOrder order;
+  final SortOrderBy orderBy;
+  final SortOrderType sortType;
 
-  ChangeSort(this.order) : super([order]);
+  ChangeSort({this.orderBy, this.sortType}) : super([orderBy, sortType]);
 
   @override
   String toString() {
-    return 'ChangeSort{order: $order}';
+    return 'ChangeSort{orderBy: $orderBy, sortType: $sortType}';
   }
 }

@@ -310,7 +310,7 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
       ),
       if (folders.isNotEmpty)
         ListTile(
-          leading: Icon(OMIcons.edit),
+          leading: Icon(OMIcons.settings),
           title: Text(AppLocalizations.of(context).actionManageFolder),
           onTap: () {
             Navigator.push(
