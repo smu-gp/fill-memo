@@ -251,6 +251,66 @@
     "type": "text",
     "placeholders": {}
   },
+  "subtitleNote": "메모",
+  "@subtitleNote": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWriteNewNoteOnStartup": "앱 시작 시 새 메모 작성",
+  "@labelWriteNewNoteOnStartup": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelQuickFolderClassification": "빠른 폴더 분류",
+  "@labelQuickFolderClassification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleQuickFolderClassification": "메모 제목을 작성할때 폴더를 분류합니다",
+  "@subtitleQuickFolderClassification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleSecurity": "보안",
+  "@subtitleSecurity": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelChangePinCode": "PIN 번호 변경",
+  "@labelChangePinCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUseFingerprint": "지문 사용",
+  "@labelUseFingerprint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleDebug": "디버그",
+  "@subtitleDebug": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelServiceHost": "서비스 호스트",
+  "@labelServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validationServiceHost": "오류: 서비스 호스트는 비워둘 수 없습니다",
+  "@validationServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleInfo": "정보",
+  "@subtitleInfo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVersion": "버전",
+  "@labelVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
   "hintInputTitle": "제목",
   "@hintInputTitle": {
     "type": "text",

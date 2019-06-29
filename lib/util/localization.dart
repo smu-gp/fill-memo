@@ -269,6 +269,67 @@ class AppLocalizations {
         name: 'labelResponseTimeout',
       );
 
+  /// SettingsScreen Strings
+  String get subtitleNote => Intl.message(
+        'Note',
+        name: 'subtitleNote',
+      );
+
+  String get labelWriteNewNoteOnStartup => Intl.message(
+        'Write new note on startup',
+        name: 'labelWriteNewNoteOnStartup',
+      );
+
+  String get labelQuickFolderClassification => Intl.message(
+        'Quick folder classification',
+        name: 'labelQuickFolderClassification',
+      );
+
+  String get subtitleQuickFolderClassification => Intl.message(
+        'Folder classification on write new note title',
+        name: 'subtitleQuickFolderClassification',
+      );
+
+  String get subtitleSecurity => Intl.message(
+        'Security',
+        name: 'subtitleSecurity',
+      );
+
+  String get labelChangePinCode => Intl.message(
+        'Change pin code',
+        name: 'labelChangePinCode',
+      );
+
+  String get labelUseFingerprint => Intl.message(
+        'Use fingerprint',
+        name: 'labelUseFingerprint',
+      );
+
+  String get subtitleDebug => Intl.message(
+        'Debug',
+        name: 'subtitleDebug',
+      );
+
+  String get labelServiceHost => Intl.message(
+        'Service host',
+        name: 'labelServiceHost',
+      );
+
+  String get validationServiceHost => Intl.message(
+        'Error: service host is not empty',
+        name: 'validationServiceHost',
+      );
+
+  String get subtitleInfo => Intl.message(
+        'Info',
+        name: 'subtitleInfo',
+      );
+
+  String get labelVersion => Intl.message(
+        'Version',
+        name: 'labelVersion',
+      );
+
   String get hintInputTitle => Intl.message(
         'Title',
         name: 'hintInputTitle',

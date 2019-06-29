@@ -50,8 +50,71 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ..._buildSecurityItems(preferences),
       if (!bool.fromEnvironment('dart.vm.product'))
         ..._buildDebugItems(preferences),
+      ..._buildInfoItems(preferences),
+    ];
+  }
+
+  List<Widget> _buildNoteItems(Preferences preferences) {
+    return <Widget>[
       SubHeader(
-        'Info',
+        AppLocalizations.of(context).subtitleNote,
+        color: Theme.of(context).accentColor,
+        bold: true,
+      ),
+      _SwitchPreference(
+        title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
+        value: false,
+        onChanged: (bool value) {},
+      ),
+      _SwitchPreference(
+        title: AppLocalizations.of(context).labelQuickFolderClassification,
+        subtitle:
+            AppLocalizations.of(context).subtitleQuickFolderClassification,
+        value: true,
+        onChanged: (bool value) {},
+      ),
+    ];
+  }
+
+  List<Widget> _buildSecurityItems(Preferences preferences) {
+    return <Widget>[
+      SubHeader(
+        AppLocalizations.of(context).subtitleSecurity,
+        color: Theme.of(context).accentColor,
+        bold: true,
+      ),
+      _Preference(
+        title: AppLocalizations.of(context).labelChangePinCode,
+        onTap: () {},
+      ),
+      _SwitchPreference(
+        title: AppLocalizations.of(context).labelUseFingerprint,
+        value: false,
+        onChanged: (bool value) {},
+      ),
+    ];
+  }
+
+  List<Widget> _buildDebugItems(Preferences preferences) {
+    return <Widget>[
+      SubHeader(
+        AppLocalizations.of(context).subtitleDebug,
+        color: Theme.of(context).accentColor,
+        bold: true,
+      ),
+      _EditTextPreference(
+        title: AppLocalizations.of(context).labelServiceHost,
+        preference: preferences.get(AppPreferences.keyServiceHost),
+        validation: (value) => value.isNotEmpty,
+        validationMessage: AppLocalizations.of(context).validationServiceHost,
+      ),
+    ];
+  }
+
+  List<Widget> _buildInfoItems(Preferences preferences) {
+    return <Widget>[
+      SubHeader(
+        AppLocalizations.of(context).subtitleInfo,
         color: Theme.of(context).accentColor,
         bold: true,
       ),
@@ -64,72 +127,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 "ver ${snapshot.data.version} (build. ${snapshot.data.buildNumber})";
           }
           return _Preference(
-            title: "Version",
+            title: AppLocalizations.of(context).labelVersion,
             subtitle: subtitle,
           );
         },
-      ),
-    ];
-  }
-
-  List<Widget> _buildSecurityItems(Preferences preferences) {
-    return <Widget>[
-      SubHeader(
-        'Security',
-        color: Theme.of(context).accentColor,
-        bold: true,
-      ),
-      _Preference(
-        title: "Change pin code",
-        onTap: () {},
-      ),
-      _SwitchPreference(
-        title: "Use fingerprint scanner",
-        value: false,
-        onChanged: (bool value) {},
-      ),
-      _SwitchPreference(
-        title: "Use iris scanner",
-        value: false,
-        onChanged: (bool value) {},
-      ),
-    ];
-  }
-
-  List<Widget> _buildNoteItems(Preferences preferences) {
-    return <Widget>[
-      SubHeader(
-        'Note',
-        color: Theme.of(context).accentColor,
-        bold: true,
-      ),
-      _SwitchPreference(
-        title: "Write new note when app open",
-        value: false,
-        onChanged: (bool value) {},
-      ),
-      _SwitchPreference(
-        title: "Quick folder classification",
-        subtitle: "Folder classification on write new note title",
-        value: true,
-        onChanged: (bool value) {},
-      ),
-    ];
-  }
-
-  List<Widget> _buildDebugItems(Preferences preferences) {
-    return <Widget>[
-      SubHeader(
-        'Debug',
-        color: Theme.of(context).accentColor,
-        bold: true,
-      ),
-      _EditTextPreference(
-        title: 'Service host',
-        preference: preferences.get(AppPreferences.keyServiceHost),
-        validation: (value) => value.isNotEmpty,
-        validationMessage: 'Error: service host is not empty',
-      ),
+      )
     ];
   }
 }

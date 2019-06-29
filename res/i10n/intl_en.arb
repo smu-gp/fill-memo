@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-06-26T10:39:37.904811",
+  "@@last_modified": "2019-06-29T10:21:45.525109",
   "appName": "sp_client",
   "@appName": {
     "type": "text",
@@ -248,6 +248,66 @@
   },
   "labelResponseTimeout": "Host Response timeout",
   "@labelResponseTimeout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleNote": "Note",
+  "@subtitleNote": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWriteNewNoteOnStartup": "Write new note on startup",
+  "@labelWriteNewNoteOnStartup": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelQuickFolderClassification": "Quick folder classification",
+  "@labelQuickFolderClassification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleQuickFolderClassification": "Folder classification on write new note title",
+  "@subtitleQuickFolderClassification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleSecurity": "Security",
+  "@subtitleSecurity": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelChangePinCode": "Change pin code",
+  "@labelChangePinCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUseFingerprint": "Use fingerprint",
+  "@labelUseFingerprint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleDebug": "Debug",
+  "@subtitleDebug": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelServiceHost": "Service host",
+  "@labelServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "validationServiceHost": "Error: service host is not empty",
+  "@validationServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleInfo": "Info",
+  "@subtitleInfo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVersion": "Version",
+  "@labelVersion": {
     "type": "text",
     "placeholders": {}
   },
