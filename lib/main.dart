@@ -14,11 +14,11 @@ void main() async {
     // ignore: deprecated_member_use
     await Sqflite.devSetDebugModeOn(true);
     BlocSupervisor.delegate = SimpleBlocDelegate();
+  } else {
+    FlutterError.onError = (FlutterErrorDetails details) {
+      Crashlytics.instance.onError(details);
+    };
   }
-
-  FlutterError.onError = (FlutterErrorDetails details) {
-    Crashlytics.instance.onError(details);
-  };
 
   final sharedPreferences = await SharedPreferences.getInstance();
   runApp(App(
