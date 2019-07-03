@@ -1,4 +1,4 @@
-import '../model/models.dart';
+import 'package:sp_client/model/models.dart';
 
 abstract class MemoRepository {
   Future<Memo> create(Memo newMemo);

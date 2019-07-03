@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-
-import '../bloc/blocs.dart';
-import '../util/utils.dart';
-import '../widget/sort_dialog.dart';
+import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/sort_dialog.dart';
 
 class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   final PreferredSizeWidget bottom;

@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-
-import '../../model/models.dart';
+import 'package:sp_client/model/models.dart';
 
 @immutable
 abstract class MemoState extends Equatable {

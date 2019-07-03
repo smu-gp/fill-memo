@@ -4,13 +4,13 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/folder_manage_screen.dart';
 import 'package:sp_client/screen/settings_screen.dart';
+import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/loading_progress.dart';
 
-import '../bloc/blocs.dart';
-import '../util/utils.dart';
 import 'edit_text_dialog.dart';
 
 class MainDrawer extends StatelessWidget {

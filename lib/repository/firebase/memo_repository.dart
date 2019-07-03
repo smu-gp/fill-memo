@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sp_client/model/models.dart';
-
-import '../repository.dart';
+import 'package:sp_client/repository/repository.dart';
 
 class FirebaseMemoRepository extends MemoRepository {
   final String userId;

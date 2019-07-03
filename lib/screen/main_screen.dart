@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/widget/main_appbar.dart';
+import 'package:sp_client/widget/main_drawer.dart';
 import 'package:sp_client/widget/main_fab.dart';
-
-import '../bloc/blocs.dart';
-import '../widget/main_appbar.dart';
-import '../widget/main_drawer.dart';
-import '../widget/memo_list.dart';
+import 'package:sp_client/widget/memo_list.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen();
