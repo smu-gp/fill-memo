@@ -28,6 +28,8 @@ dependencies:
   # Firebase
   firebase_core: ^0.4.0+3
   firebase_analytics: ^3.0.2
+  firebase_performance: ^0.3.0+2
+  firebase_crashlytics: ^0.0.4+8
   cloud_firestore: ^0.12.5+2
   # Plugins
   share: ^0.6.1+1
