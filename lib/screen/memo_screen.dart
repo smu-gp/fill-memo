@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/rich_text_editor/rich_text_editor.dart';
 
 class MemoScreen extends StatefulWidget {
   final Memo memo;
@@ -19,8 +19,9 @@ class MemoScreen extends StatefulWidget {
 }
 
 class _MemoScreenState extends State<MemoScreen> {
-  final _editTitleTextController = TextEditingController();
-  final _editContentTextController = TextEditingController();
+  var _editTitleTextController = TextEditingController();
+  var _editContentTextController = TextEditingController();
+  var _editContentSpannableController = SpannableTextController();
 
   MemoBloc _memoBloc;
 
@@ -28,8 +29,19 @@ class _MemoScreenState extends State<MemoScreen> {
   void initState() {
     super.initState();
     _memoBloc = BlocProvider.of<MemoBloc>(context);
-    _editTitleTextController.text = widget.memo.title ?? "";
-    _editContentTextController.text = widget.memo.content ?? "";
+    _editTitleTextController =
+        TextEditingController(text: widget.memo.title ?? "");
+    _editContentTextController =
+        TextEditingController(text: widget.memo.content ?? "");
+    if (widget.memo.contentStyle != null) {
+      _editContentSpannableController = SpannableTextController.fromJson(
+        sourceText: widget.memo.content ?? '',
+        jsonText: widget.memo.contentStyle,
+      );
+    } else {
+      _editContentSpannableController =
+          SpannableTextController(sourceText: widget.memo.content ?? "");
+    }
   }
 
   @override
@@ -53,6 +65,7 @@ class _MemoScreenState extends State<MemoScreen> {
             child: _ContentEditText(
               autofocus: widget.memo.id == null,
               controller: _editContentTextController,
+              spannableController: _editContentSpannableController,
             ),
           ),
           Material(
@@ -61,27 +74,8 @@ class _MemoScreenState extends State<MemoScreen> {
               height: 48.0,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(OMIcons.addBox),
-                      onPressed: () {},
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Text(
-                        Util.formatDate(widget.memo.updatedAt),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.more_vert),
-                      onPressed: () {},
-                    ),
-                  ],
+                child: StyleToolbar(
+                  controller: _editContentSpannableController,
                 ),
               ),
             ),
@@ -94,10 +88,12 @@ class _MemoScreenState extends State<MemoScreen> {
   void _updateMemo() {
     var titleText = _editTitleTextController.text;
     var contentText = _editContentTextController.text;
+    var contentStyleText = _editContentSpannableController.getJson();
 
     var memo = widget.memo;
     memo.title = titleText.isNotEmpty ? titleText : null;
     memo.content = contentText.isNotEmpty ? contentText : null;
+    memo.contentStyle = contentStyleText.isNotEmpty ? contentStyleText : null;
     memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
     if (widget.memo.id != null) {
       _memoBloc.updateMemo(memo);
@@ -111,6 +107,7 @@ class _MemoScreenState extends State<MemoScreen> {
     _updateMemo();
     _editTitleTextController.dispose();
     _editContentTextController.dispose();
+    _editContentSpannableController.dispose();
     super.dispose();
   }
 }
@@ -145,12 +142,14 @@ class _TitleEditText extends StatelessWidget {
 
 class _ContentEditText extends StatelessWidget {
   final TextEditingController controller;
+  final SpannableTextController spannableController;
   final bool autofocus;
 
   _ContentEditText({
     Key key,
     this.autofocus = false,
-    this.controller,
+    @required this.controller,
+    @required this.spannableController,
   }) : super(key: key);
 
   @override
@@ -159,17 +158,15 @@ class _ContentEditText extends StatelessWidget {
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: TextField(
+        child: RichTextEditor(
           autofocus: autofocus,
+          controller: controller,
+          spannableController: spannableController,
           decoration: InputDecoration(
             border: InputBorder.none,
             fillColor: Colors.transparent,
             hintText: AppLocalizations.of(context).hintInputNote,
           ),
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          controller: controller,
-          onChanged: (value) {},
         ),
       ),
     );

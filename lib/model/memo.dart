@@ -8,6 +8,7 @@ class Memo extends Equatable {
   static final String columnId = "id";
   static final String columnTitle = "title";
   static final String columnContent = "content";
+  static final String columnContentStyle = "contentStyle";
   static final String columnType = "type";
   static final String columnCreatedAt = "createdAt";
   static final String columnUpdatedAt = "updatedAt";
@@ -22,6 +23,7 @@ class Memo extends Equatable {
   String folderId;
   String title;
   String content;
+  String contentStyle;
   String type;
   int createdAt;
   int updatedAt;
@@ -32,11 +34,21 @@ class Memo extends Equatable {
     this.folderId = kDefaultFolderId,
     this.title,
     @required this.content,
+    this.contentStyle,
     @required this.type,
     @required this.createdAt,
     this.updatedAt,
-  }) : super(
-            [id, userId, folderId, title, content, type, createdAt, updatedAt]);
+  }) : super([
+          id,
+          userId,
+          folderId,
+          title,
+          content,
+          contentStyle,
+          type,
+          createdAt,
+          updatedAt
+        ]);
 
   Memo.fromMap(Map<String, dynamic> map)
       : super([
@@ -45,6 +57,7 @@ class Memo extends Equatable {
           map[columnFolderId],
           map[columnTitle],
           map[columnContent],
+          map[columnContentStyle],
           map[columnType],
           map[columnCreatedAt],
           map[columnUpdatedAt],
@@ -54,6 +67,7 @@ class Memo extends Equatable {
     folderId = map[columnFolderId];
     title = map[columnTitle];
     content = map[columnContent];
+    contentStyle = map[columnContentStyle];
     type = map[columnType];
     createdAt = map[columnCreatedAt];
     updatedAt = map[columnUpdatedAt];
@@ -65,6 +79,7 @@ class Memo extends Equatable {
     map[columnUserId] = userId;
     map[columnTitle] = title;
     map[columnContent] = content;
+    map[columnContentStyle] = contentStyle;
     map[columnType] = type;
     map[columnCreatedAt] = createdAt;
     map[columnFolderId] = folderId;
@@ -74,6 +89,6 @@ class Memo extends Equatable {
 
   @override
   String toString() {
-    return 'Memo{id: $id, userId: $userId, folderId: $folderId, title: $title, content: $content, type: $type, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Memo{id: $id, userId: $userId, folderId: $folderId, title: $title, content: $content, contentStyle: $contentStyle, type: $type, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }
