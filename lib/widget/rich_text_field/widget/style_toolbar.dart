@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sp_client/widget/rich_text_editor/service/spannable_text.dart';
-import 'package:sp_client/widget/rich_text_editor/util/spannable_style.dart';
+import 'package:sp_client/widget/rich_text_field/service/spannable_text.dart';
+import 'package:sp_client/widget/rich_text_field/util/spannable_style.dart';
 
 class StyleToolbar extends StatefulWidget {
   final SpannableTextController controller;

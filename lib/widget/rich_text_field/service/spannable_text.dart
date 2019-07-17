@@ -1,7 +1,7 @@
 import 'package:diff_match_patch/DiffMatchPatch.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sp_client/widget/rich_text_editor/util/spannable_list.dart';
-import 'package:sp_client/widget/rich_text_editor/util/spannable_style.dart';
+import 'package:sp_client/widget/rich_text_field/util/spannable_list.dart';
+import 'package:sp_client/widget/rich_text_field/util/spannable_style.dart';
 
 @immutable
 class SpannableTextValue {

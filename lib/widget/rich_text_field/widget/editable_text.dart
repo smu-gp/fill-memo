@@ -13,7 +13,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sp_client/widget/rich_text_editor/service/spannable_text.dart';
+import 'package:sp_client/widget/rich_text_field/service/spannable_text.dart';
 
 export 'package:flutter/rendering.dart' show SelectionChangedCause;
 export 'package:flutter/services.dart'

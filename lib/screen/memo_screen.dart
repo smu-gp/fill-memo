@@ -4,7 +4,7 @@ import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/rich_text_editor/rich_text_editor.dart';
+import 'package:sp_client/widget/rich_text_field/rich_text_field.dart';
 
 class MemoScreen extends StatefulWidget {
   final Memo memo;
@@ -158,7 +158,7 @@ class _ContentEditText extends StatelessWidget {
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: RichTextEditor(
+        child: RichTextField(
           autofocus: autofocus,
           controller: controller,
           spannableController: spannableController,
