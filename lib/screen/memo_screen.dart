@@ -162,6 +162,8 @@ class _ContentEditText extends StatelessWidget {
           autofocus: autofocus,
           controller: controller,
           spannableController: spannableController,
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
           decoration: InputDecoration(
             border: InputBorder.none,
             fillColor: Colors.transparent,

@@ -56,7 +56,11 @@ class MemoItem extends StatelessWidget {
                       ),
                     ),
                   if (memo.title != null) SizedBox(height: 4.0),
-                  Text(_clipContent(memo.content, 7)),
+                  Text(
+                    memo.content,
+                    maxLines: 7,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   SizedBox(height: 8.0),
                   Text(
                     Util.formatDate(date ?? memo.createdAt),
@@ -72,20 +76,5 @@ class MemoItem extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _clipContent(String content, int limit) {
-    if (content == null) return "";
-
-    var lines = content.split("\n");
-    if (lines.length < limit)
-      return content;
-    else {
-      var clipLines = lines.sublist(0, limit - 1);
-      var clipContent = "";
-      clipLines.forEach((line) => clipContent += "$line\n");
-      clipContent += "…";
-      return clipContent;
-    }
   }
 }
