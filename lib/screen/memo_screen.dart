@@ -158,16 +158,18 @@ class _ContentEditText extends StatelessWidget {
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: RichTextField(
-          autofocus: autofocus,
-          controller: controller,
-          spannableController: spannableController,
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            fillColor: Colors.transparent,
-            hintText: AppLocalizations.of(context).hintInputNote,
+        child: Scrollbar(
+          child: RichTextField(
+            autofocus: autofocus,
+            controller: controller,
+            spannableController: spannableController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              fillColor: Colors.transparent,
+              hintText: AppLocalizations.of(context).hintInputNote,
+            ),
           ),
         ),
       ),
