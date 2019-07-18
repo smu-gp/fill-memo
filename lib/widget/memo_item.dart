@@ -47,7 +47,7 @@ class MemoItem extends StatelessWidget {
                       child: Material(
                         color: Colors.transparent,
                         child: Text(
-                          memo.title,
+                          memo.title ?? "",
                           style: Theme.of(context)
                               .textTheme
                               .body1
@@ -57,7 +57,7 @@ class MemoItem extends StatelessWidget {
                     ),
                   if (memo.title != null) SizedBox(height: 4.0),
                   Text(
-                    memo.content,
+                    memo.content ?? "",
                     maxLines: 7,
                     overflow: TextOverflow.ellipsis,
                   ),

@@ -91,14 +91,32 @@ class _MemoScreenState extends State<MemoScreen> {
     var contentStyleText = _editContentSpannableController.getJson();
 
     var memo = widget.memo;
+    var isChanged = memo.title != titleText ||
+        memo.content != contentText ||
+        memo.contentStyle != contentStyleText;
+
     memo.title = titleText.isNotEmpty ? titleText : null;
     memo.content = contentText.isNotEmpty ? contentText : null;
     memo.contentStyle = contentStyleText.isNotEmpty ? contentStyleText : null;
-    memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
+
+    if (isChanged) {
+      memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
+    }
+
+    var isValid = memo.title != null || memo.content != null;
+
     if (widget.memo.id != null) {
-      _memoBloc.updateMemo(memo);
+      if (isValid) {
+        if (isChanged) {
+          _memoBloc.updateMemo(memo);
+        }
+      } else {
+        _memoBloc.deleteMemo(widget.memo.id);
+      }
     } else {
-      _memoBloc.createMemo(memo);
+      if (isValid) {
+        _memoBloc.createMemo(memo);
+      }
     }
   }
 
