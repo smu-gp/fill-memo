@@ -5,6 +5,7 @@ import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
+import 'package:sp_client/widget/list_item.dart';
 import 'package:sp_client/widget/sub_header.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -59,12 +60,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       SubHeader(
         AppLocalizations.of(context).subtitleNote,
       ),
-      _SwitchPreference(
+      SwitchListItem(
         title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
         value: false,
         onChanged: (bool value) {},
       ),
-      _SwitchPreference(
+      SwitchListItem(
         title: AppLocalizations.of(context).labelQuickFolderClassification,
         subtitle:
             AppLocalizations.of(context).subtitleQuickFolderClassification,
@@ -79,11 +80,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       SubHeader(
         AppLocalizations.of(context).subtitleSecurity,
       ),
-      _Preference(
+      ListItem(
         title: AppLocalizations.of(context).labelChangePinCode,
         onTap: () {},
       ),
-      _SwitchPreference(
+      SwitchListItem(
         title: AppLocalizations.of(context).labelUseFingerprint,
         value: false,
         onChanged: (bool value) {},
@@ -118,120 +119,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle =
                 "ver ${snapshot.data.version} (build. ${snapshot.data.buildNumber})";
           }
-          return _Preference(
+          return ListItem(
             title: AppLocalizations.of(context).labelVersion,
             subtitle: subtitle,
           );
         },
       )
     ];
-  }
-}
-
-class _Preference extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Widget leading;
-  final Widget trailing;
-  final VoidCallback onTap;
-  final bool enabled;
-
-  const _Preference({
-    Key key,
-    @required this.title,
-    this.leading,
-    this.trailing,
-    this.subtitle,
-    this.onTap,
-    this.enabled = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    bool twoLine = subtitle != null;
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        height: twoLine ? 64.0 : 48.0,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          children: <Widget>[
-            if (leading != null) leading,
-            if (leading != null) SizedBox(width: 32.0),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.subhead.copyWith(
-                          fontSize: 16.0,
-                        ),
-                  ),
-                  if (twoLine)
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: 14.0,
-                          ),
-                    ),
-                ],
-              ),
-            ),
-            if (trailing != null) trailing,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SwitchPreference extends StatefulWidget {
-  final String title;
-  final String subtitle;
-  final Widget leading;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  const _SwitchPreference({
-    Key key,
-    @required this.title,
-    this.subtitle,
-    this.leading,
-    @required this.value,
-    @required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  _SwitchPreferenceState createState() => _SwitchPreferenceState();
-}
-
-class _SwitchPreferenceState extends State<_SwitchPreference> {
-  bool _value;
-
-  @override
-  void initState() {
-    super.initState();
-    _value = widget.value;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _Preference(
-      title: widget.title,
-      subtitle: widget.subtitle,
-      leading: widget.leading,
-      onTap: () {
-        setState(() {
-          _value = !_value;
-        });
-      },
-      trailing: Switch(
-        value: _value,
-        onChanged: widget.onChanged,
-      ),
-    );
   }
 }
 
@@ -254,7 +148,7 @@ class _EditTextPreference extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var bloc = BlocProvider.of<PreferenceBloc>(context);
-    return _Preference(
+    return ListItem(
       title: title,
       subtitle: preference.value,
       enabled: enabled,
