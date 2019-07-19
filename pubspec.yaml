@@ -29,6 +29,7 @@ dependencies:
     path: packages/diff_match_patch
   # Firebase
   firebase_core: ^0.4.0+3
+  firebase_storage: ^3.0.3
   firebase_analytics: ^3.0.2
   firebase_performance: ^0.3.0+2
   firebase_crashlytics: ^0.0.4+8
@@ -36,7 +37,7 @@ dependencies:
   # Plugins
   share: ^0.6.1+1
   sqflite: ^1.1.5
-  image_picker: ^0.6.0+3
+  image_picker: ^0.6.0+17
   path_provider: ^1.1.0
   package_info: ^0.4.0+3
   device_info: ^0.4.0+1

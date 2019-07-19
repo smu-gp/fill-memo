@@ -9,6 +9,7 @@ class Memo extends Equatable {
   static final String columnTitle = "title";
   static final String columnContent = "content";
   static final String columnContentStyle = "contentStyle";
+  static final String columnContentImages = "contentImages";
   static final String columnType = "type";
   static final String columnCreatedAt = "createdAt";
   static final String columnUpdatedAt = "updatedAt";
@@ -24,6 +25,7 @@ class Memo extends Equatable {
   String title;
   String content;
   String contentStyle;
+  List<String> contentImages;
   String type;
   int createdAt;
   int updatedAt;
@@ -35,6 +37,7 @@ class Memo extends Equatable {
     this.title,
     @required this.content,
     this.contentStyle,
+    this.contentImages,
     @required this.type,
     @required this.createdAt,
     this.updatedAt,
@@ -45,6 +48,7 @@ class Memo extends Equatable {
           title,
           content,
           contentStyle,
+          contentImages,
           type,
           createdAt,
           updatedAt
@@ -58,6 +62,7 @@ class Memo extends Equatable {
           map[columnTitle],
           map[columnContent],
           map[columnContentStyle],
+          map[columnContentImages],
           map[columnType],
           map[columnCreatedAt],
           map[columnUpdatedAt],
@@ -68,6 +73,7 @@ class Memo extends Equatable {
     title = map[columnTitle];
     content = map[columnContent];
     contentStyle = map[columnContentStyle];
+    contentImages = map[columnContentImages]?.cast<String>();
     type = map[columnType];
     createdAt = map[columnCreatedAt];
     updatedAt = map[columnUpdatedAt];
@@ -80,6 +86,7 @@ class Memo extends Equatable {
     map[columnTitle] = title;
     map[columnContent] = content;
     map[columnContentStyle] = contentStyle;
+    map[columnContentImages] = contentImages;
     map[columnType] = type;
     map[columnCreatedAt] = createdAt;
     map[columnFolderId] = folderId;
@@ -89,6 +96,6 @@ class Memo extends Equatable {
 
   @override
   String toString() {
-    return 'Memo{id: $id, userId: $userId, folderId: $folderId, title: $title, content: $content, contentStyle: $contentStyle, type: $type, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return '$runtimeType(id: $id, userId: $userId, folderId: $folderId, title: $title, content: $content, contentStyle: $contentStyle, contentImages: $contentImages, type: $type, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
