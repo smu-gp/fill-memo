@@ -26,7 +26,7 @@ class MemoLoaded extends MemoState {
 }
 
 class MemoNotLoaded extends MemoState {
-  final Exception exception;
+  final Object exception;
 
   MemoNotLoaded(this.exception) : super([exception]);
 

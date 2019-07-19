@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:sp_client/util/localization.dart';
 
 class ErrorMemo extends StatelessWidget {
-  final Exception exception;
+  final Object exception;
 
   ErrorMemo([this.exception]);
 
