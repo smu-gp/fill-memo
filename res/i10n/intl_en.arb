@@ -1,33 +1,8 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-06-29T20:14:03.034011",
-  "appName": "sp_client",
-  "@appName": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleHistory": "History",
-  "@titleHistory": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleAddImage": "Select image area to send",
-  "@titleAddImage": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleResult": "Result",
-  "@titleResult": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleHostConnection": "Get connection code",
-  "@titleHostConnection": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleGuestConnection": "Connect another device",
-  "@titleGuestConnection": {
+  "@@last_modified": "2019-07-19T13:59:37.943204",
+  "actionAccept": "Accept",
+  "@actionAccept": {
     "type": "text",
     "placeholders": {}
   },
@@ -36,8 +11,28 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionAddFolder": "Add folder",
+  "@actionAddFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
   "actionAddMemo": "Add memo",
   "@actionAddMemo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionAddTextFromImage": "Add text from image",
+  "@actionAddTextFromImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnect": "Connect",
+  "@actionConnect": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnection": "Connection",
+  "@actionConnection": {
     "type": "text",
     "placeholders": {}
   },
@@ -46,23 +41,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionManageFolder": "Manage folder",
-  "@actionManageFolder": {
+  "actionDarkMode": "Dark mode",
+  "@actionDarkMode": {
     "type": "text",
     "placeholders": {}
   },
-  "actionAddFolder": "Add folder",
-  "@actionAddFolder": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionSort": "Sort",
-  "@actionSort": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionEdit": "Edit",
-  "@actionEdit": {
+  "actionDate": "Date",
+  "@actionDate": {
     "type": "text",
     "placeholders": {}
   },
@@ -71,18 +56,38 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionEdit": "Edit",
+  "@actionEdit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionFolder": "Folder",
+  "@actionFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionManageFolder": "Manage folder",
+  "@actionManageFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
   "actionMoveFolder": "Move another folder",
   "@actionMoveFolder": {
     "type": "text",
     "placeholders": {}
   },
-  "actionSendImage": "Send image",
-  "@actionSendImage": {
+  "actionNotes": "Notes",
+  "@actionNotes": {
     "type": "text",
     "placeholders": {}
   },
-  "actionSettings": "Settings",
-  "@actionSettings": {
+  "actionReject": "Reject",
+  "@actionReject": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionRemoveFolder": "Remove folder",
+  "@actionRemoveFolder": {
     "type": "text",
     "placeholders": {}
   },
@@ -96,48 +101,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionRemoveFolder": "Remove folder",
-  "@actionRemoveFolder": {
-    "type": "text",
-    "placeholders": {}
-  },
   "actionRetry": "Retry",
   "@actionRetry": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionConnect": "Connect",
-  "@actionConnect": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionAccept": "Accept",
-  "@actionAccept": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionReject": "Reject",
-  "@actionReject": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionDate": "Date",
-  "@actionDate": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionFolder": "Folder",
-  "@actionFolder": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionConnection": "Connection",
-  "@actionConnection": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionDarkMode": "Dark mode",
-  "@actionDarkMode": {
     "type": "text",
     "placeholders": {}
   },
@@ -146,18 +111,38 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionNotes": "Notes",
-  "@actionNotes": {
+  "actionSendImage": "Send image",
+  "@actionSendImage": {
     "type": "text",
     "placeholders": {}
   },
-  "imageFromGallery": "Select from gallery",
-  "@imageFromGallery": {
+  "actionSettings": "Settings",
+  "@actionSettings": {
     "type": "text",
     "placeholders": {}
   },
-  "imageFromCamera": "Take from camera",
-  "@imageFromCamera": {
+  "actionSort": "Sort",
+  "@actionSort": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "appName": "sp_client",
+  "@appName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogConnectionWithDevice": "Connection with device?",
+  "@dialogConnectionWithDevice": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogDeleteFolder": "All the notes in the folder are moved to the default folder. Delete folder?",
+  "@dialogDeleteFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogDeleteItem": "Are you sure to delete?",
+  "@dialogDeleteItem": {
     "type": "text",
     "placeholders": {}
   },
@@ -171,18 +156,128 @@
     "type": "text",
     "placeholders": {}
   },
-  "dialogDeleteItem": "Are you sure to delete?",
-  "@dialogDeleteItem": {
+  "errorEmptyName": "Error: name is not empty",
+  "@errorEmptyName": {
     "type": "text",
     "placeholders": {}
   },
-  "dialogDeleteFolder": "All the notes in the folder are moved to the default folder. Delete folder?",
-  "@dialogDeleteFolder": {
+  "folderDefault": "Default",
+  "@folderDefault": {
     "type": "text",
     "placeholders": {}
   },
-  "dialogConnectionWithDevice": "Connection with device?",
-  "@dialogConnectionWithDevice": {
+  "hintInputNote": "Note",
+  "@hintInputNote": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintInputTitle": "Title",
+  "@hintInputTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromCamera": "Take from camera",
+  "@imageFromCamera": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromGallery": "Select from gallery",
+  "@imageFromGallery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAuthFailed": "Auth failed",
+  "@labelAuthFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelChangePinCode": "Change pin code",
+  "@labelChangePinCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectFailed": "Connect failed",
+  "@labelConnectFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectionCode": "Connection code",
+  "@labelConnectionCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectSuccess": "Connect success",
+  "@labelConnectSuccess": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelInternalErr": "Internal server error",
+  "@labelInternalErr": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelLightTheme": "Light theme",
+  "@labelLightTheme": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNoHostWaited": "No host waited",
+  "@labelNoHostWaited": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNone": "None",
+  "@labelNone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelQuickFolderClassification": "Quick folder classification",
+  "@labelQuickFolderClassification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelRejectHost": "Reject by host",
+  "@labelRejectHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelResponseTimeout": "Host Response timeout",
+  "@labelResponseTimeout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelServiceHost": "Service host",
+  "@labelServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUseFingerprint": "Use fingerprint",
+  "@labelUseFingerprint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVersion": "Version",
+  "@labelVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWaitHostResponse": "Waiting host response",
+  "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWriteNewNoteOnStartup": "Write new note on startup",
+  "@labelWriteNewNoteOnStartup": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memoEmpty": "Empty memo",
+  "@memoEmpty": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memoError": "Error occurred",
+  "@memoError": {
     "type": "text",
     "placeholders": {}
   },
@@ -193,6 +288,16 @@
   },
   "orderByUpdated": "Updated date",
   "@orderByUpdated": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedAsc": "Created date ascending",
+  "@orderCreatedAsc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedDes": "Created date descending",
+  "@orderCreatedDes": {
     "type": "text",
     "placeholders": {}
   },
@@ -211,83 +316,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "orderCreatedAsc": "Created date ascending",
-  "@orderCreatedAsc": {
+  "subtitleDebug": "Debug",
+  "@subtitleDebug": {
     "type": "text",
     "placeholders": {}
   },
-  "orderCreatedDes": "Created date descending",
-  "@orderCreatedDes": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelLightTheme": "Light theme",
-  "@labelLightTheme": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelWaitHostResponse": "Waiting host response",
-  "@labelWaitHostResponse": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelConnectSuccess": "Connect success",
-  "@labelConnectSuccess": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelConnectFailed": "Connect failed",
-  "@labelConnectFailed": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelConnectionCode": "Connection code",
-  "@labelConnectionCode": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelNone": "None",
-  "@labelNone": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelAuthFailed": "Auth failed",
-  "@labelAuthFailed": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelInternalErr": "Internal server error",
-  "@labelInternalErr": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelRejectHost": "Reject by host",
-  "@labelRejectHost": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelNoHostWaited": "No host waited",
-  "@labelNoHostWaited": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelResponseTimeout": "Host Response timeout",
-  "@labelResponseTimeout": {
+  "subtitleInfo": "Info",
+  "@subtitleInfo": {
     "type": "text",
     "placeholders": {}
   },
   "subtitleNote": "Note",
   "@subtitleNote": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelWriteNewNoteOnStartup": "Write new note on startup",
-  "@labelWriteNewNoteOnStartup": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelQuickFolderClassification": "Quick folder classification",
-  "@labelQuickFolderClassification": {
     "type": "text",
     "placeholders": {}
   },
@@ -301,63 +341,33 @@
     "type": "text",
     "placeholders": {}
   },
-  "labelChangePinCode": "Change pin code",
-  "@labelChangePinCode": {
+  "titleAddImage": "Select image area to send",
+  "@titleAddImage": {
     "type": "text",
     "placeholders": {}
   },
-  "labelUseFingerprint": "Use fingerprint",
-  "@labelUseFingerprint": {
+  "titleGuestConnection": "Connect another device",
+  "@titleGuestConnection": {
     "type": "text",
     "placeholders": {}
   },
-  "subtitleDebug": "Debug",
-  "@subtitleDebug": {
+  "titleHistory": "History",
+  "@titleHistory": {
     "type": "text",
     "placeholders": {}
   },
-  "labelServiceHost": "Service host",
-  "@labelServiceHost": {
+  "titleHostConnection": "Get connection code",
+  "@titleHostConnection": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleResult": "Result",
+  "@titleResult": {
     "type": "text",
     "placeholders": {}
   },
   "validationServiceHost": "Error: service host is not empty",
   "@validationServiceHost": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "subtitleInfo": "Info",
-  "@subtitleInfo": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelVersion": "Version",
-  "@labelVersion": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "hintInputTitle": "Title",
-  "@hintInputTitle": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "hintInputNote": "Note",
-  "@hintInputNote": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "folderDefault": "Default",
-  "@folderDefault": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "memoEmpty": "Empty memo",
-  "@memoEmpty": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "memoError": "Error occurred",
-  "@memoError": {
     "type": "text",
     "placeholders": {}
   },
@@ -367,10 +377,5 @@
     "placeholders": {
       "resultsCount": {}
     }
-  },
-  "errorEmptyName": "Error: name is not empty",
-  "@errorEmptyName": {
-    "type": "text",
-    "placeholders": {}
   }
 }

@@ -28,6 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionAdd" : MessageLookupByLibrary.simpleMessage("Add"),
     "actionAddFolder" : MessageLookupByLibrary.simpleMessage("Add folder"),
     "actionAddMemo" : MessageLookupByLibrary.simpleMessage("Add memo"),
+    "actionAddTextFromImage" : MessageLookupByLibrary.simpleMessage("Add text from image"),
     "actionConnect" : MessageLookupByLibrary.simpleMessage("Connect"),
     "actionConnection" : MessageLookupByLibrary.simpleMessage("Connection"),
     "actionCreateNewFolder" : MessageLookupByLibrary.simpleMessage("Create new folder"),

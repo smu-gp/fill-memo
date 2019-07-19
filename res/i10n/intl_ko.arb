@@ -1,33 +1,8 @@
 {
   "@@locale": "ko",
-  "@@last_modified": "2019-05-12T00:21:03.710342",
-  "appName": "sp_client",
-  "@appName": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleHistory": "기록",
-  "@titleHistory": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleAddImage": "이미지 영역 선택",
-  "@titleAddImage": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleResult": "결과",
-  "@titleResult": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleHostConnection": "연결코드 생성",
-  "@titleHostConnection": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "titleGuestConnection": "다른 기기에 연결",
-  "@titleGuestConnection": {
+  "@@last_modified": "2019-07-19T13:59:37.943204",
+  "actionAccept": "허용",
+  "@actionAccept": {
     "type": "text",
     "placeholders": {}
   },
@@ -36,8 +11,28 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionAddFolder": "폴더 추가",
+  "@actionAddFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
   "actionAddMemo": "메모 추가",
   "@actionAddMemo": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionAddTextFromImage": "이미지에서 텍스트 가져오기",
+  "@actionAddTextFromImage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnect": "연결",
+  "@actionConnect": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionConnection": "연결",
+  "@actionConnection": {
     "type": "text",
     "placeholders": {}
   },
@@ -46,23 +41,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionManageFolder": "폴더 관리",
-  "@actionManageFolder": {
+  "actionDarkMode": "야간 모드",
+  "@actionDarkMode": {
     "type": "text",
     "placeholders": {}
   },
-  "actionAddFolder": "폴더 추가",
-  "@actionAddFolder": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionSort": "정렬",
-  "@actionSort": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionEdit": "편집",
-  "@actionEdit": {
+  "actionDate": "날짜",
+  "@actionDate": {
     "type": "text",
     "placeholders": {}
   },
@@ -71,18 +56,38 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionEdit": "편집",
+  "@actionEdit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionFolder": "폴더",
+  "@actionFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionManageFolder": "폴더 관리",
+  "@actionManageFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
   "actionMoveFolder": "다른 폴더로 이동",
   "@actionMoveFolder": {
     "type": "text",
     "placeholders": {}
   },
-  "actionSendImage": "이미지 보내기",
-  "@actionSendImage": {
+  "actionNotes": "메모",
+  "@actionNotes": {
     "type": "text",
     "placeholders": {}
   },
-  "actionSettings": "설정",
-  "@actionSettings": {
+  "actionReject": "거부",
+  "@actionReject": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionRemoveFolder": "폴더 삭제",
+  "@actionRemoveFolder": {
     "type": "text",
     "placeholders": {}
   },
@@ -96,48 +101,8 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionRemoveFolder": "폴더 삭제",
-  "@actionRemoveFolder": {
-    "type": "text",
-    "placeholders": {}
-  },
   "actionRetry": "재시도",
   "@actionRetry": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionConnect": "연결",
-  "@actionConnect": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionAccept": "허용",
-  "@actionAccept": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionReject": "거부",
-  "@actionReject": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionDate": "날짜",
-  "@actionDate": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionFolder": "폴더",
-  "@actionFolder": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionConnection": "연결",
-  "@actionConnection": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "actionDarkMode": "야간 모드",
-  "@actionDarkMode": {
     "type": "text",
     "placeholders": {}
   },
@@ -146,18 +111,38 @@
     "type": "text",
     "placeholders": {}
   },
-  "actionNotes": "메모",
-  "@actionNotes": {
+  "actionSendImage": "이미지 보내기",
+  "@actionSendImage": {
     "type": "text",
     "placeholders": {}
   },
-  "imageFromGallery": "갤러리에서 선택",
-  "@imageFromGallery": {
+  "actionSettings": "설정",
+  "@actionSettings": {
     "type": "text",
     "placeholders": {}
   },
-  "imageFromCamera": "사진 촬영",
-  "@imageFromCamera": {
+  "actionSort": "정렬",
+  "@actionSort": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "appName": "sp_client",
+  "@appName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogConnectionWithDevice": "이 기기와 연결할까요?",
+  "@dialogConnectionWithDevice": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogDeleteFolder": "폴더 내 모든 기록들이 기본 폴더로 이동됩니다. 폴더를 삭제할까요?",
+  "@dialogDeleteFolder": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialogDeleteItem": "삭제할까요?",
+  "@dialogDeleteItem": {
     "type": "text",
     "placeholders": {}
   },
@@ -171,18 +156,128 @@
     "type": "text",
     "placeholders": {}
   },
-  "dialogDeleteItem": "삭제할까요?",
-  "@dialogDeleteItem": {
+  "errorEmptyName": "오류: 이름은 비워둘 수 없습니다",
+  "@errorEmptyName": {
     "type": "text",
     "placeholders": {}
   },
-  "dialogDeleteFolder": "폴더 내 모든 기록들이 기본 폴더로 이동됩니다. 폴더를 삭제할까요?",
-  "@dialogDeleteFolder": {
+  "folderDefault": "기본",
+  "@folderDefault": {
     "type": "text",
     "placeholders": {}
   },
-  "dialogConnectionWithDevice": "이 기기와 연결할까요?",
-  "@dialogConnectionWithDevice": {
+  "hintInputNote": "메모",
+  "@hintInputNote": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintInputTitle": "제목",
+  "@hintInputTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromCamera": "사진 촬영",
+  "@imageFromCamera": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "imageFromGallery": "이미지 선택",
+  "@imageFromGallery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAuthFailed": "인증 실패",
+  "@labelAuthFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelChangePinCode": "PIN 번호 변경",
+  "@labelChangePinCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectFailed": "연결 실패",
+  "@labelConnectFailed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectionCode": "연결코드",
+  "@labelConnectionCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelConnectSuccess": "연결 성공",
+  "@labelConnectSuccess": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelInternalErr": "서버 내부 오류",
+  "@labelInternalErr": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelLightTheme": "밝은 테마",
+  "@labelLightTheme": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNoHostWaited": "기다리는 호스트가 없음",
+  "@labelNoHostWaited": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNone": "없음",
+  "@labelNone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelQuickFolderClassification": "빠른 폴더 분류",
+  "@labelQuickFolderClassification": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelRejectHost": "호스트에 의해 거부됨",
+  "@labelRejectHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelResponseTimeout": "호스트 응답시간 만료",
+  "@labelResponseTimeout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelServiceHost": "서비스 호스트",
+  "@labelServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUseFingerprint": "지문 사용",
+  "@labelUseFingerprint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelVersion": "버전",
+  "@labelVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWaitHostResponse": "호스트의 응답을 기다리는 중",
+  "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWriteNewNoteOnStartup": "앱 시작 시 새 메모 작성",
+  "@labelWriteNewNoteOnStartup": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memoEmpty": "메모가 비어있습니다",
+  "@memoEmpty": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memoError": "메모를 불러오는 데 오류가 발생하였습니다",
+  "@memoError": {
     "type": "text",
     "placeholders": {}
   },
@@ -193,6 +288,16 @@
   },
   "orderByUpdated": "수정 날짜 순",
   "@orderByUpdated": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedAsc": "추가한 날짜 오름차순",
+  "@orderCreatedAsc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "orderCreatedDes": "추가한 날짜 내림차순",
+  "@orderCreatedDes": {
     "type": "text",
     "placeholders": {}
   },
@@ -211,83 +316,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "orderCreatedAsc": "추가한 날짜 오름차순",
-  "@orderCreatedAsc": {
+  "subtitleDebug": "디버그",
+  "@subtitleDebug": {
     "type": "text",
     "placeholders": {}
   },
-  "orderCreatedDes": "추가한 날짜 내림차순",
-  "@orderCreatedDes": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelLightTheme": "밝은 테마",
-  "@labelLightTheme": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelWaitHostResponse": "호스트의 응답을 기다리는 중",
-  "@labelWaitHostResponse": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelConnectSuccess": "연결 성공",
-  "@labelConnectSuccess": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelConnectFailed": "연결 실패",
-  "@labelConnectFailed": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelConnectionCode": "연결코드",
-  "@labelConnectionCode": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelNone": "없음",
-  "@labelNone": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelAuthFailed": "인증 실패",
-  "@labelAuthFailed": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelInternalErr": "서버 내부 오류",
-  "@labelInternalErr": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelRejectHost": "호스트에 의해 거부됨",
-  "@labelRejectHost": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelNoHostWaited": "기다리는 호스트가 없음",
-  "@labelNoHostWaited": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelResponseTimeout": "호스트 응답시간 만료",
-  "@labelResponseTimeout": {
+  "subtitleInfo": "정보",
+  "@subtitleInfo": {
     "type": "text",
     "placeholders": {}
   },
   "subtitleNote": "메모",
   "@subtitleNote": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelWriteNewNoteOnStartup": "앱 시작 시 새 메모 작성",
-  "@labelWriteNewNoteOnStartup": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelQuickFolderClassification": "빠른 폴더 분류",
-  "@labelQuickFolderClassification": {
     "type": "text",
     "placeholders": {}
   },
@@ -301,63 +341,33 @@
     "type": "text",
     "placeholders": {}
   },
-  "labelChangePinCode": "PIN 번호 변경",
-  "@labelChangePinCode": {
+  "titleAddImage": "이미지 영역 선택",
+  "@titleAddImage": {
     "type": "text",
     "placeholders": {}
   },
-  "labelUseFingerprint": "지문 사용",
-  "@labelUseFingerprint": {
+  "titleGuestConnection": "다른 기기에 연결",
+  "@titleGuestConnection": {
     "type": "text",
     "placeholders": {}
   },
-  "subtitleDebug": "디버그",
-  "@subtitleDebug": {
+  "titleHistory": "기록",
+  "@titleHistory": {
     "type": "text",
     "placeholders": {}
   },
-  "labelServiceHost": "서비스 호스트",
-  "@labelServiceHost": {
+  "titleHostConnection": "연결코드 생성",
+  "@titleHostConnection": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleResult": "결과",
+  "@titleResult": {
     "type": "text",
     "placeholders": {}
   },
   "validationServiceHost": "오류: 서비스 호스트는 비워둘 수 없습니다",
   "@validationServiceHost": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "subtitleInfo": "정보",
-  "@subtitleInfo": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "labelVersion": "버전",
-  "@labelVersion": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "hintInputTitle": "제목",
-  "@hintInputTitle": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "hintInputNote": "메모",
-  "@hintInputNote": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "folderDefault": "기본",
-  "@folderDefault": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "memoEmpty": "메모가 비어있습니다",
-  "@memoEmpty": {
-    "type": "text",
-    "placeholders": {}
-  },
-  "memoError": "Error occurred",
-  "@memoError": {
     "type": "text",
     "placeholders": {}
   },
@@ -367,10 +377,5 @@
     "placeholders": {
       "resultsCount": {}
     }
-  },
-  "errorEmptyName": "오류: 폴더 이름은 비워둘 수 없습니다",
-  "@errorEmptyName": {
-    "type": "text",
-    "placeholders": {}
   }
 }
