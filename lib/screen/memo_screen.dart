@@ -40,6 +40,7 @@ class _MemoScreenState extends State<MemoScreen> {
 
   List<String> _memoContentImages;
   bool _showProgress = false;
+  double _progressValue = 0;
 
   @override
   void initState() {
@@ -66,21 +67,18 @@ class _MemoScreenState extends State<MemoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(""),
-        bottom: PreferredSize(
-          child: Container(
-            height: kToolbarHeight,
-            padding: const EdgeInsets.only(left: 16.0),
-            child: _TitleEditText(controller: _editTitleTextController),
-          ),
-          preferredSize: Size.fromHeight(kToolbarHeight),
-        ),
         elevation: 0.0,
       ),
       body: Column(
         children: <Widget>[
           Visibility(
             visible: _showProgress,
-            child: SizedBox(child: LinearProgressIndicator(), height: 1.0),
+            child: SizedBox(
+                child: LinearProgressIndicator(
+                  backgroundColor: AppColors.accentColor.withOpacity(0.2),
+                  value: _progressValue,
+                ),
+                height: 4),
           ),
           Expanded(
             child: ListView(
@@ -91,6 +89,11 @@ class _MemoScreenState extends State<MemoScreen> {
                     imageList: _memoContentImages,
                     onItemTap: _handleImageItemTapped,
                   ),
+                ),
+                Container(
+                  height: kToolbarHeight,
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: _TitleEditText(controller: _editTitleTextController),
                 ),
                 _ContentEditText(
                   autofocus: widget.memo.id == null,
@@ -246,14 +249,24 @@ class _MemoScreenState extends State<MemoScreen> {
       _showProgress = true;
     });
 
-    final snapshot = await uploadTask.onComplete;
-    final downloadUrl = await snapshot.ref.getDownloadURL();
+    await for (final event in uploadTask.events) {
+      if (event.type == StorageTaskEventType.progress) {
+        setState(() {
+          _progressValue =
+              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
+          debugPrint(_progressValue.toString());
+        });
+      } else if (event.type == StorageTaskEventType.success) {
+        final downloadURL = await event.snapshot.ref.getDownloadURL();
 
-    _memoContentImages.add(downloadUrl);
+        _memoContentImages.add(downloadURL);
 
-    setState(() {
-      _showProgress = false;
-    });
+        setState(() {
+          _progressValue = 0;
+          _showProgress = false;
+        });
+      }
+    }
   }
 
   void _uploadProcessingServer(File imageFile) async {
@@ -391,25 +404,31 @@ class _ContentImageList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 240,
-      child: (imageList.length > 1
-          ? ListView(
-              scrollDirection: Axis.horizontal,
-              itemExtent: 360,
-              children: imageList
-                  .asMap()
-                  .entries
-                  .map((entry) => Padding(
-                        padding: const EdgeInsets.only(right: 4.0),
-                        child: _ContentImageItem(
-                          url: entry.value,
-                          onTap: () => onItemTap(entry.key),
-                        ),
-                      ))
-                  .toList())
-          : _ContentImageItem(
-              url: imageList.first,
-              onTap: () => onItemTap(0),
-            )),
+      child: AspectRatio(
+        aspectRatio: 3 / 4,
+        child: (imageList.length > 1
+            ? ListView(
+                scrollDirection: Axis.horizontal,
+                itemExtent: 360,
+                children: imageList
+                    .asMap()
+                    .entries
+                    .map((entry) => Padding(
+                          padding: EdgeInsets.only(
+                              right: (entry.key != imageList.length - 1)
+                                  ? 4.0
+                                  : 0),
+                          child: _ContentImageItem(
+                            url: entry.value,
+                            onTap: () => onItemTap(entry.key),
+                          ),
+                        ))
+                    .toList())
+            : _ContentImageItem(
+                url: imageList.first,
+                onTap: () => onItemTap(0),
+              )),
+      ),
     );
   }
 }
