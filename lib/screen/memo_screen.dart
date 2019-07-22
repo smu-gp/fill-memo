@@ -58,7 +58,7 @@ class _MemoScreenState extends State<MemoScreen> {
       _editContentSpannableController =
           SpannableTextController(sourceText: widget.memo.content ?? "");
     }
-    _memoContentImages = widget.memo.contentImages ?? [];
+    _memoContentImages = []..addAll(widget.memo.contentImages ?? []);
   }
 
   @override
