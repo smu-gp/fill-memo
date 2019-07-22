@@ -13,6 +13,7 @@ import 'package:sp_client/service/text_process_service.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
+import 'package:sp_client/widget/loading_progress.dart';
 import 'package:sp_client/widget/rich_text_field/rich_text_field.dart';
 import 'package:uuid/uuid.dart';
 
@@ -423,7 +424,14 @@ class _ContentImageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Image.network(url, fit: BoxFit.fitWidth),
+      child: Image.network(
+        url,
+        fit: BoxFit.fitWidth,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return LoadingProgress();
+        },
+      ),
     );
   }
 }
