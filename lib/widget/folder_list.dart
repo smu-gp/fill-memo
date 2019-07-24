@@ -23,7 +23,6 @@ class FolderList extends StatelessWidget {
         if (state is FolderLoaded) {
           var folders = [
             Folder(
-              id: kDefaultFolderId,
               name: AppLocalizations.of(context).folderDefault,
             ),
           ]..addAll(state.folders);

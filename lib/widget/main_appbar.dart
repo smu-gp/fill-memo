@@ -47,7 +47,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                       title = AppLocalizations.of(context).actionNotes;
                     } else {
                       if (drawerState.folderId != null) {
-                        if (drawerState.folderId == kDefaultFolderId) {
+                        if (drawerState.folderId == Folder.defaultId) {
                           title = AppLocalizations.of(context).folderDefault;
                         } else if (folderState is FolderLoaded) {
                           var folders = folderState.folders;

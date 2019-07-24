@@ -4,7 +4,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/memo_screen.dart';
-import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/widget/empty_memo.dart';
 import 'package:sp_client/widget/error_memo.dart';
 import 'package:sp_client/widget/loading_progress.dart';
@@ -54,7 +53,7 @@ class MemoList extends StatelessWidget {
               // Filter memo
               if (folderId != null) {
                 memoList = memoList.where((memo) {
-                  if (folderId == kDefaultFolderId) {
+                  if (folderId == Folder.defaultId) {
                     return memo.folderId == null;
                   } else {
                     return memo.folderId == folderId;
