@@ -9,12 +9,14 @@ class Folder extends Equatable {
   static final String collectionName = "folder";
   static final String columnUserId = "userId";
 
+  static const String defaultId = "default";
+
   String id;
   String userId;
   String name;
 
   Folder({
-    this.id,
+    this.id = defaultId,
     this.userId,
     @required this.name,
   }) : super([id, userId, name]);

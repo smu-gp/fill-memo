@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sp_client/util/constants.dart';
+
+import 'folder.dart';
 
 class Memo extends Equatable {
   // Local database field constants for Secret folder
@@ -33,7 +34,7 @@ class Memo extends Equatable {
   Memo({
     this.id,
     this.userId,
-    this.folderId = kDefaultFolderId,
+    this.folderId = Folder.defaultId,
     this.title,
     @required this.content,
     this.contentStyle,

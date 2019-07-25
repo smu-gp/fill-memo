@@ -16,8 +16,8 @@ dependencies:
   equatable: ^0.2.3
   http: 0.12.0+1
   rxdart: ^0.22.0
-  bloc: ^0.14.2
-  flutter_bloc: ^0.16.0
+  bloc: ^0.14.4
+  flutter_bloc: ^0.20.0
   shared_preferences: ^0.5.2+1
   outline_material_icons: ^0.1.0
   cupertino_icons: ^0.1.2
@@ -25,6 +25,7 @@ dependencies:
   protobuf: ^0.13.11
   uuid: ^2.0.1
   flutter_staggered_grid_view: ^0.3.0
+  cached_network_image: ^1.1.0
   diff_match_patch:
     path: packages/diff_match_patch
   # Firebase
@@ -33,6 +34,7 @@ dependencies:
   firebase_analytics: ^3.0.2
   firebase_performance: ^0.3.0+2
   firebase_crashlytics: ^0.0.4+8
+  firebase_auth: ^0.11.1+12
   cloud_firestore: ^0.12.5+2
   # Plugins
   share: ^0.6.1+1

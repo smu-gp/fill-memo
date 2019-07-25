@@ -190,6 +190,11 @@ class AppLocalizations {
         name: 'imageFromGallery',
       );
 
+  String get labelAppInitialize => Intl.message(
+        'Initialize app...',
+        name: 'labelAppInitialize',
+      );
+
   String get labelAuthFailed => Intl.message(
         'Auth failed',
         name: 'labelAuthFailed',
@@ -253,6 +258,11 @@ class AppLocalizations {
   String get labelServiceHost => Intl.message(
         'Service host',
         name: 'labelServiceHost',
+      );
+
+  String get labelUnnamed => Intl.message(
+        'Unnamed',
+        name: 'labelUnnamed',
       );
 
   String get labelUseFingerprint => Intl.message(

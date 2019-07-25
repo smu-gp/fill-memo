@@ -10,11 +10,20 @@ import 'util/utils.dart';
 
 class App extends StatefulWidget {
   final PreferenceRepository preferenceRepository;
+  final UserRepository userRepository;
+  final MemoRepository memoRepository;
+  final FolderRepository folderRepository;
 
   App({
     Key key,
     @required this.preferenceRepository,
+    @required this.userRepository,
+    @required this.memoRepository,
+    @required this.folderRepository,
   })  : assert(preferenceRepository != null),
+        assert(userRepository != null),
+        assert(memoRepository != null),
+        assert(folderRepository != null),
         super(key: key);
 
   @override
@@ -22,93 +31,127 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  PreferenceBloc _preferenceBloc;
-  SessionBloc _sessionBloc;
-  ThemeBloc _themeBloc;
-
   @override
-  void initState() {
-    super.initState();
-    _initGlobalBloc();
-  }
-
-  void _initGlobalBloc() {
-    _preferenceBloc = PreferenceBloc(
+  Widget build(BuildContext context) {
+    var preferenceBloc = PreferenceBloc(
       repository: widget.preferenceRepository,
       usagePreferences: AppPreferences.preferences,
     );
 
-    var userIdPref = _preferenceBloc.getPreference(AppPreferences.keyUserId);
-    if (userIdPref.value == null) {
-      userIdPref.value = Uuid().v4();
-      _preferenceBloc.dispatch(UpdatePreference(userIdPref));
+    var userId = preferenceBloc.getPreference<String>(AppPreferences.keyUserId);
+    if (userId.value == null) {
+      userId.value = Uuid().v4();
+      preferenceBloc.dispatch(UpdatePreference(userId));
     }
-    _sessionBloc = SessionBloc(userIdPref.value);
 
     var darkMode =
-        _preferenceBloc.getPreference<bool>(AppPreferences.keyDarkMode).value;
+        preferenceBloc.getPreference<bool>(AppPreferences.keyDarkMode).value;
     var initTheme = darkMode ? AppThemes.darkTheme : AppThemes.lightTheme;
-    _themeBloc = ThemeBloc(initTheme);
-  }
+    var themeBloc = ThemeBloc(initTheme);
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocProviderTree(
-      blocProviders: [
+    var authBloc = AuthBloc(userRepository: widget.userRepository)
+      ..dispatch(AppStarted());
+
+    var memoBloc = MemoBloc(widget.memoRepository);
+    var folderBloc = FolderBloc(widget.folderRepository);
+
+    return MultiBlocProvider(
+      providers: [
         BlocProvider<PreferenceBloc>(
-          builder: (context) => _preferenceBloc,
-          dispose: (context, bloc) => bloc.dispose(),
-        ),
-        BlocProvider<SessionBloc>(
-          builder: (context) => _sessionBloc,
-          dispose: (context, bloc) => bloc.dispose(),
+          builder: (context) => preferenceBloc,
         ),
         BlocProvider<ThemeBloc>(
-          builder: (context) => _themeBloc,
-          dispose: (context, bloc) => bloc.dispose(),
+          builder: (context) => themeBloc,
+        ),
+        BlocProvider<AuthBloc>(
+          builder: (context) => authBloc,
+        ),
+        BlocProvider<MemoBloc>(
+          builder: (context) => memoBloc,
+        ),
+        BlocProvider<FolderBloc>(
+          builder: (context) => folderBloc,
         )
       ],
-      child: BlocBuilder<SessionEvent, SessionState>(
-          bloc: _sessionBloc,
-          builder: (context, sessionState) {
-            return BlocProviderTree(
-              blocProviders: [
-                BlocProvider<MemoBloc>(
-                  builder: (context) => MemoBloc(
-                    FirebaseMemoRepository(sessionState.userId),
-                  )..dispatch(ReadMemo()),
-                  dispose: (context, bloc) => bloc.dispose(),
-                ),
-                BlocProvider<FolderBloc>(
-                  builder: (context) => FolderBloc(
-                    FirebaseFolderRepository(sessionState.userId),
-                  )..dispatch(ReadFolder()),
-                  dispose: (context, bloc) => bloc.dispose(),
-                )
+      child: BlocBuilder<ThemeBloc, ThemeData>(
+        builder: (context, themeState) {
+          return BlocListener<AuthBloc, AuthState>(
+            listener: (context, authState) {
+              if (authState is Authenticated) {
+                memoBloc.dispatch(ReadMemo());
+                folderBloc.dispatch(ReadFolder());
+              }
+            },
+            child: MaterialApp(
+              onGenerateTitle: (context) =>
+                  AppLocalizations.of(context).appName,
+              theme: themeState,
+              darkTheme: AppThemes.darkTheme,
+              localizationsDelegates: [
+                const AppLocalizationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
               ],
-              child: BlocBuilder<ThemeData, ThemeData>(
-                bloc: _themeBloc,
-                builder: (context, themeState) {
-                  return MaterialApp(
-                    onGenerateTitle: (context) =>
-                        AppLocalizations.of(context).appName,
-                    theme: themeState,
-                    darkTheme: AppThemes.darkTheme,
-                    localizationsDelegates: [
-                      const AppLocalizationsDelegate(),
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                    ],
-                    supportedLocales: [
-                      const Locale('en', 'US'),
-                      const Locale('ko', 'KR'),
-                    ],
-                    home: MainScreen(),
-                  );
+              supportedLocales: [
+                const Locale('en', 'US'),
+                const Locale('ko', 'KR'),
+              ],
+              home: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, authState) {
+                  if (authState is Authenticated) {
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider<MemoBloc>(
+                          builder: (context) => MemoBloc(widget.memoRepository)
+                            ..dispatch(ReadMemo()),
+                        ),
+                        BlocProvider<FolderBloc>(
+                          builder: (context) =>
+                              FolderBloc(widget.folderRepository)
+                                ..dispatch(ReadFolder()),
+                        ),
+                      ],
+                      child: MainScreen(),
+                    );
+                  } else {
+                    var loginBloc =
+                        LoginBloc(userRepository: widget.userRepository)
+                          ..dispatch(LoginSubmitted(userId.value));
+                    return BlocListener<LoginBloc, LoginState>(
+                      bloc: loginBloc,
+                      listener: (context, state) {
+                        if (state.isSuccess) {
+                          authBloc.dispatch(LoggedIn());
+                        } else if (state.isFailure) {
+                          // Retry login
+                          loginBloc.dispatch(LoginSubmitted(userId.value));
+                        }
+                      },
+                      child: _buildUninitialized(context),
+                    );
+                  }
                 },
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildUninitialized(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(elevation: 0),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(height: 24.0),
+            Text(AppLocalizations.of(context).labelAppInitialize),
+          ],
+        ),
+      ),
     );
   }
 }

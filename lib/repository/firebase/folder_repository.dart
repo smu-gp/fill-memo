@@ -1,16 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meta/meta.dart';
 import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/repository/repository.dart';
 
 class FirebaseFolderRepository extends FolderRepository {
-  final String userId;
+  final UserRepository _userRepository;
 
-  FirebaseFolderRepository(this.userId) : assert(userId != null);
+  FirebaseFolderRepository({@required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository;
+
+  Future<String> get uid async {
+    return (await _userRepository.getUser()).uid;
+  }
 
   @override
   Future<Folder> create(Folder newFolder) async {
     if (newFolder.userId == null) {
-      newFolder.userId = userId;
+      newFolder.userId = await uid;
     }
     Firestore.instance
         .collection(Folder.collectionName)
@@ -28,7 +35,7 @@ class FirebaseFolderRepository extends FolderRepository {
   Stream<List<Folder>> readAllAsStream() async* {
     var queryStream = Firestore.instance
         .collection(Folder.collectionName)
-        .where(Folder.columnUserId, isEqualTo: userId)
+        .where(Folder.columnUserId, isEqualTo: await uid)
         .snapshots();
     await for (var queryData in queryStream) {
       yield queryData.documents

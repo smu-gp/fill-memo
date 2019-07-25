@@ -1,6 +1,6 @@
 {
   "@@locale": "ko",
-  "@@last_modified": "2019-07-19T13:59:37.943204",
+  "@@last_modified": "2019-07-25T16:40:03.816277",
   "actionAccept": "허용",
   "@actionAccept": {
     "type": "text",
@@ -186,6 +186,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelAppInitialize": "초기화하는 중...",
+  "@labelAppInitialize": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelAuthFailed": "인증 실패",
   "@labelAuthFailed": {
     "type": "text",
@@ -248,6 +253,11 @@
   },
   "labelServiceHost": "서비스 호스트",
   "@labelServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUnnamed": "이름 없음",
+  "@labelUnnamed": {
     "type": "text",
     "placeholders": {}
   },

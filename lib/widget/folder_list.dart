@@ -17,13 +17,11 @@ class FolderList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FolderEvent, FolderState>(
-      bloc: BlocProvider.of<FolderBloc>(context),
+    return BlocBuilder<FolderBloc, FolderState>(
       builder: (BuildContext context, FolderState state) {
         if (state is FolderLoaded) {
           var folders = [
             Folder(
-              id: kDefaultFolderId,
               name: AppLocalizations.of(context).folderDefault,
             ),
           ]..addAll(state.folders);

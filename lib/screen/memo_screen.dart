@@ -1,18 +1,20 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/memo_image_screen.dart';
-import 'package:sp_client/service/text_process_service.dart';
+import 'package:sp_client/service/services.dart' as Service;
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
+import 'package:sp_client/widget/loading_progress.dart';
 import 'package:sp_client/widget/rich_text_field/rich_text_field.dart';
 import 'package:uuid/uuid.dart';
 
@@ -39,6 +41,7 @@ class _MemoScreenState extends State<MemoScreen> {
 
   List<String> _memoContentImages;
   bool _showProgress = false;
+  double _progressValue = 0;
 
   @override
   void initState() {
@@ -57,7 +60,7 @@ class _MemoScreenState extends State<MemoScreen> {
       _editContentSpannableController =
           SpannableTextController(sourceText: widget.memo.content ?? "");
     }
-    _memoContentImages = widget.memo.contentImages ?? [];
+    _memoContentImages = []..addAll(widget.memo.contentImages ?? []);
   }
 
   @override
@@ -65,21 +68,18 @@ class _MemoScreenState extends State<MemoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(""),
-        bottom: PreferredSize(
-          child: Container(
-            height: kToolbarHeight,
-            padding: const EdgeInsets.only(left: 16.0),
-            child: _TitleEditText(controller: _editTitleTextController),
-          ),
-          preferredSize: Size.fromHeight(kToolbarHeight),
-        ),
         elevation: 0.0,
       ),
       body: Column(
         children: <Widget>[
           Visibility(
             visible: _showProgress,
-            child: SizedBox(child: LinearProgressIndicator(), height: 1.0),
+            child: SizedBox(
+                child: LinearProgressIndicator(
+                  backgroundColor: AppColors.accentColor.withOpacity(0.2),
+                  value: _progressValue,
+                ),
+                height: 4),
           ),
           Expanded(
             child: ListView(
@@ -90,6 +90,11 @@ class _MemoScreenState extends State<MemoScreen> {
                     imageList: _memoContentImages,
                     onItemTap: _handleImageItemTapped,
                   ),
+                ),
+                Container(
+                  height: kToolbarHeight,
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: _TitleEditText(controller: _editTitleTextController),
                 ),
                 _ContentEditText(
                   autofocus: widget.memo.id == null,
@@ -205,7 +210,7 @@ class _MemoScreenState extends State<MemoScreen> {
     );
   }
 
-  void _showSendErrorDialog([Exception e]) {
+  void _showSendErrorDialog([Object e]) {
     showDialog(
       context: context,
       builder: (context) {
@@ -245,26 +250,37 @@ class _MemoScreenState extends State<MemoScreen> {
       _showProgress = true;
     });
 
-    final snapshot = await uploadTask.onComplete;
-    final downloadUrl = await snapshot.ref.getDownloadURL();
+    await for (final event in uploadTask.events) {
+      if (event.type == StorageTaskEventType.progress) {
+        setState(() {
+          _progressValue =
+              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
+          debugPrint(_progressValue.toString());
+        });
+      } else if (event.type == StorageTaskEventType.success) {
+        final downloadURL = await event.snapshot.ref.getDownloadURL();
 
-    _memoContentImages.add(downloadUrl);
+        _memoContentImages.add(downloadURL);
 
-    setState(() {
-      _showProgress = false;
-    });
+        setState(() {
+          _progressValue = 0;
+          _showProgress = false;
+        });
+      }
+    }
   }
 
   void _uploadProcessingServer(File imageFile) async {
-    var service = TextProcessService(
-      httpClient: http.Client(),
-      baseUrl: 'http://${AppPreferences.initServiceHost}:8000',
-    );
-
     _showProgressDialog();
 
     try {
-      var results = await service.sendImage(imageFile: imageFile);
+      var prefBloc = BlocProvider.of<PreferenceBloc>(context);
+      var pref = prefBloc.getPreference<String>(AppPreferences.keyServiceHost);
+      var results = await Service.sendImage(
+        imageFile: imageFile,
+        baseUrl: pref.value.isNotEmpty ? pref.value : processServiceBaseUrl,
+      );
+
       Navigator.pop(context); // Hide progress dialog
       showDialog(
           context: context,
@@ -390,25 +406,31 @@ class _ContentImageList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 240,
-      child: (imageList.length > 1
-          ? ListView(
-              scrollDirection: Axis.horizontal,
-              itemExtent: 360,
-              children: imageList
-                  .asMap()
-                  .entries
-                  .map((entry) => Padding(
-                        padding: const EdgeInsets.only(right: 4.0),
-                        child: _ContentImageItem(
-                          url: entry.value,
-                          onTap: () => onItemTap(entry.key),
-                        ),
-                      ))
-                  .toList())
-          : _ContentImageItem(
-              url: imageList.first,
-              onTap: () => onItemTap(0),
-            )),
+      child: AspectRatio(
+        aspectRatio: 3 / 4,
+        child: (imageList.length > 1
+            ? ListView(
+                scrollDirection: Axis.horizontal,
+                itemExtent: 360,
+                children: imageList
+                    .asMap()
+                    .entries
+                    .map((entry) => Padding(
+                          padding: EdgeInsets.only(
+                              right: (entry.key != imageList.length - 1)
+                                  ? 4.0
+                                  : 0),
+                          child: _ContentImageItem(
+                            url: entry.value,
+                            onTap: () => onItemTap(entry.key),
+                          ),
+                        ))
+                    .toList())
+            : _ContentImageItem(
+                url: imageList.first,
+                onTap: () => onItemTap(0),
+              )),
+      ),
     );
   }
 }
@@ -423,7 +445,12 @@ class _ContentImageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Image.network(url, fit: BoxFit.fitWidth),
+      child: CachedNetworkImage(
+        imageUrl: url,
+        fit: BoxFit.fitWidth,
+        placeholder: (context, url) => LoadingProgress(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      ),
     );
   }
 }

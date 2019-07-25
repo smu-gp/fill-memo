@@ -21,25 +21,20 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    var folderBloc = BlocProvider.of<FolderBloc>(context);
     var drawerBloc = BlocProvider.of<MainDrawerBloc>(context);
     var listBloc = BlocProvider.of<ListBloc>(context);
 
-    return BlocListener<FolderEvent, FolderState>(
-      bloc: folderBloc,
+    return BlocListener<FolderBloc, FolderState>(
       listener: (context, folderState) {
         if (folderState is FolderLoaded && folderState.folders.isEmpty) {
           drawerBloc.dispatch(SelectMenu(0));
         }
       },
-      child: BlocBuilder<FolderEvent, FolderState>(
-        bloc: folderBloc,
+      child: BlocBuilder<FolderBloc, FolderState>(
         builder: (context, folderState) {
-          return BlocBuilder<MainDrawerEvent, MainDrawerState>(
-            bloc: drawerBloc,
+          return BlocBuilder<MainDrawerBloc, MainDrawerState>(
             builder: (context, drawerState) {
-              return BlocBuilder<ListEvent, ListState>(
-                bloc: listBloc,
+              return BlocBuilder<ListBloc, ListState>(
                 builder: (context, memoListState) {
                   var title;
                   if (memoListState is UnSelectableList) {
@@ -47,7 +42,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                       title = AppLocalizations.of(context).actionNotes;
                     } else {
                       if (drawerState.folderId != null) {
-                        if (drawerState.folderId == kDefaultFolderId) {
+                        if (drawerState.folderId == Folder.defaultId) {
                           title = AppLocalizations.of(context).folderDefault;
                         } else if (folderState is FolderLoaded) {
                           var folders = folderState.folders;

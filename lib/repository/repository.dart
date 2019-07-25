@@ -45,3 +45,15 @@ abstract class PreferenceRepository {
 
   Future<bool> setInt(String key, int value);
 }
+
+abstract class UserRepository {
+  Future<User> signIn(String uid);
+
+  Future signOut();
+
+  Future<bool> isSignedIn();
+
+  Future<User> getUser();
+
+  Future<User> updateProfile({String displayName, String email});
+}

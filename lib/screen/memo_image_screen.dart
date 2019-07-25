@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:sp_client/widget/loading_progress.dart';
 
 class MemoImageScreen extends StatefulWidget {
   final List<String> contentImages;
@@ -60,7 +62,11 @@ class _MemoImageScreenState extends State<MemoImageScreen> {
         controller: _pageController,
         itemCount: _contentImages.length,
         itemBuilder: (BuildContext context, int index) {
-          return Image.network(_contentImages[index]);
+          return CachedNetworkImage(
+            imageUrl: _contentImages[index],
+            placeholder: (context, url) => LoadingProgress(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          );
         },
         pageSnapping: true,
       ),
