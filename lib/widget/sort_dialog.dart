@@ -15,7 +15,7 @@ class SortDialog extends StatelessWidget {
         vertical: 24.0,
         horizontal: 0.0,
       ),
-      content: BlocBuilder<MemoSortEvent, MemoSortState>(
+      content: BlocBuilder<MemoSortBloc, MemoSortState>(
         bloc: bloc,
         builder: (BuildContext context, MemoSortState state) {
           return Wrap(

@@ -26,25 +26,22 @@ class _MainScreenState extends State<MainScreen> {
         _listBloc.dispatch(UnSelectable());
         return (_listBloc.currentState is UnSelectableList);
       },
-      child: BlocProviderTree(
-        blocProviders: [
+      child: MultiBlocProvider(
+        providers: [
           BlocProvider<MainDrawerBloc>(
             builder: (context) => _drawerBloc,
-            dispose: (context, bloc) => bloc.dispose(),
           ),
           BlocProvider<ListBloc>(
             builder: (context) => _listBloc,
-            dispose: (context, bloc) => bloc.dispose(),
           ),
           BlocProvider<MemoSortBloc>(
             builder: (context) => _memoSortBloc,
-            dispose: (context, bloc) => bloc.dispose(),
           ),
         ],
         child: Scaffold(
           appBar: MainAppBar(),
           drawer: MainDrawer(),
-          body: BlocBuilder<MainDrawerEvent, MainDrawerState>(
+          body: BlocBuilder<MainDrawerBloc, MainDrawerState>(
             bloc: _drawerBloc,
             builder: (context, state) {
               return MemoList(folderId: state.folderId);

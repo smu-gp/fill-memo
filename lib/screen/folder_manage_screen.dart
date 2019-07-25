@@ -17,8 +17,7 @@ class _FolderManageScreenState extends State<FolderManageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FolderEvent, FolderState>(
-      bloc: BlocProvider.of<FolderBloc>(context),
+    return BlocListener<FolderBloc, FolderState>(
       listener: (context, folderState) {
         if (folderState is FolderLoaded && folderState.folders.isEmpty) {
           Navigator.pop(context);
@@ -57,7 +56,7 @@ class _FolderManageAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
-    return BlocBuilder<ListEvent, ListState>(
+    return BlocBuilder<ListBloc, ListState>(
       bloc: listBloc,
       builder: (context, state) {
         var isSelectable = (state is SelectableList);
@@ -131,68 +130,68 @@ class _FolderListState extends State<_FolderList> {
   @override
   Widget build(BuildContext context) {
     var folderBloc = BlocProvider.of<FolderBloc>(context);
-    return BlocBuilder<FolderEvent, FolderState>(
+    return BlocBuilder<FolderBloc, FolderState>(
       bloc: folderBloc,
       builder: (context, folderState) {
         if (folderState is FolderLoaded) {
           var folders = folderState.folders;
           var listBloc = BlocProvider.of<ListBloc>(context);
-          return BlocBuilder<ListEvent, ListState>(
-              bloc: listBloc,
-              builder: (context, listState) {
-                var isSelectable = (listState is SelectableList);
-                List<dynamic> selectItems;
-                if (isSelectable) {
-                  selectItems = (listState as SelectableList).selectedItems;
-                }
-                return ListView.builder(
-                  itemBuilder: (context, index) => _FolderItem(
-                    folders[index],
-                    selected:
-                        (isSelectable && selectItems.contains(folders[index])),
-                    selectable: isSelectable,
-                    onTap: () {
-                      if (isSelectable) {
-                        var isSelected = selectItems.contains(folders[index]);
-                        if (isSelected) {
-                          listBloc.dispatch(UnSelectItem(folders[index]));
-                        } else {
-                          listBloc.dispatch(SelectItem(folders[index]));
-                        }
-                      }
-                    },
-                    onLongPress: () {
-                      listBloc.dispatch(SelectItem(folders[index]));
-                    },
-                    onCheckboxChanged: (value) {
-                      if (value) {
-                        listBloc.dispatch(SelectItem(folders[index]));
-                      } else {
+          return BlocBuilder<ListBloc, ListState>(
+            bloc: listBloc,
+            builder: (context, listState) {
+              var isSelectable = (listState is SelectableList);
+              List<dynamic> selectItems;
+              if (isSelectable) {
+                selectItems = (listState as SelectableList).selectedItems;
+              }
+              return ListView.builder(
+                itemBuilder: (context, index) => _FolderItem(
+                  folders[index],
+                  selected:
+                      (isSelectable && selectItems.contains(folders[index])),
+                  selectable: isSelectable,
+                  onTap: () {
+                    if (isSelectable) {
+                      var isSelected = selectItems.contains(folders[index]);
+                      if (isSelected) {
                         listBloc.dispatch(UnSelectItem(folders[index]));
+                      } else {
+                        listBloc.dispatch(SelectItem(folders[index]));
                       }
-                    },
-                    onEditButtonPress: () async {
-                      var folder = folders[index];
-                      var newName = await showDialog(
-                        context: context,
-                        builder: (context) => EditTextDialog(
-                          title:
-                              AppLocalizations.of(context).actionRenameFolder,
-                          value: folder.name,
-                          validation: (value) => value.isNotEmpty,
-                          validationMessage:
-                              AppLocalizations.of(context).errorEmptyName,
-                        ),
-                      );
-                      if (newName != null) {
-                        var updatedFolder = folder..name = newName;
-                        folderBloc.updateFolder(updatedFolder);
-                      }
-                    },
-                  ),
-                  itemCount: folders.length,
-                );
-              });
+                    }
+                  },
+                  onLongPress: () {
+                    listBloc.dispatch(SelectItem(folders[index]));
+                  },
+                  onCheckboxChanged: (value) {
+                    if (value) {
+                      listBloc.dispatch(SelectItem(folders[index]));
+                    } else {
+                      listBloc.dispatch(UnSelectItem(folders[index]));
+                    }
+                  },
+                  onEditButtonPress: () async {
+                    var folder = folders[index];
+                    var newName = await showDialog(
+                      context: context,
+                      builder: (context) => EditTextDialog(
+                        title: AppLocalizations.of(context).actionRenameFolder,
+                        value: folder.name,
+                        validation: (value) => value.isNotEmpty,
+                        validationMessage:
+                            AppLocalizations.of(context).errorEmptyName,
+                      ),
+                    );
+                    if (newName != null) {
+                      var updatedFolder = folder..name = newName;
+                      folderBloc.updateFolder(updatedFolder);
+                    }
+                  },
+                ),
+                itemCount: folders.length,
+              );
+            },
+          );
         } else {
           return LoadingProgress();
         }

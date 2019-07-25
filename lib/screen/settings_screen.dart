@@ -14,14 +14,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  PreferenceBloc _preferenceBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +25,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: EdgeInsets.symmetric(
           horizontal: Util.isTablet(context) ? 56.0 : 0,
         ),
-        child: BlocBuilder<PreferenceEvent, PreferenceState>(
-          bloc: _preferenceBloc,
+        child: BlocBuilder<PreferenceBloc, PreferenceState>(
           builder: (context, state) {
             return ListView(
               children: _buildItems(state.preferences),
@@ -116,8 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         builder: (context, snapshot) {
           var subtitle;
           if (snapshot.hasData) {
-            subtitle =
-                "ver ${snapshot.data.version} (build. ${snapshot.data.buildNumber})";
+            subtitle = "v${snapshot.data.version}";
           }
           return ListItem(
             title: AppLocalizations.of(context).labelVersion,

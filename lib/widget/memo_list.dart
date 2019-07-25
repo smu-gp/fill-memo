@@ -20,16 +20,12 @@ class MemoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var memoBloc = BlocProvider.of<MemoBloc>(context);
     var listBloc = BlocProvider.of<ListBloc>(context);
-    var memoSortBloc = BlocProvider.of<MemoSortBloc>(context);
 
-    return BlocBuilder<MemoEvent, MemoState>(
-      bloc: memoBloc,
+    return BlocBuilder<MemoBloc, MemoState>(
       builder: (context, memoState) {
         if (memoState is MemoLoaded) {
-          return BlocBuilder<MemoSortEvent, MemoSortState>(
-            bloc: memoSortBloc,
+          return BlocBuilder<MemoSortBloc, MemoSortState>(
             builder: (context, memoSortState) {
               // Sort memo
               var memoList = memoState.memoList;
@@ -65,7 +61,7 @@ class MemoList extends StatelessWidget {
                 return EmptyMemo();
               }
 
-              return BlocBuilder<ListEvent, ListState>(
+              return BlocBuilder<ListBloc, ListState>(
                 bloc: listBloc,
                 builder: (context, memoListState) {
                   return Padding(

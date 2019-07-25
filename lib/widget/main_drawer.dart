@@ -42,7 +42,7 @@ class MainDrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var drawerBloc = BlocProvider.of<MainDrawerBloc>(context);
-    return BlocBuilder<MainDrawerEvent, MainDrawerState>(
+    return BlocBuilder<MainDrawerBloc, MainDrawerState>(
       bloc: drawerBloc,
       builder: (context, state) {
         return Column(
@@ -124,8 +124,7 @@ class SessionInfoHeader extends StatelessWidget {
 class ThemeSwitchItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PreferenceEvent, PreferenceState>(
-      bloc: BlocProvider.of<PreferenceBloc>(context),
+    return BlocBuilder<PreferenceBloc, PreferenceState>(
       builder: (BuildContext context, PreferenceState state) {
         var darkModePref = state.preferences.get(AppPreferences.keyDarkMode);
         var themeBloc = BlocProvider.of<ThemeBloc>(context);
@@ -245,24 +244,21 @@ class _FolderExpansionTile extends StatefulWidget {
 
 class _FolderExpansionTileState extends State<_FolderExpansionTile> {
   FolderBloc _folderBloc;
-  MemoBloc _memoBloc;
 
   @override
   void initState() {
     super.initState();
     _folderBloc = BlocProvider.of<FolderBloc>(context);
-    _memoBloc = BlocProvider.of<MemoBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: BlocBuilder<FolderEvent, FolderState>(
+      child: BlocBuilder<FolderBloc, FolderState>(
         bloc: _folderBloc,
         builder: (context, folderState) {
-          return BlocBuilder<MemoEvent, MemoState>(
-            bloc: _memoBloc,
+          return BlocBuilder<MemoBloc, MemoState>(
             builder: (context, snapshot) {
               return ExpansionTile(
                 title: Text(AppLocalizations.of(context).actionFolder),

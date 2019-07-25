@@ -7,11 +7,9 @@ import 'package:sp_client/util/utils.dart';
 class MainFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MainDrawerEvent, MainDrawerState>(
-      bloc: BlocProvider.of<MainDrawerBloc>(context),
+    return BlocBuilder<MainDrawerBloc, MainDrawerState>(
       builder: (context, mainDrawerState) {
-        return BlocBuilder<ListEvent, ListState>(
-          bloc: BlocProvider.of<ListBloc>(context),
+        return BlocBuilder<ListBloc, ListState>(
           builder: (context, listState) {
             return AnimatedOpacity(
               opacity: listState is UnSelectableList ? 1.0 : 0.0,
