@@ -1,5 +1,7 @@
 import 'package:sp_client/model/models.dart';
 
+import 'constants.dart';
+
 class AppPreferences {
   static final String keyUserId = "pref_user_id";
   static final String keyDarkMode = "pref_dark_mode";
@@ -18,7 +20,7 @@ class AppPreferences {
     ),
     Preference<String>(
       key: keyServiceHost,
-      initValue: '',
+      initValue: processServiceBaseUrl,
     ),
   ];
 }

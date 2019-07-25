@@ -1,16 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meta/meta.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/repository/repository.dart';
 
 class FirebaseMemoRepository extends MemoRepository {
-  final String userId;
+  final UserRepository _userRepository;
 
-  FirebaseMemoRepository(this.userId) : assert(userId != null);
+  FirebaseMemoRepository({@required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository;
+
+  Future<String> get uid async {
+    return (await _userRepository.getUser()).uid;
+  }
 
   @override
   Future<Memo> create(Memo newMemo) async {
     if (newMemo.userId == null) {
-      newMemo.userId = userId;
+      newMemo.userId = await uid;
     }
     Firestore.instance
         .collection(Memo.collectionName)
@@ -28,7 +35,7 @@ class FirebaseMemoRepository extends MemoRepository {
   Stream<List<Memo>> readAllAsStream() async* {
     var queryStream = Firestore.instance
         .collection(Memo.collectionName)
-        .where(Memo.columnUserId, isEqualTo: userId)
+        .where(Memo.columnUserId, isEqualTo: await uid)
         .snapshots();
     await for (var queryData in queryStream) {
       yield queryData.documents
@@ -47,7 +54,7 @@ class FirebaseMemoRepository extends MemoRepository {
   Stream<List<Memo>> readByFolderIdAsStream(String folderId) async* {
     var queryStream = Firestore.instance
         .collection(Memo.collectionName)
-        .where(Memo.columnUserId, isEqualTo: userId)
+        .where(Memo.columnUserId, isEqualTo: await uid)
         .where(Memo.columnFolderId, isEqualTo: folderId)
         .snapshots();
     await for (var queryData in queryStream) {

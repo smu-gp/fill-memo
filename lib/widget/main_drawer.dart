@@ -100,7 +100,19 @@ class SessionInfoHeader extends StatelessWidget {
             ? Icons.tablet_android
             : Icons.phone_android),
       ),
-      accountName: Text("Name"),
+      accountName: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, authState) {
+          if (authState is Authenticated) {
+            var savedName = authState.displayName;
+            var name = savedName != null && savedName.isNotEmpty
+                ? savedName
+                : AppLocalizations.of(context).labelUnnamed;
+            return Text(name);
+          } else {
+            return Text("");
+          }
+        },
+      ),
       accountEmail: FutureBuilder<String>(
         future: _getDeviceName(),
         builder: (context, snapshot) => Text(snapshot.data ?? "Unknown"),

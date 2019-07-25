@@ -4,13 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/memo_image_screen.dart';
-import 'package:sp_client/service/text_process_service.dart';
+import 'package:sp_client/service/services.dart' as Service;
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
@@ -210,7 +210,7 @@ class _MemoScreenState extends State<MemoScreen> {
     );
   }
 
-  void _showSendErrorDialog([Exception e]) {
+  void _showSendErrorDialog([Object e]) {
     showDialog(
       context: context,
       builder: (context) {
@@ -271,15 +271,16 @@ class _MemoScreenState extends State<MemoScreen> {
   }
 
   void _uploadProcessingServer(File imageFile) async {
-    var service = TextProcessService(
-      httpClient: http.Client(),
-      baseUrl: 'http://${AppPreferences.initServiceHost}:8000',
-    );
-
     _showProgressDialog();
 
     try {
-      var results = await service.sendImage(imageFile: imageFile);
+      var prefBloc = BlocProvider.of<PreferenceBloc>(context);
+      var pref = prefBloc.getPreference<String>(AppPreferences.keyServiceHost);
+      var results = await Service.sendImage(
+        imageFile: imageFile,
+        baseUrl: pref.value.isNotEmpty ? pref.value : processServiceBaseUrl,
+      );
+
       Navigator.pop(context); // Hide progress dialog
       showDialog(
           context: context,

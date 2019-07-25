@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-07-19T13:59:37.943204",
+  "@@last_modified": "2019-07-25T16:40:03.816277",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -186,6 +186,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelAppInitialize": "Initialize app...",
+  "@labelAppInitialize": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelAuthFailed": "Auth failed",
   "@labelAuthFailed": {
     "type": "text",
@@ -248,6 +253,11 @@
   },
   "labelServiceHost": "Service host",
   "@labelServiceHost": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUnnamed": "Unnamed",
+  "@labelUnnamed": {
     "type": "text",
     "placeholders": {}
   },
