@@ -55,6 +55,15 @@ class Memo extends Equatable {
           updatedAt
         ]);
 
+  factory Memo.empty(String type) {
+    return Memo(
+      type: type,
+      content: null,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
   Memo.fromMap(Map<String, dynamic> map)
       : super([
           map[columnId],

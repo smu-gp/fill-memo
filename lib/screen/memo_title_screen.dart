@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/memo_screen.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 
 class MemoTitleScreen extends StatefulWidget {
@@ -106,14 +107,9 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       }
     }
 
-    var newMemo = Memo(
-      folderId: _currentFolder?.id ?? null,
-      title: title.isNotEmpty ? title : null,
-      content: null,
-      type: "plainText",
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    );
+    var newMemo = Memo.empty(typeRichText)
+      ..title = title.isNotEmpty ? title : null
+      ..folderId = _currentFolder?.id ?? null;
 
     Navigator.pushReplacement(
       context,

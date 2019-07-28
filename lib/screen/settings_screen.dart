@@ -14,8 +14,12 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  PreferenceBloc prefBloc;
+
   @override
   Widget build(BuildContext context) {
+    prefBloc = BlocProvider.of<PreferenceBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).actionSettings),
@@ -26,6 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           horizontal: Util.isTablet(context) ? 56.0 : 0,
         ),
         child: BlocBuilder<PreferenceBloc, PreferenceState>(
+          bloc: prefBloc,
           builder: (context, state) {
             return ListView(
               children: _buildItems(state.preferences),
@@ -47,21 +52,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   List<Widget> _buildNoteItems(Preferences preferences) {
+    var prefNewNoteOnStartup =
+        preferences.get(AppPreferences.keyNewNoteOnStartup);
+    var prefQuickFolderClassification =
+        preferences.get(AppPreferences.keyQuickFolderClassification);
+
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleNote,
       ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
-        value: false,
-        onChanged: (bool value) {},
+        value: prefNewNoteOnStartup.value,
+        onChanged: (bool value) => prefBloc
+            .dispatch(UpdatePreference(prefNewNoteOnStartup..value = value)),
       ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelQuickFolderClassification,
         subtitle:
             AppLocalizations.of(context).subtitleQuickFolderClassification,
-        value: true,
-        onChanged: (bool value) {},
+        value:
+            preferences.get(AppPreferences.keyQuickFolderClassification).value,
+        onChanged: (bool value) => prefBloc.dispatch(
+            UpdatePreference(prefQuickFolderClassification..value = value)),
       ),
     ];
   }

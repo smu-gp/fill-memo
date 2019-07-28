@@ -62,12 +62,6 @@ class MainDrawerMenu extends StatelessWidget {
               initiallyExpanded: state.folderId != null,
               selectedFolder: state.folderId,
             ),
-            _DrawerSelectableItem(
-              icon: (state.selectedMenu == 2) ? Icons.lock : OMIcons.lock,
-              title: AppLocalizations.of(context).actionSecretFolder,
-              selected: false,
-              onTap: () {},
-            ),
             Divider(),
             _DrawerItem(
               icon: OMIcons.phonelink,

@@ -5,6 +5,9 @@ import 'constants.dart';
 class AppPreferences {
   static final String keyUserId = "pref_user_id";
   static final String keyDarkMode = "pref_dark_mode";
+  static final String keyNewNoteOnStartup = "pref_new_note_onstartup";
+  static final String keyQuickFolderClassification =
+      "pref_quick_folder_classification";
 
   // For debug options
   static final String keyServiceHost = "pref_service_host";
@@ -17,6 +20,14 @@ class AppPreferences {
     Preference<bool>(
       key: keyDarkMode,
       initValue: false,
+    ),
+    Preference<bool>(
+      key: keyNewNoteOnStartup,
+      initValue: false,
+    ),
+    Preference<bool>(
+      key: keyQuickFolderClassification,
+      initValue: true,
     ),
     Preference<String>(
       key: keyServiceHost,
