@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sp_client/model/models.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/rich_text_field/util/spannable_list.dart';
 
 class MemoItem extends StatelessWidget {
   final Memo memo;
@@ -21,6 +23,18 @@ class MemoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget content;
+    if (memo.type == typeRichText) {
+      var style = Theme.of(context).textTheme.body1;
+      var list = SpannableList.fromJson(memo.contentStyle);
+
+      content = RichText(
+        text: list.toTextSpan(memo.content, defaultStyle: style),
+        maxLines: 7,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -56,11 +70,7 @@ class MemoItem extends StatelessWidget {
                       ),
                     ),
                   if (memo.title != null) SizedBox(height: 4.0),
-                  Text(
-                    memo.content ?? "",
-                    maxLines: 7,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  content,
                   SizedBox(height: 8.0),
                   Text(
                     Util.formatDate(date ?? memo.createdAt),
