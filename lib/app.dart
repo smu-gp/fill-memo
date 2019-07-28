@@ -57,32 +57,32 @@ class _AppState extends State<App> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PreferenceBloc>(
-          builder: (context) => preferenceBloc,
+        BlocProvider<PreferenceBloc>.value(
+          value: preferenceBloc,
         ),
-        BlocProvider<ThemeBloc>(
-          builder: (context) => themeBloc,
+        BlocProvider<ThemeBloc>.value(
+          value: themeBloc,
         ),
-        BlocProvider<AuthBloc>(
-          builder: (context) => authBloc,
+        BlocProvider<AuthBloc>.value(
+          value: authBloc,
         ),
-        BlocProvider<MemoBloc>(
-          builder: (context) => memoBloc,
+        BlocProvider<MemoBloc>.value(
+          value: memoBloc,
         ),
-        BlocProvider<FolderBloc>(
-          builder: (context) => folderBloc,
-        )
+        BlocProvider<FolderBloc>.value(
+          value: folderBloc,
+        ),
       ],
-      child: BlocBuilder<ThemeBloc, ThemeData>(
-        builder: (context, themeState) {
-          return BlocListener<AuthBloc, AuthState>(
-            listener: (context, authState) {
-              if (authState is Authenticated) {
-                memoBloc.dispatch(ReadMemo());
-                folderBloc.dispatch(ReadFolder());
-              }
-            },
-            child: MaterialApp(
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, authState) {
+          if (authState is Authenticated) {
+            memoBloc.dispatch(ReadMemo());
+            folderBloc.dispatch(ReadFolder());
+          }
+        },
+        child: BlocBuilder<ThemeBloc, ThemeData>(
+          builder: (context, themeState) {
+            return MaterialApp(
               onGenerateTitle: (context) =>
                   AppLocalizations.of(context).appName,
               theme: themeState,
@@ -99,20 +99,7 @@ class _AppState extends State<App> {
               home: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) {
                   if (authState is Authenticated) {
-                    return MultiBlocProvider(
-                      providers: [
-                        BlocProvider<MemoBloc>(
-                          builder: (context) => MemoBloc(widget.memoRepository)
-                            ..dispatch(ReadMemo()),
-                        ),
-                        BlocProvider<FolderBloc>(
-                          builder: (context) =>
-                              FolderBloc(widget.folderRepository)
-                                ..dispatch(ReadFolder()),
-                        ),
-                      ],
-                      child: MainScreen(),
-                    );
+                    return MainScreen();
                   } else {
                     var loginBloc =
                         LoginBloc(userRepository: widget.userRepository)
@@ -132,9 +119,9 @@ class _AppState extends State<App> {
                   }
                 },
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
