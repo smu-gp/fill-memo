@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info/package_info.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
+import 'package:sp_client/screen/settings/settings_memo_type_screen.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
 import 'package:sp_client/widget/list_item.dart';
@@ -52,6 +54,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   List<Widget> _buildNoteItems(Preferences preferences) {
+    var prefDefaultMemoType =
+        preferences.get(AppPreferences.keyDefaultMemoType);
     var prefNewNoteOnStartup =
         preferences.get(AppPreferences.keyNewNoteOnStartup);
     var prefQuickFolderClassification =
@@ -60,6 +64,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleNote,
+      ),
+      ListItem(
+        title: AppLocalizations.of(context).labelDefaultMemoType,
+        subtitle: _toLocalizationsFromType(prefDefaultMemoType.value),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SettingsMemoTypeScreen()),
+        ),
       ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
@@ -129,6 +141,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },
       )
     ];
+  }
+
+  String _toLocalizationsFromType(String typeString) {
+    switch (typeString) {
+      case typeRichText:
+        return AppLocalizations.of(context).labelRichText;
+      case typeMarkdown:
+        return AppLocalizations.of(context).labelMarkdown;
+      case typeHandWriting:
+        return AppLocalizations.of(context).labelHandWriting;
+    }
+    return null;
   }
 }
 

@@ -4,10 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/memo_screen.dart';
-import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 
 class MemoTitleScreen extends StatefulWidget {
+  final String memoType;
+
+  MemoTitleScreen(this.memoType);
+
   @override
   _MemoTitleScreenState createState() => _MemoTitleScreenState();
 }
@@ -107,7 +110,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       }
     }
 
-    var newMemo = Memo.empty(typeRichText)
+    var newMemo = Memo.empty(widget.memoType)
       ..title = title.isNotEmpty ? title : null
       ..folderId = _currentFolder?.id ?? null;
 

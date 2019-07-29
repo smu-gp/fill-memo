@@ -7,7 +7,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/screen/folder_manage_screen.dart';
-import 'package:sp_client/screen/settings_screen.dart';
+import 'package:sp_client/screen/settings/settings_screen.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/loading_progress.dart';
 

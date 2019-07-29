@@ -20,6 +20,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final MainDrawerBloc _drawerBloc = MainDrawerBloc();
   final ListBloc _listBloc = ListBloc();
   final MemoSortBloc _memoSortBloc = MemoSortBloc();
@@ -28,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance
-        .addPostFrameCallback((_) => _navigateMemo(onStartup: true));
+        .addPostFrameCallback((_) => _navigateNewMemo(onStartup: true));
   }
 
   @override
@@ -51,6 +53,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         child: Scaffold(
+          key: _scaffoldKey,
           appBar: MainAppBar(),
           drawer: MainDrawer(),
           body: BlocBuilder<MainDrawerBloc, MainDrawerState>(
@@ -60,14 +63,14 @@ class _MainScreenState extends State<MainScreen> {
             },
           ),
           floatingActionButton:
-              MainFloatingActionButton(onPressed: _navigateMemo),
+              MainFloatingActionButton(onPressed: _navigateNewMemo),
           resizeToAvoidBottomPadding: false,
         ),
       ),
     );
   }
 
-  void _navigateMemo({bool onStartup = false}) {
+  void _navigateNewMemo({bool onStartup = false}) {
     var preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
     var newNoteOnStartup =
         preferenceBloc.getPreference(AppPreferences.keyNewNoteOnStartup).value;
@@ -80,11 +83,24 @@ class _MainScreenState extends State<MainScreen> {
         .getPreference<bool>(AppPreferences.keyQuickFolderClassification)
         .value;
 
+    var defaultMemoType = preferenceBloc
+        .getPreference<String>(AppPreferences.keyDefaultMemoType)
+        .value;
+
+    if (defaultMemoType != typeRichText) {
+      _scaffoldKey.currentState
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text("Not supported type : $defaultMemoType"),
+        ));
+      return;
+    }
+
     var destination;
     if (quickFolderClassification) {
-      destination = MemoTitleScreen();
+      destination = MemoTitleScreen(defaultMemoType);
     } else {
-      destination = MemoScreen(Memo.empty(typeRichText));
+      destination = MemoScreen(Memo.empty(defaultMemoType));
     }
 
     Navigator.push(

@@ -220,6 +220,16 @@ class AppLocalizations {
         name: 'labelConnectSuccess',
       );
 
+  String get labelDefaultMemoType => Intl.message(
+        'Default memo type',
+        name: 'labelDefaultMemoType',
+      );
+
+  String get labelHandWriting => Intl.message(
+        'Hand writing',
+        name: 'labelHandWriting',
+      );
+
   String get labelInternalErr => Intl.message(
         'Internal server error',
         name: 'labelInternalErr',
@@ -228,6 +238,11 @@ class AppLocalizations {
   String get labelLightTheme => Intl.message(
         'Light theme',
         name: 'labelLightTheme',
+      );
+
+  String get labelMarkdown => Intl.message(
+        'Markdown',
+        name: 'labelMarkdown',
       );
 
   String get labelNoHostWaited => Intl.message(
@@ -253,6 +268,11 @@ class AppLocalizations {
   String get labelResponseTimeout => Intl.message(
         'Host Response timeout',
         name: 'labelResponseTimeout',
+      );
+
+  String get labelRichText => Intl.message(
+        'Rich text',
+        name: 'labelRichText',
       );
 
   String get labelServiceHost => Intl.message(
