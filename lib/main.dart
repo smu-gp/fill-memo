@@ -6,14 +6,11 @@ import 'package:sp_client/app.dart';
 import 'package:sp_client/bloc/simple_bloc_delegate.dart';
 import 'package:sp_client/repository/firebase/user_repository.dart';
 import 'package:sp_client/repository/repositories.dart';
-import 'package:sqflite/sqflite.dart';
 
 void main() async {
   bool isProduction = bool.fromEnvironment('dart.vm.product');
   if (!isProduction) {
     Crashlytics.instance.enableInDevMode = true;
-    // ignore: deprecated_member_use
-    await Sqflite.devSetDebugModeOn(true);
     BlocSupervisor.delegate = SimpleBlocDelegate();
   } else {
     FlutterError.onError = (FlutterErrorDetails details) {
