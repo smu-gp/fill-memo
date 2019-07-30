@@ -15,12 +15,9 @@ dependencies:
   collection: ^1.14.11
   equatable: ^0.2.3
   http: 0.12.0+1
-  rxdart: ^0.22.0
-  bloc: ^0.14.4
   flutter_bloc: ^0.20.0
   shared_preferences: ^0.5.2+1
   outline_material_icons: ^0.1.0
-  cupertino_icons: ^0.1.2
   grpc: ^1.0.2
   protobuf: ^0.13.11
   uuid: ^2.0.1
