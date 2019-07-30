@@ -7,31 +7,25 @@ abstract class MemoState extends Equatable {
   MemoState([List props = const []]) : super(props);
 }
 
-class MemoLoading extends MemoState {
+class MemosLoading extends MemoState {
   @override
-  String toString() {
-    return 'MemoLoading{}';
-  }
+  String toString() => '$runtimeType';
 }
 
-class MemoLoaded extends MemoState {
-  final List<Memo> memoList;
+class MemosLoaded extends MemoState {
+  final List<Memo> memos;
 
-  MemoLoaded(this.memoList) : super([memoList]);
+  MemosLoaded([this.memos = const []]) : super([memos]);
 
   @override
-  String toString() {
-    return 'MemoLoaded{memoList: $memoList}';
-  }
+  String toString() => '$runtimeType(memos: $memos)';
 }
 
-class MemoNotLoaded extends MemoState {
+class MemosNotLoaded extends MemoState {
   final Object exception;
 
-  MemoNotLoaded(this.exception) : super([exception]);
+  MemosNotLoaded(this.exception) : super([exception]);
 
   @override
-  String toString() {
-    return 'MemoNotLoaded{exception: $exception}';
-  }
+  String toString() => '$runtimeType(exception: $exception)';
 }

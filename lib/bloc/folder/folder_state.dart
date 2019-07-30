@@ -1,31 +1,31 @@
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 import 'package:sp_client/model/models.dart';
 
+@immutable
 abstract class FolderState extends Equatable {
   FolderState([List props = const []]) : super(props);
 }
 
-class FolderLoading extends FolderState {
+class FoldersLoading extends FolderState {
   @override
-  String toString() => 'FolderLoading';
+  String toString() => '$runtimeType';
 }
 
-class FolderLoaded extends FolderState {
+class FoldersLoaded extends FolderState {
   final List<Folder> folders;
 
-  FolderLoaded([this.folders = const []]) : super([folders]);
+  FoldersLoaded([this.folders = const []]) : super([folders]);
 
   @override
-  String toString() => 'FolderLoaded{folders: $folders}';
+  String toString() => '$runtimeType(folders: $folders)';
 }
 
-class FolderNotLoaded extends FolderState {
+class FoldersNotLoaded extends FolderState {
   final Exception exception;
 
-  FolderNotLoaded(this.exception) : super([exception]);
+  FoldersNotLoaded(this.exception) : super([exception]);
 
   @override
-  String toString() {
-    return 'FolderNotLoaded{exception: $exception}';
-  }
+  String toString() => '$runtimeType(exception: $exception)';
 }

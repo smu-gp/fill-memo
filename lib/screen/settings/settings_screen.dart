@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info/package_info.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/settings/settings_memo_type_screen.dart';
+import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
@@ -16,12 +16,21 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  PreferenceBloc prefBloc;
+  PreferenceBloc _preferenceBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    var preferenceRepository =
+        RepositoryProvider.of<PreferenceRepository>(context);
+    _preferenceBloc = PreferenceBloc(
+      repository: preferenceRepository,
+      usagePreferences: AppPreferences.preferences,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    prefBloc = BlocProvider.of<PreferenceBloc>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).actionSettings),
@@ -31,16 +40,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: EdgeInsets.symmetric(
           horizontal: Util.isTablet(context) ? 56.0 : 0,
         ),
-        child: BlocBuilder<PreferenceBloc, PreferenceState>(
-          bloc: prefBloc,
-          builder: (context, state) {
-            return ListView(
-              children: _buildItems(state.preferences),
-            );
-          },
+        child: BlocProvider<PreferenceBloc>.value(
+          value: _preferenceBloc,
+          child: BlocBuilder<PreferenceBloc, PreferenceState>(
+            bloc: _preferenceBloc,
+            builder: (context, state) {
+              return ListView(
+                children: _buildItems(state.preferences),
+              );
+            },
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _preferenceBloc.dispose();
+    super.dispose();
   }
 
   List<Widget> _buildItems(Preferences preferences) {
@@ -68,15 +86,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ListItem(
         title: AppLocalizations.of(context).labelDefaultMemoType,
         subtitle: _toLocalizationsFromType(prefDefaultMemoType.value),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SettingsMemoTypeScreen()),
-        ),
+        onTap: () =>
+            Navigator.push(context, Routes().settingsMemoType(_preferenceBloc)),
       ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
         value: prefNewNoteOnStartup.value,
-        onChanged: (bool value) => prefBloc
+        onChanged: (bool value) => _preferenceBloc
             .dispatch(UpdatePreference(prefNewNoteOnStartup..value = value)),
       ),
       SwitchListItem(
@@ -85,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             AppLocalizations.of(context).subtitleQuickFolderClassification,
         value:
             preferences.get(AppPreferences.keyQuickFolderClassification).value,
-        onChanged: (bool value) => prefBloc.dispatch(
+        onChanged: (bool value) => _preferenceBloc.dispatch(
             UpdatePreference(prefQuickFolderClassification..value = value)),
       ),
     ];

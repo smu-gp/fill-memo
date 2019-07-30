@@ -1,35 +1,23 @@
 import 'package:sp_client/model/models.dart';
 
 abstract class MemoRepository {
-  Future<Memo> create(Memo newMemo);
+  Future<void> addNewMemo(Memo memo);
 
-  Future<List<Memo>> readAll();
+  Future<void> deleteMemo(Memo memo);
 
-  Stream<List<Memo>> readAllAsStream();
+  Stream<List<Memo>> memos();
 
-  Future<List<Memo>> readByFolderId(String folderId);
-
-  Stream<List<Memo>> readByFolderIdAsStream(String folderId);
-
-  Future<Memo> readById(String id);
-
-  Stream<Memo> readByIdAsStream(String id);
-
-  Future<bool> update(Memo memo);
-
-  Future<bool> delete(String id);
+  Future<void> updateMemo(Memo memo);
 }
 
 abstract class FolderRepository {
-  Future<Folder> create(Folder newFolder);
+  Future<void> addNewFolder(Folder folder);
 
-  Future<List<Folder>> readAll();
+  Future<void> deleteFolder(Folder folder);
 
-  Stream<List<Folder>> readAllAsStream();
+  Stream<List<Folder>> folders();
 
-  Future<bool> update(Folder folder);
-
-  Future<bool> delete(String id);
+  Future<void> updateFolder(Folder folder);
 }
 
 abstract class PreferenceRepository {

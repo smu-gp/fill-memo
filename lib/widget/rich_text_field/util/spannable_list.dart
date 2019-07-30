@@ -35,6 +35,10 @@ class SpannableList {
   void modify(int offset, ModifyCallback callback) =>
       _list[offset] = callback(index(offset));
 
+  void concat(SpannableList anotherList) {
+    _list.addAll(anotherList.list);
+  }
+
   void clear() => _list.clear();
 
   int get length => _list.length;

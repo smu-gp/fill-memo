@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sp_client/screen/init_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import 'bloc/blocs.dart';
@@ -10,20 +11,11 @@ import 'util/utils.dart';
 
 class App extends StatefulWidget {
   final PreferenceRepository preferenceRepository;
-  final UserRepository userRepository;
-  final MemoRepository memoRepository;
-  final FolderRepository folderRepository;
 
   App({
     Key key,
     @required this.preferenceRepository,
-    @required this.userRepository,
-    @required this.memoRepository,
-    @required this.folderRepository,
   })  : assert(preferenceRepository != null),
-        assert(userRepository != null),
-        assert(memoRepository != null),
-        assert(folderRepository != null),
         super(key: key);
 
   @override
@@ -31,55 +23,48 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  @override
-  Widget build(BuildContext context) {
-    var preferenceBloc = PreferenceBloc(
-      repository: widget.preferenceRepository,
-      usagePreferences: AppPreferences.preferences,
-    );
+  String _userId;
+  ThemeBloc _themeBloc;
+  AuthBloc _authBloc;
 
-    var userId = preferenceBloc.getPreference<String>(AppPreferences.keyUserId);
-    if (userId.value == null) {
-      userId.value = Uuid().v4();
-      preferenceBloc.dispatch(UpdatePreference(userId));
+  UserRepository _userRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _userId = widget.preferenceRepository.getString(
+      AppPreferences.keyUserId,
+    );
+    if (_userId == null) {
+      _userId = Uuid().v4();
+      widget.preferenceRepository.setString(AppPreferences.keyUserId, _userId);
     }
 
+    _userRepository = FirebaseUserRepository();
+
     var darkMode =
-        preferenceBloc.getPreference<bool>(AppPreferences.keyDarkMode).value;
-    var initTheme = darkMode ? AppThemes.darkTheme : AppThemes.lightTheme;
-    var themeBloc = ThemeBloc(initTheme);
+        widget.preferenceRepository.getBool(AppPreferences.keyDarkMode);
+    var initTheme =
+        (darkMode ?? false) ? AppThemes.darkTheme : AppThemes.lightTheme;
+    _themeBloc = ThemeBloc(initTheme);
 
-    var authBloc = AuthBloc(userRepository: widget.userRepository)
+    _authBloc = AuthBloc(userRepository: _userRepository)
       ..dispatch(AppStarted());
+  }
 
-    var memoBloc = MemoBloc(widget.memoRepository);
-    var folderBloc = FolderBloc(widget.folderRepository);
-
+  @override
+  Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PreferenceBloc>.value(
-          value: preferenceBloc,
-        ),
         BlocProvider<ThemeBloc>.value(
-          value: themeBloc,
+          value: _themeBloc,
         ),
         BlocProvider<AuthBloc>.value(
-          value: authBloc,
-        ),
-        BlocProvider<MemoBloc>.value(
-          value: memoBloc,
-        ),
-        BlocProvider<FolderBloc>.value(
-          value: folderBloc,
+          value: _authBloc,
         ),
       ],
-      child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, authState) {
-          if (authState is Authenticated) {
-            memoBloc.dispatch(ReadMemo());
-            folderBloc.dispatch(ReadFolder());
-          }
-        },
+      child: RepositoryProvider<PreferenceRepository>.value(
+        value: widget.preferenceRepository,
         child: BlocBuilder<ThemeBloc, ThemeData>(
           builder: (context, themeState) {
             return MaterialApp(
@@ -99,44 +84,34 @@ class _AppState extends State<App> {
               home: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) {
                   if (authState is Authenticated) {
-                    return MainScreen();
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider<MemoBloc>(
+                          builder: (context) => MemoBloc(
+                            memoRepository:
+                                FirebaseMemoRepository(authState.uid),
+                          )..dispatch(LoadMemos()),
+                        ),
+                        BlocProvider<FolderBloc>(
+                          builder: (context) => FolderBloc(
+                            folderRepository:
+                                FirebaseFolderRepository(authState.uid),
+                          )..dispatch(LoadFolders()),
+                        )
+                      ],
+                      child: MainScreen(),
+                    );
                   } else {
-                    var loginBloc =
-                        LoginBloc(userRepository: widget.userRepository)
-                          ..dispatch(LoginSubmitted(userId.value));
-                    return BlocListener<LoginBloc, LoginState>(
-                      bloc: loginBloc,
-                      listener: (context, state) {
-                        if (state.isSuccess) {
-                          authBloc.dispatch(LoggedIn());
-                        } else if (state.isFailure) {
-                          // Retry login
-                          loginBloc.dispatch(LoginSubmitted(userId.value));
-                        }
-                      },
-                      child: _buildUninitialized(context),
+                    return BlocProvider(
+                      builder: (context) =>
+                          LoginBloc(userRepository: _userRepository),
+                      child: InitScreen(userId: _userId),
                     );
                   }
                 },
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUninitialized(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(elevation: 0),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(height: 24.0),
-            Text(AppLocalizations.of(context).labelAppInitialize),
-          ],
         ),
       ),
     );

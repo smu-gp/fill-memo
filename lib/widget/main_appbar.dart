@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/utils.dart';
@@ -26,7 +27,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
 
     return BlocListener<FolderBloc, FolderState>(
       listener: (context, folderState) {
-        if (folderState is FolderLoaded && folderState.folders.isEmpty) {
+        if (folderState is FoldersLoaded && folderState.folders.isEmpty) {
           drawerBloc.dispatch(SelectMenu(0));
         }
       },
@@ -44,7 +45,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                       if (drawerState.folderId != null) {
                         if (drawerState.folderId == Folder.defaultId) {
                           title = AppLocalizations.of(context).folderDefault;
-                        } else if (folderState is FolderLoaded) {
+                        } else if (folderState is FoldersLoaded) {
                           var folders = folderState.folders;
                           var findFolder = folders.firstWhere(
                               (folder) => folder.id == drawerState.folderId);
@@ -98,15 +99,15 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
 
   List<Widget> _buildNotesActions(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
-    var memoSortBloc = BlocProvider.of<MemoSortBloc>(context);
+    var memoSort = Provider.of<MemoSort>(context);
     return [
       IconButton(
         icon: Icon(Icons.sort),
         tooltip: AppLocalizations.of(context).actionSort,
         onPressed: () => showDialog(
           context: context,
-          builder: (context) => BlocProvider<MemoSortBloc>(
-            builder: (context) => memoSortBloc,
+          builder: (context) => ChangeNotifierProvider<MemoSort>.value(
+            value: memoSort,
             child: SortDialog(),
           ),
         ),
@@ -132,7 +133,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
           icon: Icon(Icons.merge_type),
           onPressed: () {
             var selectedMemo = List.castFrom<dynamic, Memo>(selectedItems);
-            memoBloc.mergeMemo(selectedMemo);
+            memoBloc.dispatch(MergeMemo(selectedMemo));
             listBloc.dispatch(UnSelectable());
           },
         ),
@@ -141,7 +142,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
         tooltip: AppLocalizations.of(context).actionDelete,
         onPressed: () {
           selectedItems.forEach((item) {
-            memoBloc.deleteMemo(item.id);
+            memoBloc.dispatch(DeleteMemo(item));
           });
           listBloc.dispatch(UnSelectable());
         },

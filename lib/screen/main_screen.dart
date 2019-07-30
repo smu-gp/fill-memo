@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/memo_screen.dart';
-import 'package:sp_client/screen/memo_title_screen.dart';
+import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/util/constants.dart';
+import 'package:sp_client/util/routes.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/main_appbar.dart';
 import 'package:sp_client/widget/main_drawer.dart';
@@ -24,7 +25,6 @@ class _MainScreenState extends State<MainScreen> {
 
   final MainDrawerBloc _drawerBloc = MainDrawerBloc();
   final ListBloc _listBloc = ListBloc();
-  final MemoSortBloc _memoSortBloc = MemoSortBloc();
 
   @override
   void initState() {
@@ -48,44 +48,54 @@ class _MainScreenState extends State<MainScreen> {
           BlocProvider<ListBloc>(
             builder: (context) => _listBloc,
           ),
-          BlocProvider<MemoSortBloc>(
-            builder: (context) => _memoSortBloc,
-          ),
         ],
-        child: Scaffold(
-          key: _scaffoldKey,
-          appBar: MainAppBar(),
-          drawer: MainDrawer(),
-          body: BlocBuilder<MainDrawerBloc, MainDrawerState>(
-            bloc: _drawerBloc,
-            builder: (context, state) {
-              return MemoList(folderId: state.folderId);
-            },
+        child: ChangeNotifierProvider(
+          builder: (_) => MemoSort(),
+          child: Scaffold(
+            key: _scaffoldKey,
+            appBar: MainAppBar(),
+            drawer: MainDrawer(),
+            body: BlocBuilder<MainDrawerBloc, MainDrawerState>(
+              bloc: _drawerBloc,
+              builder: (context, state) {
+                return MemoList(folderId: state.folderId);
+              },
+            ),
+            floatingActionButton:
+                MainFloatingActionButton(onPressed: _navigateNewMemo),
+            resizeToAvoidBottomPadding: false,
           ),
-          floatingActionButton:
-              MainFloatingActionButton(onPressed: _navigateNewMemo),
-          resizeToAvoidBottomPadding: false,
         ),
       ),
     );
   }
 
+  @override
+  void dispose() {
+    _drawerBloc.dispose();
+    _listBloc.dispose();
+    super.dispose();
+  }
+
   void _navigateNewMemo({bool onStartup = false}) {
-    var preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
+    var preferenceRepository =
+        RepositoryProvider.of<PreferenceRepository>(context);
+
     var newNoteOnStartup =
-        preferenceBloc.getPreference(AppPreferences.keyNewNoteOnStartup).value;
+        preferenceRepository.getBool(AppPreferences.keyNewNoteOnStartup) ??
+            false;
 
     if (onStartup && !newNoteOnStartup) {
       return;
     }
 
-    var quickFolderClassification = preferenceBloc
-        .getPreference<bool>(AppPreferences.keyQuickFolderClassification)
-        .value;
+    var quickFolderClassification = preferenceRepository
+            .getBool(AppPreferences.keyQuickFolderClassification) ??
+        true;
 
-    var defaultMemoType = preferenceBloc
-        .getPreference<String>(AppPreferences.keyDefaultMemoType)
-        .value;
+    var defaultMemoType =
+        preferenceRepository.getString(AppPreferences.keyDefaultMemoType) ??
+            typeRichText;
 
     if (defaultMemoType != typeRichText) {
       _scaffoldKey.currentState
@@ -98,14 +108,10 @@ class _MainScreenState extends State<MainScreen> {
 
     var destination;
     if (quickFolderClassification) {
-      destination = MemoTitleScreen(defaultMemoType);
+      destination = Routes().memoTitle(context, defaultMemoType);
     } else {
-      destination = MemoScreen(Memo.empty(defaultMemoType));
+      destination = Routes().memo(context, Memo.empty(defaultMemoType));
     }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => destination),
-    );
+    Navigator.push(context, destination);
   }
 }

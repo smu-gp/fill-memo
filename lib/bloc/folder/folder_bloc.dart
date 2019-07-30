@@ -1,46 +1,62 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:sp_client/model/folder.dart';
+import 'package:meta/meta.dart';
 import 'package:sp_client/repository/repository.dart';
 
-import './folder_event.dart';
-import './folder_state.dart';
+import 'folder_event.dart';
+import 'folder_state.dart';
 
 class FolderBloc extends Bloc<FolderEvent, FolderState> {
-  final FolderRepository repository;
+  final FolderRepository _folderRepository;
+  StreamSubscription _folderSubscription;
 
-  FolderBloc(this.repository) : assert(repository != null);
+  FolderBloc({@required FolderRepository folderRepository})
+      : assert(folderRepository != null),
+        _folderRepository = folderRepository;
 
   @override
-  FolderState get initialState => FolderLoading();
+  FolderState get initialState => FoldersLoading();
 
   @override
   Stream<FolderState> mapEventToState(
     FolderEvent event,
   ) async* {
-    if (event is ReadFolder) {
-      yield* _mapReadFolderToState(event);
+    if (event is LoadFolders) {
+      yield* _mapLoadFoldersToState(event);
+    } else if (event is AddFolder) {
+      yield* _mapAddFolderToState(event);
+    } else if (event is UpdateFolder) {
+      yield* _mapUpdateFolderToState(event);
+    } else if (event is DeleteFolder) {
+      yield* _mapDeleteFolderToState(event);
+    } else if (event is FoldersUpdated) {
+      yield* _mapFoldersUpdateToState(event);
     }
   }
 
-  Stream<FolderState> _mapReadFolderToState(ReadFolder event) async* {
-    try {
-      await for (var list in repository.readAllAsStream()) {
-        yield FolderLoaded(list);
-      }
-    } catch (exception) {
-      yield FolderNotLoaded(exception);
-    }
+  Stream<FolderState> _mapLoadFoldersToState(LoadFolders event) async* {
+    _folderSubscription?.cancel();
+    _folderSubscription = _folderRepository.folders().listen((folders) {
+      dispatch(
+        FoldersUpdated(folders),
+      );
+    });
   }
 
-  void createFolder(Folder newFolder) {
-    repository.create(newFolder);
+  Stream<FolderState> _mapAddFolderToState(AddFolder event) async* {
+    _folderRepository.addNewFolder(event.folder);
   }
 
-  void updateFolder(Folder updatedFolder) {
-    repository.update(updatedFolder);
+  Stream<FolderState> _mapUpdateFolderToState(UpdateFolder event) async* {
+    _folderRepository.updateFolder(event.updatedFolder);
   }
 
-  void deleteFolder(String id) {
-    repository.delete(id);
+  Stream<FolderState> _mapDeleteFolderToState(DeleteFolder event) async* {
+    _folderRepository.deleteFolder(event.folder);
+  }
+
+  Stream<FolderState> _mapFoldersUpdateToState(FoldersUpdated event) async* {
+    yield FoldersLoaded(event.folders);
   }
 }
