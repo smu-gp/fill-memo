@@ -308,6 +308,7 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
     return <Widget>[
       _buildFolderItem(
         Folder(
+          id: Folder.defaultId,
           name: AppLocalizations.of(context).folderDefault,
         ),
         selectedFolderId,

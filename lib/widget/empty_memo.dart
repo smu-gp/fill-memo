@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/util/utils.dart';
 
 class EmptyMemo extends StatelessWidget {
@@ -10,8 +9,8 @@ class EmptyMemo extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(
-            OMIcons.description,
-            color: Theme.of(context).iconTheme.color,
+            Icons.description,
+            color: Theme.of(context).iconTheme.color.withOpacity(0.54),
             size: 96.0,
           ),
           SizedBox(height: 24.0),

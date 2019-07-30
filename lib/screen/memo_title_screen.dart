@@ -112,7 +112,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
 
     var newMemo = Memo.empty(widget.memoType)
       ..title = title.isNotEmpty ? title : null
-      ..folderId = _currentFolder?.id ?? null;
+      ..folderId = _currentFolder?.id ?? Folder.defaultId;
 
     Navigator.pushReplacement(context, Routes().memo(context, newMemo));
   }

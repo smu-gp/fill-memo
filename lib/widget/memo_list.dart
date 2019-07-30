@@ -130,11 +130,7 @@ class MemoList extends StatelessWidget {
 
   List<Memo> _filterMemos(List<Memo> memos, {String folderId}) {
     return memos.where((memo) {
-      if (folderId == Folder.defaultId) {
-        return memo.folderId == null;
-      } else {
-        return memo.folderId == folderId;
-      }
+      return memo.folderId == folderId;
     }).toList();
   }
 }
