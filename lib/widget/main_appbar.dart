@@ -101,24 +101,35 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
     var listBloc = BlocProvider.of<ListBloc>(context);
     var memoSort = Provider.of<MemoSort>(context);
     return [
-      IconButton(
-        icon: Icon(Icons.sort),
-        tooltip: AppLocalizations.of(context).actionSort,
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => ChangeNotifierProvider<MemoSort>.value(
-            value: memoSort,
-            child: SortDialog(),
-          ),
-        ),
-      ),
-      IconButton(
-        icon: Icon(OMIcons.edit),
-        tooltip: AppLocalizations.of(context).actionEdit,
-        onPressed: () {
-          listBloc.dispatch(Selectable());
+      PopupMenuButton<NotesMenuItem>(
+        onSelected: (NotesMenuItem selected) {
+          if (selected == NotesMenuItem.actionEdit) {
+            listBloc.dispatch(Selectable());
+          } else if (selected == NotesMenuItem.actionSort) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return ChangeNotifierProvider<MemoSort>.value(
+                  value: memoSort,
+                  child: SortDialog(),
+                );
+              },
+            );
+          }
         },
-      ),
+        itemBuilder: (BuildContext context) {
+          return <PopupMenuEntry<NotesMenuItem>>[
+            PopupMenuItem<NotesMenuItem>(
+              value: NotesMenuItem.actionEdit,
+              child: Text(AppLocalizations.of(context).actionEdit),
+            ),
+            PopupMenuItem<NotesMenuItem>(
+              value: NotesMenuItem.actionSort,
+              child: Text(AppLocalizations.of(context).actionSort),
+            ),
+          ];
+        },
+      )
     ];
   }
 
@@ -147,6 +158,33 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
           listBloc.dispatch(UnSelectable());
         },
       ),
+      PopupMenuButton<EditNotesMenuItem>(
+        onSelected: (EditNotesMenuItem selected) async {
+          if (selected == EditNotesMenuItem.actionMoveFolder) {
+            var folderId = await _selectFolder(context);
+            if (folderId != null) {
+              selectedItems.forEach((item) {
+                var updatedMemo = (item as Memo)..folderId = folderId;
+                memoBloc.dispatch(UpdateMemo(updatedMemo));
+              });
+            }
+            listBloc.dispatch(UnSelectable());
+          }
+        },
+        itemBuilder: (BuildContext context) {
+          return <PopupMenuEntry<EditNotesMenuItem>>[
+            PopupMenuItem<EditNotesMenuItem>(
+              value: EditNotesMenuItem.actionMoveFolder,
+              child: Text(AppLocalizations.of(context).actionMoveFolder),
+            ),
+          ];
+        },
+      )
     ];
+  }
+
+  Future<String> _selectFolder(BuildContext context) async {
+    var folder = await Navigator.push(context, Routes().selectFolder(context));
+    return folder?.id ?? null;
   }
 }

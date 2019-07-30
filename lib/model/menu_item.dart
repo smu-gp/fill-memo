@@ -1,7 +1,3 @@
-enum MainMenuItem { actionEdit, actionSettings }
+enum NotesMenuItem { actionSort, actionEdit }
 
-enum FolderDetailMenuItem { actionEdit, actionRenameFolder, actionRemoveFolder }
-
-enum FolderDetailEditMenuItem { actionMoveFolder }
-
-enum ResultMenuItem { actionDelete }
+enum EditNotesMenuItem { actionMoveFolder }

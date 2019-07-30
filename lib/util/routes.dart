@@ -8,6 +8,7 @@ import 'package:sp_client/screen/memo_screen.dart';
 import 'package:sp_client/screen/memo_title_screen.dart';
 import 'package:sp_client/screen/settings/settings_memo_type_screen.dart';
 import 'package:sp_client/screen/settings/settings_screen.dart';
+import 'package:sp_client/widget/select_folder_dialog.dart';
 
 class Routes {
   PageRoute memoTitle(BuildContext context, String memoType) {
@@ -54,6 +55,17 @@ class Routes {
       builder: (context) => BlocProvider<FolderBloc>.value(
         value: folderBloc,
         child: FolderManageScreen(),
+      ),
+    );
+  }
+
+  PageRoute selectFolder(BuildContext context) {
+    var folderBloc = BlocProvider.of<FolderBloc>(context);
+    return MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => BlocProvider<FolderBloc>.value(
+        value: folderBloc,
+        child: SelectFolderDialog(),
       ),
     );
   }
