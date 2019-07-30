@@ -18,12 +18,8 @@ class Routes {
       builder: (context) {
         return MultiBlocProvider(
           providers: [
-            BlocProvider<MemoBloc>.value(
-              value: memoBloc,
-            ),
-            BlocProvider<FolderBloc>.value(
-              value: folderBloc,
-            ),
+            BlocProvider<MemoBloc>.value(value: memoBloc),
+            BlocProvider<FolderBloc>.value(value: folderBloc),
           ],
           child: MemoTitleScreen(memoType),
         );
@@ -50,12 +46,17 @@ class Routes {
     });
   }
 
-  PageRoute folderManage(FolderBloc folderBloc) {
+  PageRoute folderManage({MemoBloc memoBloc, FolderBloc folderBloc}) {
     return MaterialPageRoute(
-      builder: (context) => BlocProvider<FolderBloc>.value(
-        value: folderBloc,
-        child: FolderManageScreen(),
-      ),
+      builder: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<MemoBloc>.value(value: memoBloc),
+            BlocProvider<FolderBloc>.value(value: folderBloc),
+          ],
+          child: FolderManageScreen(),
+        );
+      },
     );
   }
 

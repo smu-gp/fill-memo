@@ -101,9 +101,13 @@ class _FolderManageAppBar extends StatelessWidget with PreferredSizeWidget {
   List<Widget> _buildSelectableActions(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
     var folderBloc = BlocProvider.of<FolderBloc>(context);
+    var memoBloc = BlocProvider.of<MemoBloc>(context);
+
     var listState = (listBloc.currentState as SelectableList);
     var selectedItemCount = listState.selectedItemCount;
     var selectedItems = listState.selectedItems;
+    var memoItems = (memoBloc.currentState as MemosLoaded).memos;
+
     return [
       IconButton(
         icon: Icon(OMIcons.delete),
@@ -111,6 +115,12 @@ class _FolderManageAppBar extends StatelessWidget with PreferredSizeWidget {
             ? () {
                 selectedItems.forEach((item) {
                   var folder = item as Folder;
+                  var folderMemos =
+                      memoItems.where((memo) => memo.folderId == folder.id);
+                  folderMemos.forEach((memo) {
+                    var updatedMemo = memo..folderId = Folder.defaultId;
+                    memoBloc.dispatch(UpdateMemo(updatedMemo));
+                  });
                   folderBloc.dispatch(DeleteFolder(folder));
                 });
                 listBloc.dispatch(UnSelectable());

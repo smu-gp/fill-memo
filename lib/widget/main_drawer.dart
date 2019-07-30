@@ -260,11 +260,13 @@ class _FolderExpansionTile extends StatefulWidget {
 }
 
 class _FolderExpansionTileState extends State<_FolderExpansionTile> {
+  MemoBloc _memoBloc;
   FolderBloc _folderBloc;
 
   @override
   void initState() {
     super.initState();
+    _memoBloc = BlocProvider.of<MemoBloc>(context);
     _folderBloc = BlocProvider.of<FolderBloc>(context);
   }
 
@@ -326,7 +328,13 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
           leading: Icon(OMIcons.settings),
           title: Text(AppLocalizations.of(context).actionManageFolder),
           onTap: () {
-            Navigator.push(context, Routes().folderManage(_folderBloc));
+            Navigator.push(
+              context,
+              Routes().folderManage(
+                memoBloc: _memoBloc,
+                folderBloc: _folderBloc,
+              ),
+            );
           },
         ),
     ];
