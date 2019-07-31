@@ -135,9 +135,13 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
 
   List<Widget> _buildSelectableActions(BuildContext context) {
     var memoBloc = BlocProvider.of<MemoBloc>(context);
+    var drawerBloc = BlocProvider.of<MainDrawerBloc>(context);
     var listBloc = BlocProvider.of<ListBloc>(context);
-    var memoListState = listBloc.currentState as SelectableList;
-    var selectedItems = memoListState.selectedItems;
+
+    var drawerState = drawerBloc.currentState;
+    var listState = listBloc.currentState as SelectableList;
+    var selectedItems = listState.selectedItems;
+
     return [
       if (selectedItems.length > 1)
         IconButton(
@@ -158,28 +162,29 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
           listBloc.dispatch(UnSelectable());
         },
       ),
-      PopupMenuButton<EditNotesMenuItem>(
-        onSelected: (EditNotesMenuItem selected) async {
-          if (selected == EditNotesMenuItem.actionMoveFolder) {
-            var folderId = await _selectFolder(context);
-            if (folderId != null) {
-              selectedItems.forEach((item) {
-                var updatedMemo = (item as Memo)..folderId = folderId;
-                memoBloc.dispatch(UpdateMemo(updatedMemo));
-              });
+      if (drawerState.folderId != null)
+        PopupMenuButton<EditNotesMenuItem>(
+          onSelected: (EditNotesMenuItem selected) async {
+            if (selected == EditNotesMenuItem.actionMoveFolder) {
+              var folderId = await _selectFolder(context);
+              if (folderId != null) {
+                selectedItems.forEach((item) {
+                  var updatedMemo = (item as Memo)..folderId = folderId;
+                  memoBloc.dispatch(UpdateMemo(updatedMemo));
+                });
+              }
+              listBloc.dispatch(UnSelectable());
             }
-            listBloc.dispatch(UnSelectable());
-          }
-        },
-        itemBuilder: (BuildContext context) {
-          return <PopupMenuEntry<EditNotesMenuItem>>[
-            PopupMenuItem<EditNotesMenuItem>(
-              value: EditNotesMenuItem.actionMoveFolder,
-              child: Text(AppLocalizations.of(context).actionMoveFolder),
-            ),
-          ];
-        },
-      )
+          },
+          itemBuilder: (BuildContext context) {
+            return <PopupMenuEntry<EditNotesMenuItem>>[
+              PopupMenuItem<EditNotesMenuItem>(
+                value: EditNotesMenuItem.actionMoveFolder,
+                child: Text(AppLocalizations.of(context).actionMoveFolder),
+              ),
+            ];
+          },
+        )
     ];
   }
 
