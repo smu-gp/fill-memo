@@ -19,7 +19,7 @@ class FolderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<FolderBloc, FolderState>(
       builder: (BuildContext context, FolderState state) {
-        if (state is FolderLoaded) {
+        if (state is FoldersLoaded) {
           var folders = [
             Folder(
               name: AppLocalizations.of(context).folderDefault,

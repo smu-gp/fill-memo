@@ -8,7 +8,11 @@ class EmptyMemo extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("¯\\_(ツ)_/¯", style: TextStyle(fontSize: 24.0)),
+          Icon(
+            Icons.description,
+            color: Theme.of(context).iconTheme.color.withOpacity(0.54),
+            size: 96.0,
+          ),
           SizedBox(height: 24.0),
           Text(AppLocalizations.of(context).memoEmpty),
         ],

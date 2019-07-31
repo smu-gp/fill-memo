@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/utils.dart';
@@ -26,7 +27,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
 
     return BlocListener<FolderBloc, FolderState>(
       listener: (context, folderState) {
-        if (folderState is FolderLoaded && folderState.folders.isEmpty) {
+        if (folderState is FoldersLoaded && folderState.folders.isEmpty) {
           drawerBloc.dispatch(SelectMenu(0));
         }
       },
@@ -44,7 +45,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                       if (drawerState.folderId != null) {
                         if (drawerState.folderId == Folder.defaultId) {
                           title = AppLocalizations.of(context).folderDefault;
-                        } else if (folderState is FolderLoaded) {
+                        } else if (folderState is FoldersLoaded) {
                           var folders = folderState.folders;
                           var findFolder = folders.firstWhere(
                               (folder) => folder.id == drawerState.folderId);
@@ -98,41 +99,56 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
 
   List<Widget> _buildNotesActions(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
-    var memoSortBloc = BlocProvider.of<MemoSortBloc>(context);
+    var memoSort = Provider.of<MemoSort>(context);
     return [
-      IconButton(
-        icon: Icon(Icons.sort),
-        tooltip: AppLocalizations.of(context).actionSort,
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => BlocProvider<MemoSortBloc>(
-            builder: (context) => memoSortBloc,
-            child: SortDialog(),
-          ),
-        ),
-      ),
-      IconButton(
-        icon: Icon(OMIcons.edit),
-        tooltip: AppLocalizations.of(context).actionEdit,
-        onPressed: () {
-          listBloc.dispatch(Selectable());
+      PopupMenuButton<NotesMenuItem>(
+        onSelected: (NotesMenuItem selected) {
+          if (selected == NotesMenuItem.actionEdit) {
+            listBloc.dispatch(Selectable());
+          } else if (selected == NotesMenuItem.actionSort) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return ChangeNotifierProvider<MemoSort>.value(
+                  value: memoSort,
+                  child: SortDialog(),
+                );
+              },
+            );
+          }
         },
-      ),
+        itemBuilder: (BuildContext context) {
+          return <PopupMenuEntry<NotesMenuItem>>[
+            PopupMenuItem<NotesMenuItem>(
+              value: NotesMenuItem.actionEdit,
+              child: Text(AppLocalizations.of(context).actionEdit),
+            ),
+            PopupMenuItem<NotesMenuItem>(
+              value: NotesMenuItem.actionSort,
+              child: Text(AppLocalizations.of(context).actionSort),
+            ),
+          ];
+        },
+      )
     ];
   }
 
   List<Widget> _buildSelectableActions(BuildContext context) {
     var memoBloc = BlocProvider.of<MemoBloc>(context);
+    var drawerBloc = BlocProvider.of<MainDrawerBloc>(context);
     var listBloc = BlocProvider.of<ListBloc>(context);
-    var memoListState = listBloc.currentState as SelectableList;
-    var selectedItems = memoListState.selectedItems;
+
+    var drawerState = drawerBloc.currentState;
+    var listState = listBloc.currentState as SelectableList;
+    var selectedItems = listState.selectedItems;
+
     return [
       if (selectedItems.length > 1)
         IconButton(
           icon: Icon(Icons.merge_type),
           onPressed: () {
             var selectedMemo = List.castFrom<dynamic, Memo>(selectedItems);
-            memoBloc.mergeMemo(selectedMemo);
+            memoBloc.dispatch(MergeMemo(selectedMemo));
             listBloc.dispatch(UnSelectable());
           },
         ),
@@ -141,11 +157,39 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
         tooltip: AppLocalizations.of(context).actionDelete,
         onPressed: () {
           selectedItems.forEach((item) {
-            memoBloc.deleteMemo(item.id);
+            memoBloc.dispatch(DeleteMemo(item));
           });
           listBloc.dispatch(UnSelectable());
         },
       ),
+      if (drawerState.folderId != null)
+        PopupMenuButton<EditNotesMenuItem>(
+          onSelected: (EditNotesMenuItem selected) async {
+            if (selected == EditNotesMenuItem.actionMoveFolder) {
+              var folderId = await _selectFolder(context);
+              if (folderId != null) {
+                selectedItems.forEach((item) {
+                  var updatedMemo = (item as Memo)..folderId = folderId;
+                  memoBloc.dispatch(UpdateMemo(updatedMemo));
+                });
+              }
+              listBloc.dispatch(UnSelectable());
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return <PopupMenuEntry<EditNotesMenuItem>>[
+              PopupMenuItem<EditNotesMenuItem>(
+                value: EditNotesMenuItem.actionMoveFolder,
+                child: Text(AppLocalizations.of(context).actionMoveFolder),
+              ),
+            ];
+          },
+        )
     ];
+  }
+
+  Future<String> _selectFolder(BuildContext context) async {
+    var folder = await Navigator.push(context, Routes().selectFolder(context));
+    return folder?.id ?? null;
   }
 }

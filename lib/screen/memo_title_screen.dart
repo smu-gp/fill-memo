@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/memo_screen.dart';
 import 'package:sp_client/util/localization.dart';
+import 'package:sp_client/util/utils.dart';
 
 class MemoTitleScreen extends StatefulWidget {
+  final String memoType;
+
+  MemoTitleScreen(this.memoType);
+
   @override
   _MemoTitleScreenState createState() => _MemoTitleScreenState();
 }
@@ -83,7 +87,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
     var findFolder;
     if (words.length >= 1) {
       var folderState = _folderBloc.currentState;
-      if (folderState is FolderLoaded) {
+      if (folderState is FoldersLoaded) {
         folderState.folders.forEach((folder) {
           if (folder.name == words.first) {
             findFolder = folder;
@@ -106,21 +110,11 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       }
     }
 
-    var newMemo = Memo(
-      folderId: _currentFolder?.id ?? null,
-      title: title.isNotEmpty ? title : null,
-      content: null,
-      type: "plainText",
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    );
+    var newMemo = Memo.empty(widget.memoType)
+      ..title = title.isNotEmpty ? title : null
+      ..folderId = _currentFolder?.id ?? Folder.defaultId;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MemoScreen(newMemo),
-      ),
-    );
+    Navigator.pushReplacement(context, Routes().memo(context, newMemo));
   }
 }
 

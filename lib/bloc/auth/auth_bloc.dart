@@ -34,7 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final isSignedIn = await _userRepository.isSignedIn();
       if (isSignedIn) {
         final user = await _userRepository.getUser();
-        yield Authenticated(user.displayName, user.email);
+        yield Authenticated(user.uid, user.displayName, user.email);
       } else {
         yield Unauthenticated();
       }
@@ -45,7 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Stream<AuthState> _mapLoggedInToState() async* {
     final user = await _userRepository.getUser();
-    yield Authenticated(user.displayName, user.email);
+    yield Authenticated(user.uid, user.displayName, user.email);
   }
 
   Stream<AuthState> _mapLoggedOutToState() async* {

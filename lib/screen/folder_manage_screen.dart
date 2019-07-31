@@ -19,7 +19,7 @@ class _FolderManageScreenState extends State<FolderManageScreen> {
   Widget build(BuildContext context) {
     return BlocListener<FolderBloc, FolderState>(
       listener: (context, folderState) {
-        if (folderState is FolderLoaded && folderState.folders.isEmpty) {
+        if (folderState is FoldersLoaded && folderState.folders.isEmpty) {
           Navigator.pop(context);
         }
       },
@@ -101,9 +101,13 @@ class _FolderManageAppBar extends StatelessWidget with PreferredSizeWidget {
   List<Widget> _buildSelectableActions(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
     var folderBloc = BlocProvider.of<FolderBloc>(context);
+    var memoBloc = BlocProvider.of<MemoBloc>(context);
+
     var listState = (listBloc.currentState as SelectableList);
     var selectedItemCount = listState.selectedItemCount;
     var selectedItems = listState.selectedItems;
+    var memoItems = (memoBloc.currentState as MemosLoaded).memos;
+
     return [
       IconButton(
         icon: Icon(OMIcons.delete),
@@ -111,7 +115,13 @@ class _FolderManageAppBar extends StatelessWidget with PreferredSizeWidget {
             ? () {
                 selectedItems.forEach((item) {
                   var folder = item as Folder;
-                  folderBloc.deleteFolder(folder.id);
+                  var folderMemos =
+                      memoItems.where((memo) => memo.folderId == folder.id);
+                  folderMemos.forEach((memo) {
+                    var updatedMemo = memo..folderId = Folder.defaultId;
+                    memoBloc.dispatch(UpdateMemo(updatedMemo));
+                  });
+                  folderBloc.dispatch(DeleteFolder(folder));
                 });
                 listBloc.dispatch(UnSelectable());
               }
@@ -133,7 +143,7 @@ class _FolderListState extends State<_FolderList> {
     return BlocBuilder<FolderBloc, FolderState>(
       bloc: folderBloc,
       builder: (context, folderState) {
-        if (folderState is FolderLoaded) {
+        if (folderState is FoldersLoaded) {
           var folders = folderState.folders;
           var listBloc = BlocProvider.of<ListBloc>(context);
           return BlocBuilder<ListBloc, ListState>(
@@ -184,7 +194,7 @@ class _FolderListState extends State<_FolderList> {
                     );
                     if (newName != null) {
                       var updatedFolder = folder..name = newName;
-                      folderBloc.updateFolder(updatedFolder);
+                      folderBloc.dispatch(UpdateFolder(updatedFolder));
                     }
                   },
                 ),

@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/memo_image_screen.dart';
+import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/service/services.dart' as Service;
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
@@ -38,6 +38,7 @@ class _MemoScreenState extends State<MemoScreen> {
   SpannableTextController _editContentSpannableController;
 
   MemoBloc _memoBloc;
+  PreferenceRepository _preferenceRepository;
 
   List<String> _memoContentImages;
   bool _showProgress = false;
@@ -47,6 +48,9 @@ class _MemoScreenState extends State<MemoScreen> {
   void initState() {
     super.initState();
     _memoBloc = BlocProvider.of<MemoBloc>(context);
+    _preferenceRepository =
+        RepositoryProvider.of<PreferenceRepository>(context);
+
     _editTitleTextController =
         TextEditingController(text: widget.memo.title ?? "");
     _editContentTextController =
@@ -133,12 +137,7 @@ class _MemoScreenState extends State<MemoScreen> {
   void _handleImageItemTapped(int index) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => MemoImageScreen(
-          contentImages: _memoContentImages,
-          initIndex: index,
-        ),
-      ),
+      Routes().memoImage(contentImages: _memoContentImages, initIndex: index),
     );
     setState(() {});
   }
@@ -168,14 +167,14 @@ class _MemoScreenState extends State<MemoScreen> {
     if (widget.memo.id != null) {
       if (isValid) {
         if (isChanged) {
-          _memoBloc.updateMemo(memo);
+          _memoBloc.dispatch(UpdateMemo(memo));
         }
       } else {
-        _memoBloc.deleteMemo(widget.memo.id);
+        _memoBloc.dispatch(DeleteMemo(widget.memo));
       }
     } else {
       if (isValid) {
-        _memoBloc.createMemo(memo);
+        _memoBloc.dispatch(AddMemo(memo));
       }
     }
   }
@@ -239,7 +238,7 @@ class _MemoScreenState extends State<MemoScreen> {
   }
 
   Future _uploadFirebaseStorage(File imageFile) async {
-    final userId = _getUserId();
+    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
     final uuid = Uuid().v1();
     final ext = imageFile.path.split(".")[1];
     final storage = FirebaseStorage.instance;
@@ -274,11 +273,13 @@ class _MemoScreenState extends State<MemoScreen> {
     _showProgressDialog();
 
     try {
-      var prefBloc = BlocProvider.of<PreferenceBloc>(context);
-      var pref = prefBloc.getPreference<String>(AppPreferences.keyServiceHost);
+      var baseUrl =
+          _preferenceRepository.getString(AppPreferences.keyServiceHost) ??
+              processServiceBaseUrl;
+
       var results = await Service.sendImage(
         imageFile: imageFile,
-        baseUrl: pref.value.isNotEmpty ? pref.value : processServiceBaseUrl,
+        baseUrl: baseUrl,
       );
 
       Navigator.pop(context); // Hide progress dialog
@@ -309,12 +310,6 @@ class _MemoScreenState extends State<MemoScreen> {
       Navigator.pop(context); // Hide progress dialog
       _showSendErrorDialog(e);
     }
-  }
-
-  String _getUserId() {
-    return BlocProvider.of<PreferenceBloc>(context)
-        .getPreference<String>(AppPreferences.keyUserId)
-        .value;
   }
 
   @override

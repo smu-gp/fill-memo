@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/memo_screen.dart';
+import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/empty_memo.dart';
 import 'package:sp_client/widget/error_memo.dart';
 import 'package:sp_client/widget/loading_progress.dart';
@@ -24,37 +25,17 @@ class MemoList extends StatelessWidget {
 
     return BlocBuilder<MemoBloc, MemoState>(
       builder: (context, memoState) {
-        if (memoState is MemoLoaded) {
-          return BlocBuilder<MemoSortBloc, MemoSortState>(
-            builder: (context, memoSortState) {
-              // Sort memo
-              var memoList = memoState.memoList;
-              memoList.sort((a, b) {
-                if (memoSortState.orderBy == SortOrderBy.createdAt) {
-                  if (memoSortState.sortType == SortOrderType.Asc) {
-                    return a.createdAt.compareTo(b.createdAt);
-                  } else {
-                    return b.createdAt.compareTo(a.createdAt);
-                  }
-                } else if (memoSortState.orderBy == SortOrderBy.updatedAt) {
-                  if (memoSortState.sortType == SortOrderType.Asc) {
-                    return a.updatedAt.compareTo(b.updatedAt);
-                  } else {
-                    return b.updatedAt.compareTo(a.updatedAt);
-                  }
-                }
-                return 0;
-              });
+        if (memoState is MemosLoaded) {
+          return Consumer<MemoSort>(
+            builder: (context, sortValue, _) {
+              var memoList = _sortMemos(
+                memoState.memos,
+                orderBy: sortValue.orderBy,
+                type: sortValue.orderType,
+              );
 
-              // Filter memo
               if (folderId != null) {
-                memoList = memoList.where((memo) {
-                  if (folderId == Folder.defaultId) {
-                    return memo.folderId == null;
-                  } else {
-                    return memo.folderId == folderId;
-                  }
-                }).toList();
+                memoList = _filterMemos(memoList, folderId: folderId);
               }
 
               if (memoList.isEmpty) {
@@ -66,13 +47,18 @@ class MemoList extends StatelessWidget {
                 builder: (context, memoListState) {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: _buildGrid(memoList, memoSortState, listBloc),
+                    child: _buildGrid(
+                      memoList,
+                      listBloc: listBloc,
+                      listState: memoListState,
+                      orderType: sortValue.orderType,
+                    ),
                   );
                 },
               );
             },
           );
-        } else if (memoState is MemoNotLoaded) {
+        } else if (memoState is MemosNotLoaded) {
           return ErrorMemo(memoState.exception);
         } else {
           return LoadingProgress();
@@ -81,11 +67,12 @@ class MemoList extends StatelessWidget {
     );
   }
 
-  StaggeredGridView _buildGrid(
-    List<Memo> memoList,
-    MemoSortState sortState,
+  Widget _buildGrid(
+    List<Memo> memoList, {
     ListBloc listBloc,
-  ) {
+    ListState listState,
+    SortOrderType orderType,
+  }) {
     return StaggeredGridView.countBuilder(
       primary: false,
       crossAxisCount: 4,
@@ -95,15 +82,12 @@ class MemoList extends StatelessWidget {
       itemBuilder: (context, index) {
         var memo = memoList[index];
         var selected = false;
-        var listState = listBloc.currentState;
         if (listState is SelectableList) {
           selected = listState.selectedItems.contains(memo);
         }
         return MemoItem(
           memo,
-          date: sortState.orderBy == SortOrderBy.updatedAt
-              ? memo.updatedAt
-              : null,
+          date: orderType == SortOrderBy.updatedAt ? memo.updatedAt : null,
           selected: selected,
           onTap: () {
             if (listState is SelectableList) {
@@ -113,12 +97,7 @@ class MemoList extends StatelessWidget {
                 listBloc.dispatch(SelectItem(memo));
               }
             } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MemoScreen(memo),
-                ),
-              );
+              Navigator.push(context, Routes().memo(context, memo));
             }
           },
           onLongPress: () => listBloc.dispatch(SelectItem(memo)),
@@ -126,5 +105,32 @@ class MemoList extends StatelessWidget {
       },
       staggeredTileBuilder: (index) => StaggeredTile.fit(2),
     );
+  }
+
+  List<Memo> _sortMemos(List<Memo> memos,
+      {SortOrderBy orderBy, SortOrderType type}) {
+    memos.sort((a, b) {
+      if (orderBy == SortOrderBy.createdAt) {
+        if (type == SortOrderType.Asc) {
+          return a.createdAt.compareTo(b.createdAt);
+        } else {
+          return b.createdAt.compareTo(a.createdAt);
+        }
+      } else if (orderBy == SortOrderBy.updatedAt) {
+        if (type == SortOrderType.Asc) {
+          return a.updatedAt.compareTo(b.updatedAt);
+        } else {
+          return b.updatedAt.compareTo(a.updatedAt);
+        }
+      }
+      return 0;
+    });
+    return memos;
+  }
+
+  List<Memo> _filterMemos(List<Memo> memos, {String folderId}) {
+    return memos.where((memo) {
+      return memo.folderId == folderId;
+    }).toList();
   }
 }

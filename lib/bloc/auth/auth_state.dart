@@ -12,13 +12,16 @@ class Uninitialized extends AuthState {
 }
 
 class Authenticated extends AuthState {
+  final String uid;
   final String displayName;
   final String email;
 
-  Authenticated(this.displayName, this.email) : super([displayName, email]);
+  Authenticated(this.uid, this.displayName, this.email)
+      : super([uid, displayName, email]);
 
   @override
-  String toString() => "$runtimeType(displayName: $displayName, email: $email)";
+  String toString() =>
+      "$runtimeType(uid: $uid, displayName: $displayName, email: $email)";
 }
 
 class Unauthenticated extends AuthState {

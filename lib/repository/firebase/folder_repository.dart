@@ -1,62 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/repository/repository.dart';
 
 class FirebaseFolderRepository extends FolderRepository {
-  final UserRepository _userRepository;
+  final folderCollection = Firestore.instance.collection(Folder.collectionName);
+  final String userId;
 
-  FirebaseFolderRepository({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository;
+  FirebaseFolderRepository(this.userId) : assert(userId != null);
 
-  Future<String> get uid async {
-    return (await _userRepository.getUser()).uid;
+  @override
+  Future<void> addNewFolder(Folder folder) {
+    folder.userId = userId;
+    return folderCollection.add(folder.toMap());
   }
 
   @override
-  Future<Folder> create(Folder newFolder) async {
-    if (newFolder.userId == null) {
-      newFolder.userId = await uid;
-    }
-    Firestore.instance
-        .collection(Folder.collectionName)
-        .document()
-        .setData(newFolder.toMap());
-    return newFolder;
+  Future<void> deleteFolder(Folder folder) {
+    return folderCollection.document(folder.id).delete();
   }
 
   @override
-  Future<List<Folder>> readAll() {
-    throw UnsupportedError("readAll");
-  }
-
-  @override
-  Stream<List<Folder>> readAllAsStream() async* {
-    var queryStream = Firestore.instance
-        .collection(Folder.collectionName)
-        .where(Folder.columnUserId, isEqualTo: await uid)
-        .snapshots();
-    await for (var queryData in queryStream) {
-      yield queryData.documents
+  Stream<List<Folder>> folders() {
+    return folderCollection
+        .where(Folder.columnUserId, isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.documents
           .map((document) =>
               Folder.fromMap(document.data)..id = document.documentID)
           .toList();
-    }
+    });
   }
 
   @override
-  Future<bool> update(Folder folder) async {
-    Firestore.instance
-        .collection(Folder.collectionName)
-        .document(folder.id)
-        .updateData(folder.toMap());
-    return true;
-  }
-
-  @override
-  Future<bool> delete(String id) async {
-    Firestore.instance.collection(Folder.collectionName).document(id).delete();
-    return true;
+  Future<void> updateFolder(Folder folder) {
+    return folderCollection.document(folder.id).updateData(folder.toMap());
   }
 }

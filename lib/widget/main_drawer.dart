@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/folder_manage_screen.dart';
-import 'package:sp_client/screen/settings_screen.dart';
+import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/loading_progress.dart';
 
@@ -62,12 +61,6 @@ class MainDrawerMenu extends StatelessWidget {
               initiallyExpanded: state.folderId != null,
               selectedFolder: state.folderId,
             ),
-            _DrawerSelectableItem(
-              icon: (state.selectedMenu == 2) ? Icons.lock : OMIcons.lock,
-              title: AppLocalizations.of(context).actionSecretFolder,
-              selected: false,
-              onTap: () {},
-            ),
             Divider(),
             _DrawerItem(
               icon: OMIcons.phonelink,
@@ -78,10 +71,7 @@ class MainDrawerMenu extends StatelessWidget {
               icon: OMIcons.settings,
               title: Text(AppLocalizations.of(context).actionSettings),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()),
-                );
+                Navigator.push(context, Routes().settings);
               },
             ),
           ],
@@ -133,33 +123,48 @@ class SessionInfoHeader extends StatelessWidget {
   }
 }
 
-class ThemeSwitchItem extends StatelessWidget {
+class ThemeSwitchItem extends StatefulWidget {
+  @override
+  _ThemeSwitchItemState createState() => _ThemeSwitchItemState();
+}
+
+class _ThemeSwitchItemState extends State<ThemeSwitchItem> {
+  ThemeBloc _themeBloc;
+  PreferenceRepository _preferenceRepository;
+
+  bool _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _themeBloc = BlocProvider.of<ThemeBloc>(context);
+    _preferenceRepository =
+        RepositoryProvider.of<PreferenceRepository>(context);
+    _value = _preferenceRepository.getBool(AppPreferences.keyDarkMode) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PreferenceBloc, PreferenceState>(
-      builder: (BuildContext context, PreferenceState state) {
-        var darkModePref = state.preferences.get(AppPreferences.keyDarkMode);
-        var themeBloc = BlocProvider.of<ThemeBloc>(context);
-        return ListTileTheme(
-          style: ListTileStyle.drawer,
-          contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: SwitchListTile(
-            title: Text(AppLocalizations.of(context).actionDarkMode),
-            secondary: Icon(
-              Icons.brightness_2,
-              color: Theme.of(context).accentColor,
-            ),
-            value: darkModePref.value,
-            onChanged: (bool value) {
-              BlocProvider.of<PreferenceBloc>(context)
-                  .dispatch(UpdatePreference(darkModePref..value = value));
-              themeBloc.dispatch(
-                value ? AppThemes.darkTheme : AppThemes.lightTheme,
-              );
-            },
-          ),
-        );
-      },
+    return ListTileTheme(
+      style: ListTileStyle.drawer,
+      contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
+      child: SwitchListTile(
+        title: Text(AppLocalizations.of(context).actionDarkMode),
+        secondary: Icon(
+          Icons.brightness_2,
+          color: Theme.of(context).accentColor,
+        ),
+        value: _value,
+        onChanged: (bool value) {
+          _preferenceRepository.setBool(AppPreferences.keyDarkMode, value);
+          _themeBloc.dispatch(
+            value ? AppThemes.darkTheme : AppThemes.lightTheme,
+          );
+          setState(() {
+            _value = value;
+          });
+        },
+      ),
     );
   }
 }
@@ -255,11 +260,13 @@ class _FolderExpansionTile extends StatefulWidget {
 }
 
 class _FolderExpansionTileState extends State<_FolderExpansionTile> {
+  MemoBloc _memoBloc;
   FolderBloc _folderBloc;
 
   @override
   void initState() {
     super.initState();
+    _memoBloc = BlocProvider.of<MemoBloc>(context);
     _folderBloc = BlocProvider.of<FolderBloc>(context);
   }
 
@@ -277,12 +284,12 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
                 leading: Icon(OMIcons.folder),
                 initiallyExpanded: widget.initiallyExpanded,
                 children: <Widget>[
-                  if (folderState is FolderLoading)
+                  if (folderState is FoldersLoading)
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: LoadingProgress(),
                     ),
-                  if (folderState is FolderLoaded)
+                  if (folderState is FoldersLoaded)
                     ..._buildFolderItems(
                       folderState.folders,
                       widget.selectedFolder,
@@ -303,6 +310,7 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
     return <Widget>[
       _buildFolderItem(
         Folder(
+          id: Folder.defaultId,
           name: AppLocalizations.of(context).folderDefault,
         ),
         selectedFolderId,
@@ -322,8 +330,9 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => FolderManageScreen(),
+              Routes().folderManage(
+                memoBloc: _memoBloc,
+                folderBloc: _folderBloc,
               ),
             );
           },
@@ -359,7 +368,7 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
       ),
     );
     if (folderName != null) {
-      _folderBloc.createFolder(Folder(name: folderName));
+      _folderBloc.dispatch(AddFolder(Folder(name: folderName)));
     }
   }
 }

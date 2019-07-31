@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'folder.dart';
 
 class Memo extends Equatable {
-  // Local database field constants for Secret folder
   static final String tableName = "memoSecret";
   static final String columnId = "id";
   static final String columnTitle = "title";
@@ -54,6 +53,15 @@ class Memo extends Equatable {
           createdAt,
           updatedAt
         ]);
+
+  factory Memo.empty(String type) {
+    return Memo(
+      type: type,
+      content: null,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
+  }
 
   Memo.fromMap(Map<String, dynamic> map)
       : super([
