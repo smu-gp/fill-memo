@@ -12,9 +12,7 @@ void main() async {
     Crashlytics.instance.enableInDevMode = true;
     BlocSupervisor.delegate = SimpleBlocDelegate();
   } else {
-    FlutterError.onError = (FlutterErrorDetails details) {
-      Crashlytics.instance.onError(details);
-    };
+    FlutterError.onError = Crashlytics.instance.recordFlutterError;
   }
 
   final sharedPreferences = await SharedPreferences.getInstance();
