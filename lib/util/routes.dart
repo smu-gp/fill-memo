@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
+import 'package:sp_client/screen/connection/connect_device_screen.dart';
+import 'package:sp_client/screen/connection/connection_authentication_screen.dart';
+import 'package:sp_client/screen/connection/connection_authorization_screen.dart';
+import 'package:sp_client/screen/connection/generate_code_screen.dart';
+import 'package:sp_client/screen/connection/menu_screen.dart';
+import 'package:sp_client/screen/connection/profile_screen.dart';
 import 'package:sp_client/screen/folder_manage_screen.dart';
 import 'package:sp_client/screen/memo_image_screen.dart';
 import 'package:sp_client/screen/memo_screen.dart';
 import 'package:sp_client/screen/memo_title_screen.dart';
-import 'package:sp_client/screen/settings/settings_memo_type_screen.dart';
+import 'package:sp_client/screen/settings/memo_type_screen.dart';
 import 'package:sp_client/screen/settings/settings_screen.dart';
+import 'package:sp_client/service/protobuf/connection.pb.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
 
 class Routes {
@@ -70,6 +77,34 @@ class Routes {
       ),
     );
   }
+
+  PageRoute connectionMenu = MaterialPageRoute(
+    builder: (context) => ConnectionMenuScreen(),
+  );
+
+  PageRoute connectionProfile = MaterialPageRoute(
+    builder: (context) => ConnectionProfileScreen(),
+  );
+
+  PageRoute connectionGenerateCode = MaterialPageRoute(
+    builder: (context) => GenerateCodeScreen(),
+  );
+
+  PageRoute connectionAuthorization(WaitAuthResponse response) {
+    return MaterialPageRoute(
+      builder: (context) => ConnectionAuthorizationScreen(response),
+    );
+  }
+
+  PageRoute connectionAuthentication(AuthRequest request) {
+    return MaterialPageRoute(
+      builder: (context) => ConnectionAuthenticationScreen(request),
+    );
+  }
+
+  PageRoute connectionConnectDevice = MaterialPageRoute(
+    builder: (context) => ConnectDeviceScreen(),
+  );
 
   PageRoute settings = MaterialPageRoute(
     builder: (context) => SettingsScreen(),

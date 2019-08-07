@@ -104,6 +104,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         onChanged: (bool value) => _preferenceBloc.dispatch(
             UpdatePreference(prefQuickFolderClassification..value = value)),
       ),
+      Divider(height: 1),
     ];
   }
 
@@ -121,6 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         value: false,
         onChanged: (bool value) {},
       ),
+      Divider(height: 1),
     ];
   }
 
@@ -135,6 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         validation: (value) => value.isNotEmpty,
         validationMessage: AppLocalizations.of(context).validationServiceHost,
       ),
+      Divider(height: 1),
     ];
   }
 

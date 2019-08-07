@@ -16,8 +16,30 @@ class Authenticated extends AuthState {
   final String displayName;
   final String email;
 
-  Authenticated(this.uid, this.displayName, this.email)
+  Authenticated({this.uid, this.displayName, this.email})
       : super([uid, displayName, email]);
+
+  Authenticated update({
+    String displayName,
+    String email,
+  }) {
+    return copyWith(
+      displayName: displayName,
+      email: email,
+    );
+  }
+
+  Authenticated copyWith({
+    String uid,
+    String displayName,
+    String email,
+  }) {
+    return Authenticated(
+      uid: uid ?? this.uid,
+      displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+    );
+  }
 
   @override
   String toString() =>

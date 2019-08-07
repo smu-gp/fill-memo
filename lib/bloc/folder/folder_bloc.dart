@@ -32,6 +32,8 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
       yield* _mapDeleteFolderToState(event);
     } else if (event is FoldersUpdated) {
       yield* _mapFoldersUpdateToState(event);
+    } else if (event is UpdateFolderUser) {
+      yield* _mapUpdateFolderUserToState(event);
     }
   }
 
@@ -58,5 +60,11 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
   Stream<FolderState> _mapFoldersUpdateToState(FoldersUpdated event) async* {
     yield FoldersLoaded(event.folders);
+  }
+
+  Stream<FolderState> _mapUpdateFolderUserToState(
+      UpdateFolderUser event) async* {
+    _folderRepository.updateUserId(event.userId);
+    dispatch(LoadFolders());
   }
 }

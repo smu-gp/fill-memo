@@ -22,8 +22,10 @@ class MemoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
+    var memoBloc = BlocProvider.of<MemoBloc>(context);
 
     return BlocBuilder<MemoBloc, MemoState>(
+      bloc: memoBloc,
       builder: (context, memoState) {
         if (memoState is MemosLoaded) {
           return Consumer<MemoSort>(

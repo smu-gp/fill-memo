@@ -47,3 +47,12 @@ class FoldersUpdated extends FolderEvent {
   @override
   String toString() => '$runtimeType';
 }
+
+class UpdateFolderUser extends FolderEvent {
+  final String userId;
+
+  UpdateFolderUser(this.userId) : super([userId]);
+
+  @override
+  String toString() => '$runtimeType(userId: $userId)';
+}

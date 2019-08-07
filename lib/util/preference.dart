@@ -36,7 +36,7 @@ class AppPreferences {
     ),
     Preference<String>(
       key: keyServiceHost,
-      initValue: processServiceBaseUrl,
+      initValue: defaultServiceHost,
     ),
   ];
 }

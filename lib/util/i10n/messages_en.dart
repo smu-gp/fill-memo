@@ -20,7 +20,11 @@ typedef MessageIfAbsent(String message_str, List args);
 class MessageLookup extends MessageLookupByLibrary {
   get localeName => 'en';
 
-  static m0(resultsCount) => "${resultsCount} result";
+  static m0(displayName, modelName) => "${displayName}\'s ${modelName}";
+
+  static m1(deviceName) => "${deviceName} requests connection";
+
+  static m2(resultsCount) => "${resultsCount} result";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -50,15 +54,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "deviceName" : m0,
     "dialogConnectionWithDevice" : MessageLookupByLibrary.simpleMessage("Connection with device?"),
     "dialogDeleteFolder" : MessageLookupByLibrary.simpleMessage("All the notes in the folder are moved to the default folder. Delete folder?"),
     "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("Are you sure to delete?"),
     "dialogFolderSelect" : MessageLookupByLibrary.simpleMessage("Folder Select"),
     "dialogSendImage" : MessageLookupByLibrary.simpleMessage("Send image..."),
+    "errorEmptyCode" : MessageLookupByLibrary.simpleMessage("Error: connection code is not empty"),
     "errorEmptyName" : MessageLookupByLibrary.simpleMessage("Error: name is not empty"),
     "folderDefault" : MessageLookupByLibrary.simpleMessage("Default"),
+    "hintConnectAnotherDevice" : MessageLookupByLibrary.simpleMessage("Connect another device by connection code"),
+    "hintGenerateCode" : MessageLookupByLibrary.simpleMessage("Generate code for connect another device"),
     "hintInputNote" : MessageLookupByLibrary.simpleMessage("Note"),
     "hintInputTitle" : MessageLookupByLibrary.simpleMessage("Title"),
+    "hintName" : MessageLookupByLibrary.simpleMessage("* Setting name to display on another devices"),
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("Take from camera"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("Select from gallery"),
     "labelAppInitialize" : MessageLookupByLibrary.simpleMessage("Initialize app..."),
@@ -67,11 +76,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelConnectFailed" : MessageLookupByLibrary.simpleMessage("Connect failed"),
     "labelConnectSuccess" : MessageLookupByLibrary.simpleMessage("Connect success"),
     "labelConnectionCode" : MessageLookupByLibrary.simpleMessage("Connection code"),
+    "labelConnectionRequest" : m1,
     "labelDefaultMemoType" : MessageLookupByLibrary.simpleMessage("Default memo type"),
+    "labelDisconnectAnother" : MessageLookupByLibrary.simpleMessage("Disconnect another device"),
     "labelHandWriting" : MessageLookupByLibrary.simpleMessage("Hand writing"),
     "labelInternalErr" : MessageLookupByLibrary.simpleMessage("Internal server error"),
     "labelLightTheme" : MessageLookupByLibrary.simpleMessage("Light theme"),
     "labelMarkdown" : MessageLookupByLibrary.simpleMessage("Markdown"),
+    "labelName" : MessageLookupByLibrary.simpleMessage("Name"),
     "labelNoHostWaited" : MessageLookupByLibrary.simpleMessage("No host waited"),
     "labelNone" : MessageLookupByLibrary.simpleMessage("None"),
     "labelQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("Quick folder classification"),
@@ -79,9 +91,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelResponseTimeout" : MessageLookupByLibrary.simpleMessage("Host Response timeout"),
     "labelRichText" : MessageLookupByLibrary.simpleMessage("Rich text"),
     "labelServiceHost" : MessageLookupByLibrary.simpleMessage("Service host"),
+    "labelServiceUnavailable" : MessageLookupByLibrary.simpleMessage("Service Unavailable"),
     "labelUnnamed" : MessageLookupByLibrary.simpleMessage("Unnamed"),
+    "labelUpdateProfile" : MessageLookupByLibrary.simpleMessage("Update profile"),
     "labelUseFingerprint" : MessageLookupByLibrary.simpleMessage("Use fingerprint"),
     "labelVersion" : MessageLookupByLibrary.simpleMessage("Version"),
+    "labelWaitConnection" : MessageLookupByLibrary.simpleMessage("Connection..."),
     "labelWaitHostResponse" : MessageLookupByLibrary.simpleMessage("Waiting host response"),
     "labelWriteNewNoteOnStartup" : MessageLookupByLibrary.simpleMessage("Write new note on startup"),
     "memoEmpty" : MessageLookupByLibrary.simpleMessage("Empty memo"),
@@ -93,7 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "orderType" : MessageLookupByLibrary.simpleMessage("Order type"),
     "orderTypeAsc" : MessageLookupByLibrary.simpleMessage("Ascending"),
     "orderTypeDes" : MessageLookupByLibrary.simpleMessage("Descending"),
-    "resultCountMessage" : m0,
+    "resultCountMessage" : m2,
     "subtitleDebug" : MessageLookupByLibrary.simpleMessage("Debug"),
     "subtitleInfo" : MessageLookupByLibrary.simpleMessage("Info"),
     "subtitleNote" : MessageLookupByLibrary.simpleMessage("Note"),
@@ -104,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "titleHistory" : MessageLookupByLibrary.simpleMessage("History"),
     "titleHostConnection" : MessageLookupByLibrary.simpleMessage("Get connection code"),
     "titleResult" : MessageLookupByLibrary.simpleMessage("Result"),
-    "validationServiceHost" : MessageLookupByLibrary.simpleMessage("Error: service host is not empty")
+    "validationServiceHost" : MessageLookupByLibrary.simpleMessage("Error: service host is not empty"),
+    "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("If you close the screen before connecting from another device, you will not receive a connection request.")
   };
 }

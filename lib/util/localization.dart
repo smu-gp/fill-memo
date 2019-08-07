@@ -160,6 +160,11 @@ class AppLocalizations {
         name: 'dialogSendImage',
       );
 
+  String get errorEmptyCode => Intl.message(
+        'Error: connection code is not empty',
+        name: 'errorEmptyCode',
+      );
+
   String get errorEmptyName => Intl.message(
         'Error: name is not empty',
         name: 'errorEmptyName',
@@ -170,6 +175,16 @@ class AppLocalizations {
         name: 'folderDefault',
       );
 
+  String get hintConnectAnotherDevice => Intl.message(
+        'Connect another device by connection code',
+        name: 'hintConnectAnotherDevice',
+      );
+
+  String get hintGenerateCode => Intl.message(
+        'Generate code for connect another device',
+        name: 'hintGenerateCode',
+      );
+
   String get hintInputNote => Intl.message(
         'Note',
         name: 'hintInputNote',
@@ -178,6 +193,11 @@ class AppLocalizations {
   String get hintInputTitle => Intl.message(
         'Title',
         name: 'hintInputTitle',
+      );
+
+  String get hintName => Intl.message(
+        '* Setting name to display on another devices',
+        name: 'hintName',
       );
 
   String get imageFromCamera => Intl.message(
@@ -225,6 +245,11 @@ class AppLocalizations {
         name: 'labelDefaultMemoType',
       );
 
+  String get labelDisconnectAnother => Intl.message(
+        'Disconnect another device',
+        name: 'labelDisconnectAnother',
+      );
+
   String get labelHandWriting => Intl.message(
         'Hand writing',
         name: 'labelHandWriting',
@@ -243,6 +268,11 @@ class AppLocalizations {
   String get labelMarkdown => Intl.message(
         'Markdown',
         name: 'labelMarkdown',
+      );
+
+  String get labelName => Intl.message(
+        'Name',
+        name: 'labelName',
       );
 
   String get labelNoHostWaited => Intl.message(
@@ -280,9 +310,19 @@ class AppLocalizations {
         name: 'labelServiceHost',
       );
 
+  String get labelServiceUnavailable => Intl.message(
+        'Service Unavailable',
+        name: 'labelServiceUnavailable',
+      );
+
   String get labelUnnamed => Intl.message(
         'Unnamed',
         name: 'labelUnnamed',
+      );
+
+  String get labelUpdateProfile => Intl.message(
+        'Update profile',
+        name: 'labelUpdateProfile',
       );
 
   String get labelUseFingerprint => Intl.message(
@@ -293,6 +333,11 @@ class AppLocalizations {
   String get labelVersion => Intl.message(
         'Version',
         name: 'labelVersion',
+      );
+
+  String get labelWaitConnection => Intl.message(
+        'Connection...',
+        name: 'labelWaitConnection',
       );
 
   String get labelWaitHostResponse => Intl.message(
@@ -404,6 +449,23 @@ class AppLocalizations {
   String get validationServiceHost => Intl.message(
         'Error: service host is not empty',
         name: 'validationServiceHost',
+      );
+
+  String get warnGenerateCode => Intl.message(
+        'If you close the screen before connecting from another device, you will not receive a connection request.',
+        name: 'warnGenerateCode',
+      );
+
+  String deviceName(String displayName, String modelName) => Intl.message(
+        "$displayName's $modelName",
+        args: [displayName, modelName],
+        name: 'deviceName',
+      );
+
+  String labelConnectionRequest(String deviceName) => Intl.message(
+        '$deviceName requests connection',
+        args: [deviceName],
+        name: 'labelConnectionRequest',
       );
 
   String resultCountMessage(int resultsCount) => Intl.message(

@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -65,7 +62,9 @@ class MainDrawerMenu extends StatelessWidget {
             _DrawerItem(
               icon: OMIcons.phonelink,
               title: Text(AppLocalizations.of(context).actionConnection),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, Routes().connectionMenu);
+              },
             ),
             _DrawerItem(
               icon: OMIcons.settings,
@@ -84,42 +83,60 @@ class MainDrawerMenu extends StatelessWidget {
 class SessionInfoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return UserAccountsDrawerHeader(
-      currentAccountPicture: CircleAvatar(
-        child: Icon(Util.isTablet(context)
-            ? Icons.tablet_android
-            : Icons.phone_android),
-      ),
-      accountName: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, authState) {
-          if (authState is Authenticated) {
-            var savedName = authState.displayName;
-            var name = savedName != null && savedName.isNotEmpty
-                ? savedName
-                : AppLocalizations.of(context).labelUnnamed;
-            return Text(name);
-          } else {
-            return Text("");
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        var displayName = AppLocalizations.of(context).labelUnnamed;
+        var isUnknown = true;
+        if (state is Authenticated) {
+          var savedName = state.displayName;
+          if (savedName != null && savedName.isNotEmpty) {
+            displayName = savedName;
+            isUnknown = false;
           }
-        },
-      ),
-      accountEmail: FutureBuilder<String>(
-        future: _getDeviceName(),
-        builder: (context, snapshot) => Text(snapshot.data ?? "Unknown"),
-      ),
-    );
-  }
+        }
 
-  Future<String> _getDeviceName() async {
-    if (Platform.isAndroid) {
-      var info = await DeviceInfoPlugin().androidInfo;
-      return info.model;
-    } else if (Platform.isIOS) {
-      var info = await DeviceInfoPlugin().iosInfo;
-      return info.utsname.machine;
-    } else {
-      return null;
-    }
+        var avatarName;
+        var nameWords = displayName.split(' ');
+        if (nameWords.length > 1) {
+          avatarName = (nameWords[0][0] + nameWords[1][0]).toUpperCase();
+        } else {
+          avatarName = displayName[0].toUpperCase();
+        }
+
+        var avatarColor = Colors.grey[600];
+        if (!isUnknown) {
+          var hash = 0;
+          for (var char in displayName.codeUnits) {
+            hash = char + ((hash << 5) - hash);
+          }
+          var hue = hash % 360;
+          avatarColor =
+              HSLColor.fromAHSL(1, hue.toDouble(), 0.5, 0.3).toColor();
+        }
+
+        return Container(
+          height: 74,
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 16,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: avatarColor,
+                  child: isUnknown ? Icon(Icons.person) : Text(avatarName),
+                ),
+                Text(
+                  displayName,
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

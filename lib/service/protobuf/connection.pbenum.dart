@@ -1,8 +1,9 @@
 ///
 //  Generated code. Do not modify.
 //  source: connection.proto
-///
-// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name
+//
+// @dart = 2.3
+// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type
 
 // ignore_for_file: UNDEFINED_SHOWN_NAME,UNUSED_SHOWN_NAME
 import 'dart:core' as $core show int, dynamic, String, List, Map;
@@ -47,11 +48,11 @@ class AuthResponse_FailedReason extends $pb.ProtobufEnum {
 }
 
 class AuthDeviceInfo_DeviceType extends $pb.ProtobufEnum {
-  static const AuthDeviceInfo_DeviceType DEVICE_TABLET = AuthDeviceInfo_DeviceType._(0, 'DEVICE_TABLET');
+  static const AuthDeviceInfo_DeviceType DEVICE_ANDROID = AuthDeviceInfo_DeviceType._(0, 'DEVICE_ANDROID');
   static const AuthDeviceInfo_DeviceType DEVICE_WEB = AuthDeviceInfo_DeviceType._(1, 'DEVICE_WEB');
 
   static const $core.List<AuthDeviceInfo_DeviceType> values = <AuthDeviceInfo_DeviceType> [
-    DEVICE_TABLET,
+    DEVICE_ANDROID,
     DEVICE_WEB,
   ];
 

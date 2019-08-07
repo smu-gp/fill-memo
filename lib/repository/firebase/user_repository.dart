@@ -12,8 +12,8 @@ class FirebaseUserRepository extends UserRepository {
   @override
   Future<User> signIn(String uid) async {
     String token = await Service.getToken(uid: uid);
-    var user = await _firebaseAuth.signInWithCustomToken(token: token);
-    return _toUser(user);
+    var result = await _firebaseAuth.signInWithCustomToken(token: token);
+    return _toUser(result.user);
   }
 
   @override

@@ -1,8 +1,9 @@
 ///
 //  Generated code. Do not modify.
 //  source: connection.proto
-///
-// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name
+//
+// @dart = 2.3
+// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type
 
 const ConnectionRequest$json = const {
   '1': 'ConnectionRequest',
@@ -84,7 +85,7 @@ const AuthDeviceInfo$json = const {
 const AuthDeviceInfo_DeviceType$json = const {
   '1': 'DeviceType',
   '2': const [
-    const {'1': 'DEVICE_TABLET', '2': 0},
+    const {'1': 'DEVICE_ANDROID', '2': 0},
     const {'1': 'DEVICE_WEB', '2': 1},
   ],
 };

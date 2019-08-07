@@ -56,3 +56,12 @@ class MemosUpdated extends MemoEvent {
   @override
   String toString() => '$runtimeType';
 }
+
+class UpdateMemoUser extends MemoEvent {
+  final String userId;
+
+  UpdateMemoUser(this.userId) : super([userId]);
+
+  @override
+  String toString() => '$runtimeType(userId: $userId)';
+}

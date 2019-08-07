@@ -26,6 +26,8 @@ class _AppState extends State<App> {
   String _userId;
   ThemeBloc _themeBloc;
   AuthBloc _authBloc;
+  MemoBloc _memoBloc;
+  FolderBloc _folderBloc;
 
   UserRepository _userRepository;
 
@@ -46,10 +48,19 @@ class _AppState extends State<App> {
         widget.preferenceRepository.getBool(AppPreferences.keyDarkMode);
     var initTheme =
         (darkMode ?? false) ? AppThemes.darkTheme : AppThemes.lightTheme;
+
     _themeBloc = ThemeBloc(initTheme);
 
-    _authBloc = AuthBloc(userRepository: _userRepository)
-      ..dispatch(AppStarted());
+    _authBloc = AuthBloc(
+      userRepository: _userRepository,
+    )..dispatch(AppStarted(_userId));
+
+    _memoBloc = MemoBloc(
+      memoRepository: FirebaseMemoRepository(_userId),
+    );
+    _folderBloc = FolderBloc(
+      folderRepository: FirebaseFolderRepository(_userId),
+    );
   }
 
   @override
@@ -61,6 +72,12 @@ class _AppState extends State<App> {
         ),
         BlocProvider<AuthBloc>.value(
           value: _authBloc,
+        ),
+        BlocProvider<MemoBloc>.value(
+          value: _memoBloc,
+        ),
+        BlocProvider<FolderBloc>.value(
+          value: _folderBloc,
         ),
       ],
       child: RepositoryProvider<PreferenceRepository>.value(
@@ -84,23 +101,14 @@ class _AppState extends State<App> {
               home: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) {
                   if (authState is Authenticated) {
-                    return MultiBlocProvider(
-                      providers: [
-                        BlocProvider<MemoBloc>(
-                          builder: (context) => MemoBloc(
-                            memoRepository:
-                                FirebaseMemoRepository(authState.uid),
-                          )..dispatch(LoadMemos()),
-                        ),
-                        BlocProvider<FolderBloc>(
-                          builder: (context) => FolderBloc(
-                            folderRepository:
-                                FirebaseFolderRepository(authState.uid),
-                          )..dispatch(LoadFolders()),
-                        )
-                      ],
-                      child: MainScreen(),
-                    );
+                    if (authState.uid == _userId) {
+                      _memoBloc.dispatch(LoadMemos());
+                      _folderBloc.dispatch(LoadFolders());
+                    } else {
+                      _memoBloc.dispatch(UpdateMemoUser(authState.uid));
+                      _folderBloc.dispatch(UpdateFolderUser(authState.uid));
+                    }
+                    return MainScreen();
                   } else {
                     return BlocProvider(
                       builder: (context) =>

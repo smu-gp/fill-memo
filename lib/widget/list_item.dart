@@ -21,8 +21,10 @@ class ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool twoLine = subtitle != null;
+    ThemeData theme = Theme.of(context);
+
     return InkWell(
-      onTap: onTap,
+      onTap: enabled ? onTap : null,
       child: Container(
         height: twoLine ? 64.0 : 48.0,
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -37,16 +39,16 @@ class ListItem extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     title,
-                    style: Theme.of(context).textTheme.subhead.copyWith(
-                          fontSize: 16.0,
-                        ),
+                    style: theme.textTheme.subhead.copyWith(
+                        fontSize: 16.0,
+                        color: !enabled ? theme.disabledColor : null),
                   ),
                   if (twoLine)
                     Text(
                       subtitle,
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: 14.0,
-                          ),
+                      style: theme.textTheme.caption.copyWith(
+                        fontSize: 14.0,
+                      ),
                     ),
                 ],
               ),
