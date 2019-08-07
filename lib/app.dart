@@ -49,7 +49,7 @@ class _AppState extends State<App> {
     _themeBloc = ThemeBloc(initTheme);
 
     _authBloc = AuthBloc(userRepository: _userRepository)
-      ..dispatch(AppStarted());
+      ..dispatch(AppStarted(_userId));
   }
 
   @override
@@ -84,19 +84,19 @@ class _AppState extends State<App> {
               home: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) {
                   if (authState is Authenticated) {
+                    var memoBloc = MemoBloc(
+                      memoRepository: FirebaseMemoRepository(authState.uid),
+                    )..dispatch(LoadMemos());
+                    var folderBloc = FolderBloc(
+                      folderRepository: FirebaseFolderRepository(authState.uid),
+                    )..dispatch(LoadFolders());
                     return MultiBlocProvider(
                       providers: [
-                        BlocProvider<MemoBloc>(
-                          builder: (context) => MemoBloc(
-                            memoRepository:
-                                FirebaseMemoRepository(authState.uid),
-                          )..dispatch(LoadMemos()),
+                        BlocProvider<MemoBloc>.value(
+                          value: memoBloc,
                         ),
-                        BlocProvider<FolderBloc>(
-                          builder: (context) => FolderBloc(
-                            folderRepository:
-                                FirebaseFolderRepository(authState.uid),
-                          )..dispatch(LoadFolders()),
+                        BlocProvider<FolderBloc>.value(
+                          value: folderBloc,
                         )
                       ],
                       child: MainScreen(),

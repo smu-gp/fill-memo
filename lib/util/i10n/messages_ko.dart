@@ -20,7 +20,11 @@ typedef MessageIfAbsent(String message_str, List args);
 class MessageLookup extends MessageLookupByLibrary {
   get localeName => 'ko';
 
-  static m0(resultsCount) => "${resultsCount}개의 결과";
+  static m0(displayName, modelName) => "${displayName}의 ${modelName}";
+
+  static m1(deviceName) => "${deviceName}이(가) 연결을 요청합니다";
+
+  static m2(resultsCount) => "${resultsCount}개의 결과";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -50,15 +54,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionSettings" : MessageLookupByLibrary.simpleMessage("설정"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),
     "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "deviceName" : m0,
     "dialogConnectionWithDevice" : MessageLookupByLibrary.simpleMessage("이 기기와 연결할까요?"),
     "dialogDeleteFolder" : MessageLookupByLibrary.simpleMessage("폴더 내 모든 기록들이 기본 폴더로 이동됩니다. 폴더를 삭제할까요?"),
     "dialogDeleteItem" : MessageLookupByLibrary.simpleMessage("삭제할까요?"),
     "dialogFolderSelect" : MessageLookupByLibrary.simpleMessage("폴더 선택"),
     "dialogSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내는 중..."),
+    "errorEmptyCode" : MessageLookupByLibrary.simpleMessage("오류: 연결 코드는 비워둘 수 없습니다"),
     "errorEmptyName" : MessageLookupByLibrary.simpleMessage("오류: 이름은 비워둘 수 없습니다"),
     "folderDefault" : MessageLookupByLibrary.simpleMessage("기본"),
+    "hintConnectAnotherDevice" : MessageLookupByLibrary.simpleMessage("연결코드로 다른 기기에 연결합니다"),
+    "hintGenerateCode" : MessageLookupByLibrary.simpleMessage("다른 기기에서 연결하기 위해 코드를 생성합니다"),
     "hintInputNote" : MessageLookupByLibrary.simpleMessage("메모"),
     "hintInputTitle" : MessageLookupByLibrary.simpleMessage("제목"),
+    "hintName" : MessageLookupByLibrary.simpleMessage("* 다른 기기에서 표시할 이름을 설정합니다"),
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("사진 촬영"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("이미지 선택"),
     "labelAppInitialize" : MessageLookupByLibrary.simpleMessage("초기화하는 중..."),
@@ -67,11 +76,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelConnectFailed" : MessageLookupByLibrary.simpleMessage("연결 실패"),
     "labelConnectSuccess" : MessageLookupByLibrary.simpleMessage("연결 성공"),
     "labelConnectionCode" : MessageLookupByLibrary.simpleMessage("연결코드"),
+    "labelConnectionRequest" : m1,
     "labelDefaultMemoType" : MessageLookupByLibrary.simpleMessage("기본 메모 유형"),
+    "labelDisconnectAnother" : MessageLookupByLibrary.simpleMessage("다른 기기에서 연결 해제"),
     "labelHandWriting" : MessageLookupByLibrary.simpleMessage("손글씨"),
     "labelInternalErr" : MessageLookupByLibrary.simpleMessage("서버 내부 오류"),
     "labelLightTheme" : MessageLookupByLibrary.simpleMessage("밝은 테마"),
     "labelMarkdown" : MessageLookupByLibrary.simpleMessage("마크다운"),
+    "labelName" : MessageLookupByLibrary.simpleMessage("이름"),
     "labelNoHostWaited" : MessageLookupByLibrary.simpleMessage("기다리는 호스트가 없음"),
     "labelNone" : MessageLookupByLibrary.simpleMessage("없음"),
     "labelQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("빠른 폴더 분류"),
@@ -79,9 +91,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelResponseTimeout" : MessageLookupByLibrary.simpleMessage("호스트 응답시간 만료"),
     "labelRichText" : MessageLookupByLibrary.simpleMessage("서식 있는 텍스트"),
     "labelServiceHost" : MessageLookupByLibrary.simpleMessage("서비스 호스트"),
+    "labelServiceUnavailable" : MessageLookupByLibrary.simpleMessage("서비스 사용할 수 없음"),
     "labelUnnamed" : MessageLookupByLibrary.simpleMessage("이름 없음"),
+    "labelUpdateProfile" : MessageLookupByLibrary.simpleMessage("프로필 업데이트"),
     "labelUseFingerprint" : MessageLookupByLibrary.simpleMessage("지문 사용"),
     "labelVersion" : MessageLookupByLibrary.simpleMessage("버전"),
+    "labelWaitConnection" : MessageLookupByLibrary.simpleMessage("연결 중..."),
     "labelWaitHostResponse" : MessageLookupByLibrary.simpleMessage("호스트의 응답을 기다리는 중"),
     "labelWriteNewNoteOnStartup" : MessageLookupByLibrary.simpleMessage("앱 시작 시 새 메모 작성"),
     "memoEmpty" : MessageLookupByLibrary.simpleMessage("메모가 비어있습니다"),
@@ -93,7 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "orderType" : MessageLookupByLibrary.simpleMessage("순서"),
     "orderTypeAsc" : MessageLookupByLibrary.simpleMessage("오름차순"),
     "orderTypeDes" : MessageLookupByLibrary.simpleMessage("내림차순"),
-    "resultCountMessage" : m0,
+    "resultCountMessage" : m2,
     "subtitleDebug" : MessageLookupByLibrary.simpleMessage("디버그"),
     "subtitleInfo" : MessageLookupByLibrary.simpleMessage("정보"),
     "subtitleNote" : MessageLookupByLibrary.simpleMessage("메모"),
@@ -104,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "titleHistory" : MessageLookupByLibrary.simpleMessage("기록"),
     "titleHostConnection" : MessageLookupByLibrary.simpleMessage("연결코드 생성"),
     "titleResult" : MessageLookupByLibrary.simpleMessage("결과"),
-    "validationServiceHost" : MessageLookupByLibrary.simpleMessage("오류: 서비스 호스트는 비워둘 수 없습니다")
+    "validationServiceHost" : MessageLookupByLibrary.simpleMessage("오류: 서비스 호스트는 비워둘 수 없습니다"),
+    "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("다른 기기에서 연결하기 전에 화면을 닫으면 연결 요청을 받을 수 없습니다.")
   };
 }

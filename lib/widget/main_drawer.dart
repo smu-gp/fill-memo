@@ -65,7 +65,9 @@ class MainDrawerMenu extends StatelessWidget {
             _DrawerItem(
               icon: OMIcons.phonelink,
               title: Text(AppLocalizations.of(context).actionConnection),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, Routes().connectionMenu);
+              },
             ),
             _DrawerItem(
               icon: OMIcons.settings,
@@ -84,29 +86,48 @@ class MainDrawerMenu extends StatelessWidget {
 class SessionInfoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return UserAccountsDrawerHeader(
-      currentAccountPicture: CircleAvatar(
-        child: Icon(Util.isTablet(context)
-            ? Icons.tablet_android
-            : Icons.phone_android),
-      ),
-      accountName: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, authState) {
-          if (authState is Authenticated) {
-            var savedName = authState.displayName;
-            var name = savedName != null && savedName.isNotEmpty
-                ? savedName
-                : AppLocalizations.of(context).labelUnnamed;
-            return Text(name);
-          } else {
-            return Text("");
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        var displayName = AppLocalizations.of(context).labelUnnamed;
+        var isUnknown = true;
+        if (state is Authenticated) {
+          var savedName = state.displayName;
+          if (savedName != null && savedName.isNotEmpty) {
+            displayName = savedName;
+            isUnknown = false;
           }
-        },
-      ),
-      accountEmail: FutureBuilder<String>(
-        future: _getDeviceName(),
-        builder: (context, snapshot) => Text(snapshot.data ?? "Unknown"),
-      ),
+        }
+
+        var avatarColor = Colors.grey[600];
+        if (!isUnknown) {
+          var hash = 0;
+          for (var char in displayName.codeUnits) {
+            hash = char + ((hash << 5) - hash);
+          }
+          var hue = hash % 360;
+          avatarColor =
+              HSLColor.fromAHSL(1, hue.toDouble(), 0.5, 0.3).toColor();
+        }
+
+        return UserAccountsDrawerHeader(
+          currentAccountPicture: CircleAvatar(
+            backgroundColor: avatarColor,
+            child: isUnknown
+                ? Icon(Icons.person, size: 48)
+                : Text(
+                    displayName[0].toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 30,
+                    ),
+                  ),
+          ),
+          accountName: Text(displayName),
+          accountEmail: FutureBuilder<String>(
+            future: _getDeviceName(),
+            builder: (context, snapshot) => Text(snapshot.data ?? "Unknown"),
+          ),
+        );
+      },
     );
   }
 

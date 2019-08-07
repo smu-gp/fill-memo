@@ -70,20 +70,18 @@ class _MemoScreenState extends State<MemoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(""),
-        elevation: 0.0,
-      ),
+      appBar: AppBar(elevation: 0.0),
       body: Column(
         children: <Widget>[
           Visibility(
             visible: _showProgress,
             child: SizedBox(
-                child: LinearProgressIndicator(
-                  backgroundColor: AppColors.accentColor.withOpacity(0.2),
-                  value: _progressValue,
-                ),
-                height: 4),
+              child: LinearProgressIndicator(
+                backgroundColor: AppColors.accentColor.withOpacity(0.2),
+                value: _progressValue,
+              ),
+              height: 4,
+            ),
           ),
           Expanded(
             child: ListView(
@@ -273,13 +271,13 @@ class _MemoScreenState extends State<MemoScreen> {
     _showProgressDialog();
 
     try {
-      var baseUrl =
+      var host =
           _preferenceRepository.getString(AppPreferences.keyServiceHost) ??
-              processServiceBaseUrl;
+              defaultServiceHost;
 
       var results = await Service.sendImage(
         imageFile: imageFile,
-        baseUrl: baseUrl,
+        baseUrl: processingServiceUrl(host),
       );
 
       Navigator.pop(context); // Hide progress dialog

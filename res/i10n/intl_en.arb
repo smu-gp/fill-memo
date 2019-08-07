@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-07-29T11:34:19.977185",
+  "@@last_modified": "2019-08-07T15:05:12.790922",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -156,6 +156,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "errorEmptyCode": "Error: connection code is not empty",
+  "@errorEmptyCode": {
+    "type": "text",
+    "placeholders": {}
+  },
   "errorEmptyName": "Error: name is not empty",
   "@errorEmptyName": {
     "type": "text",
@@ -166,6 +171,16 @@
     "type": "text",
     "placeholders": {}
   },
+  "hintConnectAnotherDevice": "Connect another device by connection code",
+  "@hintConnectAnotherDevice": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintGenerateCode": "Generate code for connect another device",
+  "@hintGenerateCode": {
+    "type": "text",
+    "placeholders": {}
+  },
   "hintInputNote": "Note",
   "@hintInputNote": {
     "type": "text",
@@ -173,6 +188,11 @@
   },
   "hintInputTitle": "Title",
   "@hintInputTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintName": "* Setting name to display on another devices",
+  "@hintName": {
     "type": "text",
     "placeholders": {}
   },
@@ -221,6 +241,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelDisconnectAnother": "Disconnect another device",
+  "@labelDisconnectAnother": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelHandWriting": "Hand writing",
   "@labelHandWriting": {
     "type": "text",
@@ -238,6 +263,11 @@
   },
   "labelMarkdown": "Markdown",
   "@labelMarkdown": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelName": "Name",
+  "@labelName": {
     "type": "text",
     "placeholders": {}
   },
@@ -276,8 +306,18 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelServiceUnavailable": "Service Unavailable",
+  "@labelServiceUnavailable": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelUnnamed": "Unnamed",
   "@labelUnnamed": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelUpdateProfile": "Update profile",
+  "@labelUpdateProfile": {
     "type": "text",
     "placeholders": {}
   },
@@ -288,6 +328,11 @@
   },
   "labelVersion": "Version",
   "@labelVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWaitConnection": "Connection...",
+  "@labelWaitConnection": {
     "type": "text",
     "placeholders": {}
   },
@@ -400,6 +445,26 @@
   "@validationServiceHost": {
     "type": "text",
     "placeholders": {}
+  },
+  "warnGenerateCode": "If you close the screen before connecting from another device, you will not receive a connection request.",
+  "@warnGenerateCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceName": "{displayName}'s {modelName}",
+  "@deviceName": {
+    "type": "text",
+    "placeholders": {
+      "displayName": {},
+      "modelName": {}
+    }
+  },
+  "labelConnectionRequest": "{deviceName} requests connection",
+  "@labelConnectionRequest": {
+    "type": "text",
+    "placeholders": {
+      "deviceName": {}
+    }
   },
   "resultCountMessage": "{resultsCount} result",
   "@resultCountMessage": {

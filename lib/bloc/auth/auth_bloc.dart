@@ -21,20 +21,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthEvent event,
   ) async* {
     if (event is AppStarted) {
-      yield* _mapAppStartedToState();
+      yield* _mapAppStartedToState(event);
     } else if (event is LoggedIn) {
       yield* _mapLoggedInToState();
     } else if (event is LoggedOut) {
       yield* _mapLoggedOutToState();
+    } else if (event is ProfileUpdated) {
+      yield* _mapProfileUpdatedToState(event);
+    } else if (event is ChangedUser) {
+      yield* _mapChangedUserToState(event);
     }
   }
 
-  Stream<AuthState> _mapAppStartedToState() async* {
+  Stream<AuthState> _mapAppStartedToState(AppStarted event) async* {
     try {
       final isSignedIn = await _userRepository.isSignedIn();
       if (isSignedIn) {
         final user = await _userRepository.getUser();
-        yield Authenticated(user.uid, user.displayName, user.email);
+        if (user.uid == event.initUserId) {
+          yield Authenticated(
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+          );
+        } else {
+          dispatch(LoggedOut());
+        }
       } else {
         yield Unauthenticated();
       }
@@ -45,11 +57,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Stream<AuthState> _mapLoggedInToState() async* {
     final user = await _userRepository.getUser();
-    yield Authenticated(user.uid, user.displayName, user.email);
+    yield Authenticated(
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+    );
   }
 
   Stream<AuthState> _mapLoggedOutToState() async* {
     yield Unauthenticated();
     _userRepository.signOut();
+  }
+
+  Stream<AuthState> _mapProfileUpdatedToState(ProfileUpdated event) async* {
+    final user = await _userRepository.updateProfile(
+      displayName: event.name,
+      email: event.email,
+    );
+    yield (currentState as Authenticated).update(
+      displayName: user.displayName,
+      email: user.email,
+    );
+  }
+
+  Stream<AuthState> _mapChangedUserToState(ChangedUser event) async* {
+    if (await _userRepository.isSignedIn()) {
+      await _userRepository.signOut();
+      await _userRepository.signIn(event.changeUserId);
+    }
+    dispatch(LoggedIn());
   }
 }
