@@ -35,6 +35,8 @@ class MemoBloc extends Bloc<MemoEvent, MemoState> {
       yield* _mapMergeMemoToState(event);
     } else if (event is MemosUpdated) {
       yield* _mapMemosUpdateToState(event);
+    } else if (event is UpdateMemoUser) {
+      yield* _mapUpdateMemoUserToState(event);
     }
   }
 
@@ -81,5 +83,10 @@ class MemoBloc extends Bloc<MemoEvent, MemoState> {
 
   Stream<MemoState> _mapMemosUpdateToState(MemosUpdated event) async* {
     yield MemosLoaded(event.memos);
+  }
+
+  Stream<MemoState> _mapUpdateMemoUserToState(UpdateMemoUser event) async* {
+    _memoRepository.updateUserId(event.userId);
+    dispatch(LoadMemos());
   }
 }

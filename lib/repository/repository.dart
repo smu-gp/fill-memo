@@ -8,6 +8,8 @@ abstract class MemoRepository {
   Stream<List<Memo>> memos();
 
   Future<void> updateMemo(Memo memo);
+
+  void updateUserId(String userId);
 }
 
 abstract class FolderRepository {
@@ -18,6 +20,8 @@ abstract class FolderRepository {
   Stream<List<Folder>> folders();
 
   Future<void> updateFolder(Folder folder);
+
+  void updateUserId(String userId);
 }
 
 abstract class PreferenceRepository {

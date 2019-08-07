@@ -6,13 +6,15 @@ import 'package:sp_client/repository/repository.dart';
 
 class FirebaseMemoRepository extends MemoRepository {
   final memoCollection = Firestore.instance.collection(Memo.collectionName);
-  final String userId;
+  String _userId;
 
-  FirebaseMemoRepository(this.userId) : assert(userId != null);
+  FirebaseMemoRepository(String userId)
+      : assert(userId != null),
+        _userId = userId;
 
   @override
   Future<void> addNewMemo(Memo memo) async {
-    memo.userId = userId;
+    memo.userId = _userId;
     return memoCollection.add(memo.toMap());
   }
 
@@ -24,7 +26,7 @@ class FirebaseMemoRepository extends MemoRepository {
   @override
   Stream<List<Memo>> memos() {
     return memoCollection
-        .where(Memo.columnUserId, isEqualTo: userId)
+        .where(Memo.columnUserId, isEqualTo: _userId)
         .snapshots()
         .map((snapshot) {
       return snapshot.documents
@@ -38,4 +40,7 @@ class FirebaseMemoRepository extends MemoRepository {
   Future<void> updateMemo(Memo memo) {
     return memoCollection.document(memo.id).updateData(memo.toMap());
   }
+
+  @override
+  void updateUserId(String userId) => _userId = userId;
 }

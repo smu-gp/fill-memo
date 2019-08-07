@@ -4,13 +4,15 @@ import 'package:sp_client/repository/repository.dart';
 
 class FirebaseFolderRepository extends FolderRepository {
   final folderCollection = Firestore.instance.collection(Folder.collectionName);
-  final String userId;
+  String _userId;
 
-  FirebaseFolderRepository(this.userId) : assert(userId != null);
+  FirebaseFolderRepository(String userId)
+      : assert(userId != null),
+        _userId = userId;
 
   @override
   Future<void> addNewFolder(Folder folder) {
-    folder.userId = userId;
+    folder.userId = _userId;
     return folderCollection.add(folder.toMap());
   }
 
@@ -22,7 +24,7 @@ class FirebaseFolderRepository extends FolderRepository {
   @override
   Stream<List<Folder>> folders() {
     return folderCollection
-        .where(Folder.columnUserId, isEqualTo: userId)
+        .where(Folder.columnUserId, isEqualTo: _userId)
         .snapshots()
         .map((snapshot) {
       return snapshot.documents
@@ -36,4 +38,7 @@ class FirebaseFolderRepository extends FolderRepository {
   Future<void> updateFolder(Folder folder) {
     return folderCollection.document(folder.id).updateData(folder.toMap());
   }
+
+  @override
+  void updateUserId(String userId) => _userId = userId;
 }
