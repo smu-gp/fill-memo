@@ -8,10 +8,6 @@ class FirebaseMemoRepository extends MemoRepository {
   final memoCollection = Firestore.instance.collection(Memo.collectionName);
   String _userId;
 
-  FirebaseMemoRepository(String userId)
-      : assert(userId != null),
-        _userId = userId;
-
   @override
   Future<void> addNewMemo(Memo memo) async {
     memo.userId = _userId;
