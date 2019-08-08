@@ -21,6 +21,12 @@ class AppThemes {
         borderRadius: BorderRadius.all(Radius.circular(4.0)),
       ),
     ),
+    inputDecorationTheme: InputDecorationTheme(
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: AppColors.accentColor),
+      ),
+      filled: true,
+    ),
     fontFamily: 'NotoSansKR',
   );
 
@@ -42,6 +48,9 @@ class AppThemes {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(4.0)),
       ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
     ),
     fontFamily: 'NotoSansKR',
   );
