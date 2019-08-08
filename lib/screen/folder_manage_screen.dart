@@ -154,7 +154,7 @@ class _FolderListState extends State<_FolderList> {
               if (isSelectable) {
                 selectItems = (listState as SelectableList).selectedItems;
               }
-              return ListView.builder(
+              return ListView.separated(
                 itemBuilder: (context, index) => _FolderItem(
                   folders[index],
                   selected:
@@ -199,6 +199,7 @@ class _FolderListState extends State<_FolderList> {
                   },
                 ),
                 itemCount: folders.length,
+                separatorBuilder: (context, index) => Divider(height: 1),
               );
             },
           );

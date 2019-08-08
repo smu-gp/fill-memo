@@ -25,7 +25,7 @@ class FolderList extends StatelessWidget {
               name: AppLocalizations.of(context).folderDefault,
             ),
           ]..addAll(state.folders);
-          return ListView.builder(
+          return ListView.separated(
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
                 leading: Icon(
@@ -39,6 +39,7 @@ class FolderList extends StatelessWidget {
               );
             },
             itemCount: folders.length,
+            separatorBuilder: (context, index) => Divider(height: 1),
             shrinkWrap: true,
           );
         } else {

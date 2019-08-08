@@ -42,39 +42,40 @@ class _ConnectionMenuScreenState extends State<ConnectionMenuScreen> {
               isHostLogged = userId == authState.uid;
             }
 
-            return ListView(
-              children: <Widget>[
-                ListItem(
-                  title: AppLocalizations.of(context).labelUpdateProfile,
-                  onTap: () =>
-                      Navigator.push(context, Routes().connectionProfile),
-                  enabled: isHostLogged,
-                ),
-                Divider(height: 1),
-                ListItem(
-                  title: AppLocalizations.of(context).titleHostConnection,
-                  subtitle: AppLocalizations.of(context).hintGenerateCode,
-                  onTap: () =>
-                      Navigator.push(context, Routes().connectionGenerateCode),
-                  enabled: isHostLogged,
-                ),
-                Divider(height: 1),
-                ListItem(
-                  title: AppLocalizations.of(context).titleGuestConnection,
-                  subtitle:
-                      AppLocalizations.of(context).hintConnectAnotherDevice,
-                  onTap: () =>
-                      Navigator.push(context, Routes().connectionConnectDevice),
-                  enabled: isHostLogged,
-                ),
-                ListItem(
-                  title: AppLocalizations.of(context).labelDisconnectAnother,
-                  onTap: () {
-                    _authBloc.dispatch(ChangedUser(userId));
-                  },
-                  enabled: !isHostLogged,
-                )
-              ],
+            var children = <Widget>[
+              ListItem(
+                title: AppLocalizations.of(context).labelUpdateProfile,
+                onTap: () =>
+                    Navigator.push(context, Routes().connectionProfile),
+                enabled: isHostLogged,
+              ),
+              ListItem(
+                title: AppLocalizations.of(context).titleHostConnection,
+                subtitle: AppLocalizations.of(context).hintGenerateCode,
+                onTap: () =>
+                    Navigator.push(context, Routes().connectionGenerateCode),
+                enabled: isHostLogged,
+              ),
+              ListItem(
+                title: AppLocalizations.of(context).titleGuestConnection,
+                subtitle: AppLocalizations.of(context).hintConnectAnotherDevice,
+                onTap: () =>
+                    Navigator.push(context, Routes().connectionConnectDevice),
+                enabled: isHostLogged,
+              ),
+              ListItem(
+                title: AppLocalizations.of(context).labelDisconnectAnother,
+                onTap: () {
+                  _authBloc.dispatch(ChangedUser(userId));
+                },
+                enabled: !isHostLogged,
+              )
+            ];
+
+            return ListView.separated(
+              itemBuilder: (context, index) => children[index],
+              itemCount: children.length,
+              separatorBuilder: (context, index) => Divider(height: 1),
             );
           }),
     );
