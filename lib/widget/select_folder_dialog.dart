@@ -6,7 +6,7 @@ class SelectFolderDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Util.isTablet(context)
+      appBar: Util.isLarge(context)
           ? null
           : AppBar(
               title: Text(AppLocalizations.of(context).dialogFolderSelect),

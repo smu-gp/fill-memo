@@ -35,6 +35,30 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget child = Scaffold(
+      key: _scaffoldKey,
+      appBar: MainAppBar(),
+      drawer: !Util.isLarge(context) ? MainDrawer() : null,
+      body: BlocBuilder<MainDrawerBloc, MainDrawerState>(
+        bloc: _drawerBloc,
+        builder: (context, state) {
+          return MemoList(folderId: state.folderId);
+        },
+      ),
+      floatingActionButton:
+          MainFloatingActionButton(onPressed: _navigateNewMemo),
+      resizeToAvoidBottomPadding: false,
+    );
+
+    if (Util.isLarge(context)) {
+      child = Row(
+        children: <Widget>[
+          MainDrawer(),
+          Expanded(child: child),
+        ],
+      );
+    }
+
     return WillPopScope(
       onWillPop: () async {
         _listBloc.dispatch(UnSelectable());
@@ -51,20 +75,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
         child: ChangeNotifierProvider(
           builder: (_) => MemoSort(),
-          child: Scaffold(
-            key: _scaffoldKey,
-            appBar: MainAppBar(),
-            drawer: MainDrawer(),
-            body: BlocBuilder<MainDrawerBloc, MainDrawerState>(
-              bloc: _drawerBloc,
-              builder: (context, state) {
-                return MemoList(folderId: state.folderId);
-              },
-            ),
-            floatingActionButton:
-                MainFloatingActionButton(onPressed: _navigateNewMemo),
-            resizeToAvoidBottomPadding: false,
-          ),
+          child: child,
         ),
       ),
     );

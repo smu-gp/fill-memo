@@ -189,7 +189,15 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   Future<String> _selectFolder(BuildContext context) async {
-    var folder = await Navigator.push(context, Routes().selectFolder(context));
+    var folder;
+    if (Util.isLarge(context)) {
+      folder = await showDialog(
+        context: context,
+        builder: (context) => Routes().selectFolderDialog(context),
+      );
+    } else {
+      folder = await Navigator.push(context, Routes().selectFolder(context));
+    }
     return folder?.id ?? null;
   }
 }

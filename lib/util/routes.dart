@@ -15,6 +15,7 @@ import 'package:sp_client/screen/memo_title_screen.dart';
 import 'package:sp_client/screen/settings/memo_type_screen.dart';
 import 'package:sp_client/screen/settings/settings_screen.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
+import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
 
 class Routes {
@@ -75,6 +76,32 @@ class Routes {
         value: folderBloc,
         child: SelectFolderDialog(),
       ),
+    );
+  }
+
+  AlertDialog selectFolderDialog(BuildContext context) {
+    var folderBloc = BlocProvider.of<FolderBloc>(context);
+    return AlertDialog(
+      title: Text(AppLocalizations.of(context).dialogFolderSelect),
+      contentPadding: EdgeInsets.all(16.0),
+      content: Container(
+        width: 360.0,
+        height: 160.0,
+        child: BlocProvider<FolderBloc>.value(
+          value: folderBloc,
+          child: SelectFolderDialog(),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(
+            MaterialLocalizations.of(context).cancelButtonLabel,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        )
+      ],
     );
   }
 
