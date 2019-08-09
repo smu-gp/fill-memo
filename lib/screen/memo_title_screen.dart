@@ -143,7 +143,7 @@ class _MemoTitleEditTextState extends State<_MemoTitleEditText> {
       style: Theme.of(context).textTheme.headline,
       decoration: InputDecoration(
         border: InputBorder.none,
-        fillColor: Colors.transparent,
+        filled: false,
         hintText: AppLocalizations.of(context).hintInputTitle,
       ),
     );

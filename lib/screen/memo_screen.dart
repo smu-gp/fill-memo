@@ -338,7 +338,7 @@ class _TitleEditText extends StatelessWidget {
         decoration: InputDecoration(
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
-          fillColor: Colors.transparent,
+          filled: false,
           hintText: AppLocalizations.of(context).hintInputTitle,
         ),
         style: Theme.of(context).textTheme.headline,
@@ -377,7 +377,7 @@ class _ContentEditText extends StatelessWidget {
             decoration: InputDecoration(
               border: InputBorder.none,
               focusedBorder: InputBorder.none,
-              fillColor: Colors.transparent,
+              filled: false,
               hintText: AppLocalizations.of(context).hintInputNote,
             ),
           ),
