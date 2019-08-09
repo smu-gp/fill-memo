@@ -13,7 +13,7 @@ class Util {
         .format(DateTime.fromMillisecondsSinceEpoch(timestamp));
   }
 
-  static bool isTablet(BuildContext context) {
+  static bool isLarge(BuildContext context) {
     assert(context != null);
     var size = MediaQuery.of(context).size;
     return min(size.width, size.height) > 600;

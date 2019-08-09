@@ -54,6 +54,7 @@ class MemoList extends StatelessWidget {
                       listBloc: listBloc,
                       listState: memoListState,
                       orderType: sortValue.orderType,
+                      isLarge: Util.isLarge(context),
                     ),
                   );
                 },
@@ -74,10 +75,11 @@ class MemoList extends StatelessWidget {
     ListBloc listBloc,
     ListState listState,
     SortOrderType orderType,
+    bool isLarge,
   }) {
     return StaggeredGridView.countBuilder(
       primary: false,
-      crossAxisCount: 4,
+      crossAxisCount: isLarge ? 3 : 2,
       mainAxisSpacing: 2.0,
       crossAxisSpacing: 2.0,
       itemCount: memoList.length,
@@ -99,13 +101,13 @@ class MemoList extends StatelessWidget {
                 listBloc.dispatch(SelectItem(memo));
               }
             } else {
-              Navigator.push(context, Routes().memo(context, memo));
+              Navigator.push(context, Routes().memo(memo));
             }
           },
           onLongPress: () => listBloc.dispatch(SelectItem(memo)),
         );
       },
-      staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+      staggeredTileBuilder: (index) => StaggeredTile.fit(1),
     );
   }
 

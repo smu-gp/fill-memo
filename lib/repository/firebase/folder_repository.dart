@@ -6,10 +6,6 @@ class FirebaseFolderRepository extends FolderRepository {
   final folderCollection = Firestore.instance.collection(Folder.collectionName);
   String _userId;
 
-  FirebaseFolderRepository(String userId)
-      : assert(userId != null),
-        _userId = userId;
-
   @override
   Future<void> addNewFolder(Folder folder) {
     folder.userId = _userId;

@@ -48,11 +48,6 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextField(
-                    decoration: InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: localizations.labelConnectionCode,
-                      filled: true,
-                    ),
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.done,
                     maxLength: 6,

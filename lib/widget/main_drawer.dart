@@ -51,7 +51,7 @@ class MainDrawerMenu extends StatelessWidget {
               selected: state.selectedMenu == 0,
               onTap: () {
                 drawerBloc.dispatch(SelectMenu(0));
-                Navigator.pop(context);
+                if (!Util.isLarge(context)) Navigator.pop(context);
               },
             ),
             _FolderExpansionTile(
@@ -369,7 +369,7 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
           SelectMenu(1, folderId: folder.id),
         );
         BlocProvider.of<ListBloc>(context).dispatch(UnSelectable());
-        Navigator.pop(context);
+        if (!Util.isLarge(context)) Navigator.pop(context);
       },
     );
   }

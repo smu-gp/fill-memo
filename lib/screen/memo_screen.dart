@@ -337,7 +337,8 @@ class _TitleEditText extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           border: InputBorder.none,
-          fillColor: Colors.transparent,
+          focusedBorder: InputBorder.none,
+          filled: false,
           hintText: AppLocalizations.of(context).hintInputTitle,
         ),
         style: Theme.of(context).textTheme.headline,
@@ -375,7 +376,8 @@ class _ContentEditText extends StatelessWidget {
             maxLines: null,
             decoration: InputDecoration(
               border: InputBorder.none,
-              fillColor: Colors.transparent,
+              focusedBorder: InputBorder.none,
+              filled: false,
               hintText: AppLocalizations.of(context).hintInputNote,
             ),
           ),

@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:sp_client/widget/rich_text_field/widget/editable_text.dart';
 
 const double _kHandleSize = 22.0;
 const double _kToolbarScreenPadding = 8.0;

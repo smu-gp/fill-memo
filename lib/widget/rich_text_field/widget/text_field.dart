@@ -198,8 +198,8 @@ class RichTextField extends StatefulWidget {
 
 class _RichTextFieldState extends State<RichTextField>
     with AutomaticKeepAliveClientMixin {
-  final GlobalKey<SpannableEditableTextState> _editableTextKey =
-      GlobalKey<SpannableEditableTextState>();
+  final GlobalKey<SpanEditableTextState> _editableTextKey =
+      GlobalKey<SpanEditableTextState>();
 
   Set<InteractiveInkFeature> _splashes;
   InteractiveInkFeature _currentSplash;
@@ -328,7 +328,7 @@ class _RichTextFieldState extends State<RichTextField>
     super.dispose();
   }
 
-  SpannableEditableTextState get _editableText => _editableTextKey.currentState;
+  SpanEditableTextState get _editableText => _editableTextKey.currentState;
 
   void _requestKeyboard() {
     _editableText?.requestKeyboard();
@@ -648,7 +648,7 @@ class _RichTextFieldState extends State<RichTextField>
     }
 
     Widget child = RepaintBoundary(
-      child: SpannableEditableText(
+      child: SpanEditableText(
         key: _editableTextKey,
         readOnly: widget.readOnly,
         showCursor: widget.showCursor,

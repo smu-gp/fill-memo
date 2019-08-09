@@ -56,10 +56,10 @@ class _AppState extends State<App> {
     )..dispatch(AppStarted(_userId));
 
     _memoBloc = MemoBloc(
-      memoRepository: FirebaseMemoRepository(_userId),
+      memoRepository: FirebaseMemoRepository(),
     );
     _folderBloc = FolderBloc(
-      folderRepository: FirebaseFolderRepository(_userId),
+      folderRepository: FirebaseFolderRepository(),
     );
   }
 
@@ -101,13 +101,8 @@ class _AppState extends State<App> {
               home: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) {
                   if (authState is Authenticated) {
-                    if (authState.uid == _userId) {
-                      _memoBloc.dispatch(LoadMemos());
-                      _folderBloc.dispatch(LoadFolders());
-                    } else {
-                      _memoBloc.dispatch(UpdateMemoUser(authState.uid));
-                      _folderBloc.dispatch(UpdateFolderUser(authState.uid));
-                    }
+                    _memoBloc.dispatch(UpdateMemoUser(authState.uid));
+                    _folderBloc.dispatch(UpdateFolderUser(authState.uid));
                     return MainScreen();
                   } else {
                     return BlocProvider(

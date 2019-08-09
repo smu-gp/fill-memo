@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: Util.isTablet(context) ? 56.0 : 0,
+          horizontal: Util.isLarge(context) ? 56.0 : 0,
         ),
         child: BlocProvider<PreferenceBloc>.value(
           value: _preferenceBloc,

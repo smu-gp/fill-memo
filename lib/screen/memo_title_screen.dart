@@ -114,7 +114,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       ..title = title.isNotEmpty ? title : null
       ..folderId = _currentFolder?.id ?? Folder.defaultId;
 
-    Navigator.pushReplacement(context, Routes().memo(context, newMemo));
+    Navigator.pushReplacement(context, Routes().memo(newMemo));
   }
 }
 
@@ -143,7 +143,7 @@ class _MemoTitleEditTextState extends State<_MemoTitleEditText> {
       style: Theme.of(context).textTheme.headline,
       decoration: InputDecoration(
         border: InputBorder.none,
-        fillColor: Colors.transparent,
+        filled: false,
         hintText: AppLocalizations.of(context).hintInputTitle,
       ),
     );
