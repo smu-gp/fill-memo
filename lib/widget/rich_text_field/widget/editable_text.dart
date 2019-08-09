@@ -92,7 +92,7 @@ class SpanEditableText extends EditableText {
           scrollPadding: scrollPadding,
           keyboardAppearance: keyboardAppearance,
           dragStartBehavior: dragStartBehavior,
-          enableInteractiveSelection: enableInteractiveSelection,
+          enableInteractiveSelection: enableInteractiveSelection ?? true,
           scrollController: scrollController,
           scrollPhysics: scrollPhysics,
         );
