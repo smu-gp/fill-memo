@@ -114,7 +114,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       ..title = title.isNotEmpty ? title : null
       ..folderId = _currentFolder?.id ?? Folder.defaultId;
 
-    Navigator.pushReplacement(context, Routes().memo(context, newMemo));
+    Navigator.pushReplacement(context, Routes().memo(newMemo));
   }
 }
 

@@ -119,9 +119,9 @@ class _MainScreenState extends State<MainScreen> {
 
     var destination;
     if (quickFolderClassification) {
-      destination = Routes().memoTitle(context, defaultMemoType);
+      destination = Routes().memoTitle(defaultMemoType);
     } else {
-      destination = Routes().memo(context, Memo.empty(defaultMemoType));
+      destination = Routes().memo(Memo.empty(defaultMemoType));
     }
     Navigator.push(context, destination);
   }

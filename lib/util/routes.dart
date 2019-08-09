@@ -19,78 +19,44 @@ import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
 
 class Routes {
-  PageRoute memoTitle(BuildContext context, String memoType) {
-    var memoBloc = BlocProvider.of<MemoBloc>(context);
-    var folderBloc = BlocProvider.of<FolderBloc>(context);
-    return MaterialPageRoute(
-      builder: (context) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<MemoBloc>.value(value: memoBloc),
-            BlocProvider<FolderBloc>.value(value: folderBloc),
-          ],
-          child: MemoTitleScreen(memoType),
-        );
-      },
-    );
+  PageRoute memoTitle(String memoType) {
+    return MaterialPageRoute(builder: (context) => MemoTitleScreen(memoType));
   }
 
-  PageRoute memo(BuildContext context, Memo memo) {
-    var memoBloc = BlocProvider.of<MemoBloc>(context);
-    return MaterialPageRoute(builder: (context) {
-      return BlocProvider<MemoBloc>.value(
-        value: memoBloc,
-        child: MemoScreen(memo),
-      );
-    });
+  PageRoute memo(Memo memo) {
+    return MaterialPageRoute(builder: (context) => MemoScreen(memo));
   }
 
   PageRoute memoImage({List<String> contentImages, int initIndex}) {
-    return MaterialPageRoute(builder: (context) {
-      return MemoImageScreen(
+    return MaterialPageRoute(
+      builder: (context) => MemoImageScreen(
         contentImages: contentImages,
         initIndex: initIndex,
-      );
-    });
-  }
-
-  PageRoute folderManage({MemoBloc memoBloc, FolderBloc folderBloc}) {
-    return MaterialPageRoute(
-      builder: (context) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<MemoBloc>.value(value: memoBloc),
-            BlocProvider<FolderBloc>.value(value: folderBloc),
-          ],
-          child: FolderManageScreen(),
-        );
-      },
-    );
-  }
-
-  PageRoute selectFolder(BuildContext context) {
-    var folderBloc = BlocProvider.of<FolderBloc>(context);
-    return MaterialPageRoute(
-      fullscreenDialog: true,
-      builder: (context) => BlocProvider<FolderBloc>.value(
-        value: folderBloc,
-        child: SelectFolderDialog(),
       ),
     );
   }
 
+  PageRoute folderManage({MemoBloc memoBloc, FolderBloc folderBloc}) {
+    return MaterialPageRoute(
+      builder: (context) => FolderManageScreen(),
+    );
+  }
+
+  PageRoute selectFolder() {
+    return MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => SelectFolderDialog(),
+    );
+  }
+
   AlertDialog selectFolderDialog(BuildContext context) {
-    var folderBloc = BlocProvider.of<FolderBloc>(context);
     return AlertDialog(
       title: Text(AppLocalizations.of(context).dialogFolderSelect),
       contentPadding: EdgeInsets.all(16.0),
       content: Container(
         width: 360.0,
         height: 160.0,
-        child: BlocProvider<FolderBloc>.value(
-          value: folderBloc,
-          child: SelectFolderDialog(),
-        ),
+        child: SelectFolderDialog(),
       ),
       actions: <Widget>[
         FlatButton(

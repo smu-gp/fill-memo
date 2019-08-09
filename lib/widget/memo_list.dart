@@ -101,7 +101,7 @@ class MemoList extends StatelessWidget {
                 listBloc.dispatch(SelectItem(memo));
               }
             } else {
-              Navigator.push(context, Routes().memo(context, memo));
+              Navigator.push(context, Routes().memo(memo));
             }
           },
           onLongPress: () => listBloc.dispatch(SelectItem(memo)),
