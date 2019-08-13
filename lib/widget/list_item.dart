@@ -67,6 +67,7 @@ class SwitchListItem extends StatefulWidget {
   final Widget leading;
   final bool value;
   final ValueChanged<bool> onChanged;
+  final bool enabled;
 
   const SwitchListItem({
     Key key,
@@ -75,6 +76,7 @@ class SwitchListItem extends StatefulWidget {
     this.leading,
     @required this.value,
     @required this.onChanged,
+    this.enabled = true,
   }) : super(key: key);
 
   @override
@@ -96,10 +98,11 @@ class _SwitchListItemState extends State<SwitchListItem> {
       title: widget.title,
       subtitle: widget.subtitle,
       leading: widget.leading,
+      enabled: widget.enabled,
       onTap: () => _handleOnChange(!_value),
       trailing: Switch(
         value: _value,
-        onChanged: _handleOnChange,
+        onChanged: widget.enabled ? _handleOnChange : null,
       ),
     );
   }
