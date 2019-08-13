@@ -73,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
             builder: (context) => _listBloc,
           ),
         ],
-        child: ChangeNotifierProvider(
+        child: ChangeNotifierProvider<MemoSort>(
           builder: (_) => MemoSort(),
           child: child,
         ),

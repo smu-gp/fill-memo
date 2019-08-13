@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-08-07T15:05:12.790922",
+  "@@last_modified": "2019-08-13T13:25:51.363063",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -448,6 +448,56 @@
   },
   "warnGenerateCode": "If you close the screen before connecting from another device, you will not receive a connection request.",
   "@warnGenerateCode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelFingerprint": "Use fingerprint to unlock",
+  "@labelFingerprint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticatedReason": "Please authenticate to use app",
+  "@authenticatedReason": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "androidFingerprintHint": "Touch sensor",
+  "@androidFingerprintHint": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "androidFingerprintNotRecognized": "Fingerprint not recognized. Try again.",
+  "@androidFingerprintNotRecognized": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "androidFingerprintSuccess": "Fingerprint recognized.",
+  "@androidFingerprintSuccess": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "androidCancelButton": "Cancel",
+  "@androidCancelButton": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "androidSignInTitle": "Fingerprint Authentication",
+  "@androidSignInTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "androidFingerprintRequiredTitle": "Fingerprint required",
+  "@androidFingerprintRequiredTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "goToSettings": "Go to settings",
+  "@goToSettings": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "androidGoToSettingsDescription": "Fingerprint is not set up on your device. Go to 'Settings > Security' to add your fingerprint.",
+  "@androidGoToSettingsDescription": {
     "type": "text",
     "placeholders": {}
   },

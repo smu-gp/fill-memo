@@ -456,6 +456,59 @@ class AppLocalizations {
         name: 'warnGenerateCode',
       );
 
+  String get labelFingerprint => Intl.message(
+        'Use fingerprint to unlock',
+        name: 'labelFingerprint',
+      );
+
+  String get authenticatedReason => Intl.message(
+        'Please authenticate to use app',
+        name: 'authenticatedReason',
+      );
+
+  String get androidFingerprintHint => Intl.message(
+        'Touch sensor',
+        name: 'androidFingerprintHint',
+      );
+
+  String get androidFingerprintNotRecognized => Intl.message(
+        'Fingerprint not recognized. Try again.',
+        name: 'androidFingerprintNotRecognized',
+      );
+
+  String get androidFingerprintSuccess => Intl.message(
+        'Fingerprint recognized.',
+        name: 'androidFingerprintSuccess',
+      );
+
+  String get androidCancelButton => Intl.message(
+        'Cancel',
+        name: 'androidCancelButton',
+      );
+
+  String get androidSignInTitle => Intl.message(
+        'Fingerprint Authentication',
+        name: 'androidSignInTitle',
+      );
+
+  String get androidFingerprintRequiredTitle {
+    return Intl.message(
+      'Fingerprint required',
+      name: 'androidFingerprintRequiredTitle',
+    );
+  }
+
+  String get goToSettings => Intl.message(
+        'Go to settings',
+        name: 'goToSettings',
+      );
+
+  String get androidGoToSettingsDescription => Intl.message(
+        'Fingerprint is not set up on your device. Go to '
+        '\'Settings > Security\' to add your fingerprint.',
+        name: 'androidGoToSettingsDescription',
+      );
+
   String deviceName(String displayName, String modelName) => Intl.message(
         "$displayName's $modelName",
         args: [displayName, modelName],

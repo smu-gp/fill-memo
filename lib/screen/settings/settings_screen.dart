@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/repository/repositories.dart';
@@ -86,41 +87,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ListItem(
         title: AppLocalizations.of(context).labelDefaultMemoType,
         subtitle: _toLocalizationsFromType(prefDefaultMemoType.value),
-        onTap: () =>
-            Navigator.push(context, Routes().settingsMemoType(_preferenceBloc)),
+        onTap: () {
+          Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
+        },
       ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
         value: prefNewNoteOnStartup.value,
-        onChanged: (bool value) => _preferenceBloc
-            .dispatch(UpdatePreference(prefNewNoteOnStartup..value = value)),
+        onChanged: (bool value) {
+          _preferenceBloc.dispatch(
+            UpdatePreference(prefNewNoteOnStartup..value = value),
+          );
+        },
       ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelQuickFolderClassification,
         subtitle:
             AppLocalizations.of(context).subtitleQuickFolderClassification,
-        value:
-            preferences.get(AppPreferences.keyQuickFolderClassification).value,
-        onChanged: (bool value) => _preferenceBloc.dispatch(
-            UpdatePreference(prefQuickFolderClassification..value = value)),
+        value: prefQuickFolderClassification.value,
+        onChanged: (bool value) {
+          _preferenceBloc.dispatch(
+            UpdatePreference(prefQuickFolderClassification..value = value),
+          );
+        },
       ),
       Divider(height: 1),
     ];
   }
 
   List<Widget> _buildSecurityItems(Preferences preferences) {
+    var prefUseFingerprint = preferences.get(AppPreferences.keyUseFingerprint);
+    var config = Provider.of<AppConfig>(context);
+
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleSecurity,
       ),
-      ListItem(
-        title: AppLocalizations.of(context).labelChangePinCode,
-        onTap: () {},
-      ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelUseFingerprint,
-        value: false,
-        onChanged: (bool value) {},
+        value: prefUseFingerprint.value,
+        enabled: config.useFingerprint,
+        onChanged: (bool value) {
+          _preferenceBloc.dispatch(
+            UpdatePreference(prefUseFingerprint..value = value),
+          );
+        },
       ),
       Divider(height: 1),
     ];

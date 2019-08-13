@@ -9,6 +9,7 @@ class AppPreferences {
   static final String keyNewNoteOnStartup = "pref_new_note_onstartup";
   static final String keyQuickFolderClassification =
       "pref_quick_folder_classification";
+  static final String keyUseFingerprint = "pref_use_finderprint";
 
   // For debug options
   static final String keyServiceHost = "pref_service_host";
@@ -37,6 +38,10 @@ class AppPreferences {
     Preference<String>(
       key: keyServiceHost,
       initValue: defaultServiceHost,
+    ),
+    Preference<bool>(
+      key: keyUseFingerprint,
+      initValue: false,
     ),
   ];
 }
