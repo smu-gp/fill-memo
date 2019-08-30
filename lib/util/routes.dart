@@ -17,6 +17,8 @@ import 'package:sp_client/screen/settings/settings_screen.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
+import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
+import 'package:sp_client/screen/memo_markdown_screen.dart';
 
 class Routes {
   PageRoute memoTitle(String memoType) {
@@ -108,6 +110,20 @@ class Routes {
       builder: (context) => BlocProvider<PreferenceBloc>.value(
         value: preferenceBloc,
         child: SettingsMemoTypeScreen(),
+      ),
+    );
+  }
+
+  PageRoute markdownMemo(BuildContext context) {
+    return MaterialPageRoute(
+      builder: (context) => MemoMarkdownScreen(),
+    );
+  }
+
+  PageRoute markdownPreviewMemo({String content}) {
+    return MaterialPageRoute(
+      builder: (context) => MemoMarkdownPreviewScreen(
+        content: content,
       ),
     );
   }
