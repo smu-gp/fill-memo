@@ -17,11 +17,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  AppConfig _appConfig;
   PreferenceBloc _preferenceBloc;
 
   @override
   void initState() {
     super.initState();
+    _appConfig = Provider.of<AppConfig>(context, listen: false);
     var preferenceRepository =
         RepositoryProvider.of<PreferenceRepository>(context);
     _preferenceBloc = PreferenceBloc(
@@ -65,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<Widget> _buildItems(Preferences preferences) {
     return <Widget>[
       ..._buildNoteItems(preferences),
-      ..._buildSecurityItems(preferences),
+      if (!_appConfig.runOnWeb) ..._buildSecurityItems(preferences),
       if (!bool.fromEnvironment('dart.vm.product'))
         ..._buildDebugItems(preferences),
       ..._buildInfoItems(preferences),
@@ -91,15 +93,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
         },
       ),
-      SwitchListItem(
-        title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
-        value: prefNewNoteOnStartup.value,
-        onChanged: (bool value) {
-          _preferenceBloc.dispatch(
-            UpdatePreference(prefNewNoteOnStartup..value = value),
-          );
-        },
-      ),
+      if (!_appConfig.runOnWeb)
+        SwitchListItem(
+          title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
+          value: prefNewNoteOnStartup.value,
+          onChanged: (bool value) {
+            _preferenceBloc.dispatch(
+              UpdatePreference(prefNewNoteOnStartup..value = value),
+            );
+          },
+        ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelQuickFolderClassification,
         subtitle:

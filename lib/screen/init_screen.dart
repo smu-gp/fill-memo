@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/util/config.dart';
 import 'package:sp_client/util/localization.dart';
 
 class InitScreen extends StatefulWidget {
@@ -9,13 +11,14 @@ class InitScreen extends StatefulWidget {
   InitScreen({
     Key key,
     @required this.userId,
-  }) : assert(userId != null);
+  });
 
   @override
   _InitScreenState createState() => _InitScreenState();
 }
 
 class _InitScreenState extends State<InitScreen> {
+  AppConfig _appConfig;
   AuthBloc _authBloc;
   LoginBloc _loginBloc;
 
@@ -24,7 +27,10 @@ class _InitScreenState extends State<InitScreen> {
     super.initState();
     _authBloc = BlocProvider.of<AuthBloc>(context);
     _loginBloc = BlocProvider.of<LoginBloc>(context);
-    _loginBloc.dispatch(LoginSubmitted(widget.userId));
+    _appConfig = Provider.of<AppConfig>(context, listen: false);
+    if (!_appConfig.runOnWeb) {
+      _loginBloc.dispatch(LoginSubmitted(widget.userId));
+    }
   }
 
   @override

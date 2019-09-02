@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sp_client/model/local_auth.dart';
+import 'package:sp_client/model/web_auth.dart';
 import 'package:sp_client/screen/init_screen.dart';
 import 'package:sp_client/screen/local_auth_screen.dart';
+import 'package:sp_client/screen/web/intro_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import 'bloc/blocs.dart';
@@ -29,75 +31,92 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  UserRepository _userRepository;
+  MemoRepository _memoRepository;
+  FolderRepository _folderRepository;
+
   bool _useFingerprint;
   String _userId;
+  ThemeData _initTheme;
+
   ThemeBloc _themeBloc;
   AuthBloc _authBloc;
   MemoBloc _memoBloc;
   FolderBloc _folderBloc;
 
-  UserRepository _userRepository;
-
   @override
   void initState() {
     super.initState();
-    _userId = widget.preferenceRepository.getString(
-      AppPreferences.keyUserId,
-    );
-    if (_userId == null) {
-      _userId = Uuid().v4();
-      widget.preferenceRepository.setString(AppPreferences.keyUserId, _userId);
-    }
-
-    _userRepository = FirebaseUserRepository();
-
-    var darkMode =
-        widget.preferenceRepository.getBool(AppPreferences.keyDarkMode);
-    var initTheme =
-        (darkMode ?? false) ? AppThemes.darkTheme : AppThemes.lightTheme;
-
-    _themeBloc = ThemeBloc(initTheme);
-
-    _useFingerprint =
-        widget.preferenceRepository.getBool(AppPreferences.keyUseFingerprint) ??
-            false;
-
-    _authBloc = AuthBloc(
-      userRepository: _userRepository,
-    )..dispatch(AppStarted(_userId));
-
-    _memoBloc = MemoBloc(
-      memoRepository: FirebaseMemoRepository(),
-    );
-    _folderBloc = FolderBloc(
-      folderRepository: FirebaseFolderRepository(),
-    );
+    _initRepository();
+    _fetchSettings();
+    _initBloc();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<AppConfig>.value(value: widget.config),
+    var providers = <SingleChildCloneableWidget>[
+      Provider<AppConfig>.value(value: widget.config),
+      if (widget.config.runOnWeb)
+        ChangeNotifierProvider<WebAuthenticate>(
+          builder: (context) => WebAuthenticate(),
+        ),
+      if (widget.config.useFingerprint)
         ChangeNotifierProvider<LocalAuthenticate>(
           builder: (context) => LocalAuthenticate(!_useFingerprint),
-        )
-      ],
+        ),
+    ];
+
+    var blocProviders = <BlocProvider>[
+      BlocProvider<ThemeBloc>.value(value: _themeBloc),
+      BlocProvider<AuthBloc>.value(value: _authBloc),
+      BlocProvider<MemoBloc>.value(value: _memoBloc),
+      BlocProvider<FolderBloc>.value(value: _folderBloc),
+    ];
+
+    Widget main = BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, authState) {
+        if (authState is Authenticated) {
+          _memoBloc.dispatch(UpdateMemoUser(authState.uid));
+          _folderBloc.dispatch(UpdateFolderUser(authState.uid));
+          return MainScreen();
+        } else {
+          return BlocProvider(
+            builder: (context) => LoginBloc(userRepository: _userRepository),
+            child: InitScreen(userId: _userId),
+          );
+        }
+      },
+    );
+
+    var home;
+    if (widget.config.runOnWeb) {
+      home = Consumer<WebAuthenticate>(
+        builder: (context, authenticate, _) {
+          if (authenticate.value) {
+            return main;
+          } else {
+            return WebIntroScreen();
+          }
+        },
+      );
+    }
+
+    if (widget.config.useFingerprint) {
+      home = Consumer<LocalAuthenticate>(
+        builder: (context, authenticate, _) {
+          if (authenticate.authenticated) {
+            return main;
+          } else {
+            return LocalAuthScreen();
+          }
+        },
+      );
+    }
+
+    return MultiProvider(
+      providers: providers,
       child: MultiBlocProvider(
-        providers: [
-          BlocProvider<ThemeBloc>.value(
-            value: _themeBloc,
-          ),
-          BlocProvider<AuthBloc>.value(
-            value: _authBloc,
-          ),
-          BlocProvider<MemoBloc>.value(
-            value: _memoBloc,
-          ),
-          BlocProvider<FolderBloc>.value(
-            value: _folderBloc,
-          ),
-        ],
+        providers: blocProviders,
         child: RepositoryProvider<PreferenceRepository>.value(
           value: widget.preferenceRepository,
           child: BlocBuilder<ThemeBloc, ThemeData>(
@@ -116,35 +135,53 @@ class _AppState extends State<App> {
                   const Locale('en', 'US'),
                   const Locale('ko', 'KR'),
                 ],
-                home: Consumer<LocalAuthenticate>(
-                  builder: (context, authenticate, _) {
-                    if (authenticate.authenticated) {
-                      return BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, authState) {
-                          if (authState is Authenticated) {
-                            _memoBloc.dispatch(UpdateMemoUser(authState.uid));
-                            _folderBloc
-                                .dispatch(UpdateFolderUser(authState.uid));
-                            return MainScreen();
-                          } else {
-                            return BlocProvider(
-                              builder: (context) =>
-                                  LoginBloc(userRepository: _userRepository),
-                              child: InitScreen(userId: _userId),
-                            );
-                          }
-                        },
-                      );
-                    } else {
-                      return LocalAuthScreen();
-                    }
-                  },
-                ),
+                home: home,
               );
             },
           ),
         ),
       ),
     );
+  }
+
+  void _initRepository() {
+    _userRepository = FirebaseUserRepository();
+    _memoRepository = FirebaseMemoRepository();
+    _folderRepository = FirebaseFolderRepository();
+  }
+
+  void _fetchSettings() {
+    var darkMode =
+        widget.preferenceRepository.getBool(AppPreferences.keyDarkMode);
+
+    _initTheme =
+        (darkMode ?? false) ? AppThemes.darkTheme : AppThemes.lightTheme;
+
+    if (!widget.config.runOnWeb) {
+      _userId = widget.preferenceRepository.getString(
+        AppPreferences.keyUserId,
+      );
+
+      if (_userId == null) {
+        _userId = Uuid().v4();
+        widget.preferenceRepository
+            .setString(AppPreferences.keyUserId, _userId);
+      }
+
+      _useFingerprint = widget.preferenceRepository
+              .getBool(AppPreferences.keyUseFingerprint) ??
+          false;
+    }
+  }
+
+  void _initBloc() {
+    _themeBloc = ThemeBloc(_initTheme);
+    _authBloc = AuthBloc(userRepository: _userRepository);
+    _memoBloc = MemoBloc(memoRepository: _memoRepository);
+    _folderBloc = FolderBloc(folderRepository: _folderRepository);
+
+    if (!widget.config.runOnWeb) {
+      _authBloc.dispatch(AppStarted(_userId));
+    }
   }
 }

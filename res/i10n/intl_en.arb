@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-08-13T13:25:51.363063",
+  "@@last_modified": "2019-09-02T18:13:34.857393",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -241,6 +241,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelDisconnect": "Disconnect",
+  "@labelDisconnect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelDisconnectAnother": "Disconnect another device",
   "@labelDisconnectAnother": {
     "type": "text",
@@ -338,6 +343,11 @@
   },
   "labelWaitHostResponse": "Waiting host response",
   "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWebConnectionRequest": "Web requests connection",
+  "@labelWebConnectionRequest": {
     "type": "text",
     "placeholders": {}
   },

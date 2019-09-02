@@ -19,3 +19,19 @@ class Util {
     return min(size.width, size.height) > 600;
   }
 }
+
+class SingleChangeNotifier<T> extends ChangeNotifier {
+  T _value;
+
+  SingleChangeNotifier(this._value);
+
+  set value(T newValue) {
+    _value = newValue;
+    notifyListeners();
+  }
+
+  get value => _value;
+
+  @override
+  String toString() => '$runtimeType(value: $_value)';
+}
