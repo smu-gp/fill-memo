@@ -88,7 +88,8 @@ class _AppState extends State<App> {
       },
     );
 
-    var home;
+    var home = main;
+
     if (widget.config.runOnWeb) {
       home = Consumer<WebAuthenticate>(
         builder: (context, authenticate, _) {
