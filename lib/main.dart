@@ -17,6 +17,8 @@ void main() async {
     FlutterError.onError = Crashlytics.instance.recordFlutterError;
   }
 
+  WidgetsFlutterBinding.ensureInitialized();
+
   LocalAuthentication localAuth = LocalAuthentication();
   bool canCheckBiometrics = await localAuth.canCheckBiometrics;
   bool useFingerprint = false;
