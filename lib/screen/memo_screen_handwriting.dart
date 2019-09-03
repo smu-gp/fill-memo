@@ -58,6 +58,8 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
 
   GlobalKey outCapture = new GlobalKey();
 
+  int _curInx=0;
+
 
   @override
   void initState() {
@@ -135,6 +137,9 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     }
   }
 
+  void _onItemTapped(int index) {
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -142,90 +147,128 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     Finishsize = new Size(width,height);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: _controller.backgroundColor,
         title: Text(""),
-        bottom: PreferredSize(
-          child: Container(
-            height: kToolbarHeight,
-            padding: const EdgeInsets.only(left: 16.0),
-            child: _TitleEditText(controller: _editTitleTextController),
-          ),
-          preferredSize: Size.fromHeight(kToolbarHeight),
-        ),
-        elevation: 0.0,
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: new RepaintBoundary(
-              key : outCapture,
-              child: Painter(_controller)
-            )
-
-          ),
-          Material(
-            elevation: 8.0,
-            child: Container(
-              color: Colors.white,
-              height: 48.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Opacity(
-                    opacity: 0.99,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.border_color),
-                          color: Colors.black,
-                          onPressed: () => restart(),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.brush),
-                          color: Colors.black,
-                          onPressed: () => _showPenSettingBottomSheet(),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.undo),
-                            color: Colors.black,
-                            //onPressed: () => _controller.undo(),
-                            onPressed: () => undo(_controller),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.clear),
-                            color: Colors.black,
-                            //onPressed: () => _controller.clear(),
-                            onPressed: () => clear(_controller),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.delete),
-                            color: Colors.black,
-                            onPressed: () => _controller.erase(),
-                        ),
-                        IconButton(
-                          icon: Icon(OMIcons.image),
-                          onPressed: _showAddImageBottomSheet,
-                        ),
-                      ],
-                    ),
-                )
-              ),
-            ),
+        actions: <Widget>[
+          new IconButton(
+              icon:new Icon(Icons.undo),
+              onPressed: ()=>undo(_controller),
           ),
         ],
+        //bottom: PreferredSize(
+        //  child: Container(
+        //    height: kToolbarHeight+3,
+        //    padding: const EdgeInsets.only(left: 16.0),
+        //    child: _TitleEditText(controller: _editTitleTextController),
+        //  ),
+        //  preferredSize: Size.fromHeight(kToolbarHeight),
+        //),
+        elevation: 0.0,
+      ),
+      body: Center(
+        child: new RepaintBoundary(
+          key : outCapture,
+           child: Painter(_controller)
+        ),
+      ),
+      bottomNavigationBar : BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.create,
+              color: Colors.black,
+            ),
+            activeIcon: Icon(
+              Icons.create,
+              size: 30,
+              color: Colors.blue,
+            ),
+            title: Text(""),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.color_lens,
+              color: Colors.black,),
+            activeIcon: Icon(
+              Icons.color_lens,
+              size: 30,
+              color: Colors.blue,
+            ),
+            title: Text(""),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.clear,
+              color: Colors.black,
+            ),
+            activeIcon: Icon(
+              Icons.clear,
+              size: 30,
+              color: Colors.blue,
+            ),
+            title: Text(""),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.black,
+            ),
+            activeIcon: Icon(
+              Icons.delete,
+              size: 30,
+              color: Colors.blue,
+            ),
+            title: Text(""),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              OMIcons.image,
+              color: Colors.black,
+            ),
+            activeIcon: Icon(
+              OMIcons.image,
+              size: 30,
+              color: Colors.blue,
+            ),
+            title: Text(""),
+          ),
+        ],
+        selectedItemColor: Colors.amber[800],
+        currentIndex: _curInx,
+        onTap: (index){
+          setState(() {
+            _curInx = index;
+            switch(index){
+              case 0:
+                restart();
+                break;
+              case 1:
+                _showPenSettingBottomSheet();
+                break;
+              case 2:
+                clear(_controller);
+                break;
+              case 3:
+                _controller.erase();
+                break;
+              case 4:
+                _showAddImageBottomSheet();
+                break;
+            }
+          });
+        },
       ),
     );
   }
   
   void clear(PainterController controller){
     controller.clear();
-    capturePng(controller);
+    capturePng(controller.capture, controller);
   }
 
   void undo(PainterController controller){
     controller.undo();
-    capturePng(controller);
+    capturePng(controller.capture, controller);
   }
   
   void _updateDrawingMemo(Size size){
@@ -252,6 +295,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       getimage =  cached.toPNG();
       getimage.then((data){
         savedInfo(memo, contentText, img, data, titleText);
+
       },onError: (e)
       {
       });
@@ -336,17 +380,17 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
   //  }
  // }
 
-  Future<void> capturePng(PainterController controller) async{
+  Future<void> capturePng(GlobalKey capture, PainterController controller) async{
     ui.Image image;
     bool catched = false;
-    RenderRepaintBoundary boundary = controller.capture.currentContext.findRenderObject();
+    RenderRepaintBoundary boundary = capture.currentContext.findRenderObject();
     try{
       image = await boundary.toImage();
       catched = true;
     }catch(exception){
       catched = false;
       Timer(Duration(milliseconds: 1),(){
-        capturePng(controller);
+        capturePng(capture, controller);
       });
     }
     if(catched) {
@@ -373,7 +417,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         _controller.pictureOn = true;
         _controller.onDrawing = result.file;
       });
-      capturePng(_controller);
+      capturePng(outCapture ,_controller);
     }
   }
 
@@ -515,7 +559,17 @@ class _TitleEditText extends StatelessWidget {
         autofocus: false,
         controller: controller,
         decoration: InputDecoration(
-          border: InputBorder.none,
+          prefixIcon: Icon(
+            Icons.description,
+            size: 30,
+            color: Colors.amber,
+          ),
+          //border: InputBorder.none,
+          //border: UnderlineInputBorder(
+          //  borderSide: BorderSide(
+          //    color: Colors.amber,
+          //  ),
+          //),
           fillColor: Colors.transparent,
           focusedBorder: InputBorder.none,
           hintText: AppLocalizations.of(context).hintInputTitle,

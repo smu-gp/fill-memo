@@ -1,7 +1,8 @@
 
 import 'dart:developer';
 import 'dart:io';
-
+import 'dart:math';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
@@ -22,6 +23,9 @@ class Painter extends StatefulWidget {
 class _PainterState extends State<Painter> {
 
   bool _finished;
+
+  Offset before;
+
   //GlobalKey capture = GlobalKey();
   @override
   void initState() {
@@ -84,6 +88,8 @@ class _PainterState extends State<Painter> {
       child=new ClipRect(child:child);
       if(!_finished){
         child=new GestureDetector(
+
+
           child:child,
           onPanStart: _onPanStart,
           onPanUpdate: _onPanUpdate,
@@ -99,11 +105,33 @@ class _PainterState extends State<Painter> {
 
   }
 
+
   void _onPanStart(DragStartDetails start){
-    Offset pos=(context.findRenderObject() as RenderBox)
-        .globalToLocal(start.globalPosition);
-    widget.painterController._pathHistory.add(pos);
-    widget.painterController._notifyListeners();
+    if(widget.painterController.removeon){
+      if(widget.painterController.removeon){
+        var savedpath = widget.painterController.pathHistory.savedpath;
+        var path = widget.painterController.pathHistory.paths;
+        Offset pos=(context.findRenderObject() as RenderBox)
+            .globalToLocal(start.globalPosition);
+        int removepath;
+        for(int i=0; i<path.length ; i++){
+          if(path[i].key.contains(pos)){
+            removepath = i;
+          }
+        }
+        savedpath.removeAt(removepath);
+        path.removeAt(removepath);
+      }
+    }
+    else{
+
+      Offset pos=(context.findRenderObject() as RenderBox)
+          .globalToLocal(start.globalPosition);
+      before = pos;
+      widget.painterController._pathHistory.add(pos);
+      widget.painterController._notifyListeners();
+
+    }
   }
 
   void _onPanUpdate(DragUpdateDetails update){
@@ -122,19 +150,27 @@ class _PainterState extends State<Painter> {
       path.removeAt(removepath);
     }
     else{
+
       Offset pos=(context.findRenderObject() as RenderBox)
-          .globalToLocal(update.globalPosition);
-      widget.painterController._pathHistory.updateCurrent(pos);
-      widget.painterController._notifyListeners();
+            .globalToLocal(update.globalPosition);
+      if(sqrt((pos.dx-before.dx)*(pos.dx-before.dx)+(pos.dy-before.dy)*(pos.dy-before.dy))<50 ){
+        before = pos;
+        widget.painterController._pathHistory.updateCurrent(pos);
+        widget.painterController._notifyListeners();
+      }
+
     }
   }
 
   void _onPanEnd(DragEndDetails end){
     Future <Uint8List> data = capturePng(widget.painterController.capture);
     getimg(data);
+
     widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
   }
+
+
 
 
   Future<Uint8List> capturePng(GlobalKey capture) async{
@@ -203,7 +239,6 @@ class _PathHistory {
     //_paXyPaint=new MapEntry<Offset,Paint>(Offset() , Paint());
     //_pathload=new List<Offset>();
     _savedpath = new List<MapEntry<MapEntry<Offset,Paint>, List<Offset>>>();
-
     _inDrag = false;
     _backgroundPaint = new Paint();
   }

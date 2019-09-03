@@ -1,23 +1,47 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:sp_client/model/memo.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class MemoMarkdownScreen extends StatefulWidget {
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/model/models.dart';
+import 'package:sp_client/repository/repositories.dart';
 
+class MemoMarkdownScreen extends StatefulWidget {
+  final Memo memo;
+  MemoMarkdownScreen(
+    this.memo, {
+      Key key,
+  }) : super(key: key);
   @override
   _MemoMarkdownScreenState createState() => _MemoMarkdownScreenState();
 }
 
 class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
-  TextEditingController _editingController = TextEditingController();
-  String content = "";
+  //TextEditingController _editingController = TextEditingController();
+  TextEditingController _editTitleTextController;
+  TextEditingController _editingController;
+  String content;
+  MemoBloc _memoBloc;
+  PreferenceRepository _preferenceRepository;
 
   @override
   void initState() {
     super.initState();
+    _memoBloc = BlocProvider.of<MemoBloc>(context);
+    _preferenceRepository =
+        RepositoryProvider.of<PreferenceRepository>(context);
+    _editTitleTextController=TextEditingController(text: widget.memo.title ?? "");;
+    _editingController = TextEditingController(text: widget.memo.content ?? "");
+    //_editingController =
+    //    TextEditingController(text: widget.memo.content ?? "");
+    //_editingController.text += widget.memo.content;
     _editingController.addListener(() {
       setState(() {
         content = _editingController.value.text;
@@ -43,8 +67,8 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
         children: <Widget>[
           Expanded(
             child: Markdown(
-              data: content,
-
+              //data: content,
+              data : _editingController.text,
             ),
             flex: 1,
           ),
@@ -163,6 +187,47 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
       ),
     );
   }
+  void _updataMarkDownMemo(){
+    var memo = widget.memo;
+    var titleText = _editTitleTextController.text;
+    var contentText = content;
+    var isChanged = memo.content != contentText ||
+        memo.title != titleText ;
+
+    memo.title = titleText.isNotEmpty ? titleText : null;
+    memo.content = contentText.isNotEmpty ? contentText : null;
+
+    if (isChanged) {
+      memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
+    }
+
+    var isValid = memo.content != null;
+
+    if (widget.memo.id != null) {
+      if (isValid) {
+        if (isChanged) {
+          _memoBloc.dispatch(UpdateMemo(memo));
+        }
+      } else {
+        _memoBloc.dispatch(DeleteMemo(widget.memo));
+      }
+    } else {
+      if (isValid) {
+        _memoBloc.dispatch(AddMemo(memo));
+      }
+    }
+
+
+  }
+
+
+  void dispose(){
+    _updataMarkDownMemo();
+    _editTitleTextController.dispose();
+    _editingController.dispose();
+    super.dispose();
+  }
+
 
   Future _showPreviewScreen() async{
     await Navigator.push(

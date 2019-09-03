@@ -108,15 +108,29 @@ class _MainScreenState extends State<MainScreen> {
         preferenceRepository.getString(AppPreferences.keyDefaultMemoType) ??
             typeRichText;
 
-    if (defaultMemoType != typeRichText) {
-      _scaffoldKey.currentState
-        ..removeCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text("Not supported type : $defaultMemoType"),
-        ));
-      return;
-    }
+    //if (defaultMemoType != typeRichText) {
+    //  _scaffoldKey.currentState
+    //    ..removeCurrentSnackBar()
+    //    ..showSnackBar(SnackBar(
+    //      content: Text("Not supported type : $defaultMemoType"),
+    //    ));
+    //  return;
+    //}
 
+    //var destination;
+    //if (defaultMemoType == typeMarkdown) {
+    //  destination = Routes().markdownMemo(context);
+    //}
+    //else if (defaultMemoType == typeHandWriting) {
+    //  destination = Routes().handwritingMemo(context, Memo.empty(defaultMemoType));
+    //} else {
+    //  if (quickFolderClassification) {
+    //    destination = Routes().memoTitle(defaultMemoType);
+    //  } else {
+    //    destination = Routes().memo(Memo.empty(defaultMemoType));
+    //  }
+    //}
+    //Navigator.push(context, destination);
     var destination;
     if (quickFolderClassification) {
       destination = Routes().memoTitle(defaultMemoType);

@@ -6,6 +6,8 @@ import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 
+import '../util/constants.dart';
+
 class MemoTitleScreen extends StatefulWidget {
   final String memoType;
 
@@ -115,6 +117,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       ..folderId = _currentFolder?.id ?? Folder.defaultId;
 
     Navigator.pushReplacement(context, Routes().memo(newMemo));
+
   }
 }
 
