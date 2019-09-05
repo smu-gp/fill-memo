@@ -6,7 +6,7 @@ import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/sort_dialog.dart';
+import 'package:sp_client/widget/memo_sort.dart';
 
 class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   final PreferredSizeWidget bottom;
@@ -131,7 +131,16 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
               builder: (context) {
                 return ChangeNotifierProvider<MemoSort>.value(
                   value: memoSort,
-                  child: SortDialog(),
+                  child: AlertDialog(
+                    title: Text(AppLocalizations.of(context).actionSort),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 24.0,
+                      horizontal: 0.0,
+                    ),
+                    content: MemoSortPanel(
+                      onSortSelected: () => Navigator.pop(context),
+                    ),
+                  ),
                 );
               },
             );
@@ -194,7 +203,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
               var folderId = await _selectFolder(context);
               if (folderId != null) {
                 selectedItems.forEach((item) {
-                  var updatedMemo = (item as Memo)..folderId = folderId;
+                  var updatedMemo = item..folderId = folderId;
                   memoBloc.dispatch(UpdateMemo(updatedMemo));
                 });
               }
