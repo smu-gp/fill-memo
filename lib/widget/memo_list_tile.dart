@@ -84,14 +84,10 @@ class _MemoIcon extends StatelessWidget {
       color = theme.accentColor;
     }
 
-    return Stack(
-      children: <Widget>[
-        CircleAvatar(
-          radius: 24,
-          child: Icon(icon, color: iconColor),
-          backgroundColor: color,
-        ),
-      ],
+    return CircleAvatar(
+      radius: 24,
+      child: Icon(icon, color: iconColor),
+      backgroundColor: color,
     );
   }
 }

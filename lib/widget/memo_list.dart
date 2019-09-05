@@ -38,7 +38,7 @@ class MemoList extends StatelessWidget {
         return Consumer<MemoSort>(
           builder: (context, sort, child) {
             if (memoState is MemosLoaded) {
-              var memos = memoState.memos;
+              var memos = List.from(memoState.memos);
 
               // Filter folder memo
               if (folderId != null) {

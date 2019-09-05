@@ -173,9 +173,12 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
     var listState = listBloc.currentState as SelectableList;
     var selectedItems = List.castFrom<dynamic, Memo>(listState.selectedItems);
 
-    var memosType = _checkMemosType(selectedItems);
-    var canMerge =
-        selectedItems.length > 1 && availableMergeType.contains(memosType);
+    var canMerge = false;
+    var memosType;
+    if (selectedItems.length > 1) {
+      memosType = _checkMemosType(selectedItems);
+      canMerge = availableMergeType.contains(memosType);
+    }
 
     return [
       if (canMerge)

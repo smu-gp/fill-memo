@@ -10,20 +10,16 @@ class MainFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MainDrawerBloc, MainDrawerState>(
-      builder: (context, mainDrawerState) {
-        return BlocBuilder<ListBloc, ListState>(
-          builder: (context, listState) {
-            return AnimatedOpacity(
-              opacity: listState is UnSelectableList ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 200),
-              child: FloatingActionButton(
-                tooltip: AppLocalizations.of(context).actionAddMemo,
-                onPressed: onPressed,
-                child: Icon(Icons.add),
-              ),
-            );
-          },
+    return BlocBuilder<ListBloc, ListState>(
+      builder: (context, listState) {
+        return Visibility(
+          visible: true,
+          child: FloatingActionButton(
+            heroTag: null,
+            child: Icon(Icons.add),
+            onPressed: onPressed,
+            tooltip: AppLocalizations.of(context).actionAddMemo,
+          ),
         );
       },
     );
