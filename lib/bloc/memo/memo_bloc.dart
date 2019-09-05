@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:sp_client/repository/repositories.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/widget/rich_text_field/rich_text_field.dart';
 
 import 'memo_event.dart';
@@ -64,21 +65,23 @@ class MemoBloc extends Bloc<MemoEvent, MemoState> {
   }
 
   Stream<MemoState> _mapMergeMemoToState(MergeMemo event) async* {
-    var merged = event.memos.first;
-    var content = merged.content;
-    var contentStyle = SpannableList.fromJson(merged.contentStyle);
-    var contentImages = <String>[]..addAll(merged.contentImages);
-    for (var index = 1; index < event.memos.length; index++) {
-      var memo = event.memos[index];
-      content += memo.content;
-      contentStyle.concat(SpannableList.fromJson(memo.contentStyle));
-      contentImages.addAll(memo.contentImages);
-      _memoRepository.deleteMemo(memo);
+    if (event.type == typeRichText) {
+      var merged = event.memos.first;
+      var content = merged.content;
+      var contentStyle = SpannableList.fromJson(merged.contentStyle);
+      var contentImages = <String>[]..addAll(merged.contentImages);
+      for (var index = 1; index < event.memos.length; index++) {
+        var memo = event.memos[index];
+        content += memo.content;
+        contentStyle.concat(SpannableList.fromJson(memo.contentStyle));
+        contentImages.addAll(memo.contentImages);
+        _memoRepository.deleteMemo(memo);
+      }
+      merged.content = content;
+      merged.contentStyle = contentStyle.toJson();
+      merged.contentImages = contentImages;
+      _memoRepository.updateMemo(merged);
     }
-    merged.content = content;
-    merged.contentStyle = contentStyle.toJson();
-    merged.contentImages = contentImages;
-    _memoRepository.updateMemo(merged);
   }
 
   Stream<MemoState> _mapMemosUpdateToState(MemosUpdated event) async* {

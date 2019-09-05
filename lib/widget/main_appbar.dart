@@ -4,6 +4,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/sort_dialog.dart';
 
@@ -134,21 +135,26 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   List<Widget> _buildSelectableActions(BuildContext context) {
+    final availableMergeType = [typeRichText];
+
     var memoBloc = BlocProvider.of<MemoBloc>(context);
     var drawerBloc = BlocProvider.of<MainDrawerBloc>(context);
     var listBloc = BlocProvider.of<ListBloc>(context);
 
     var drawerState = drawerBloc.currentState;
     var listState = listBloc.currentState as SelectableList;
-    var selectedItems = listState.selectedItems;
+    var selectedItems = List.castFrom<dynamic, Memo>(listState.selectedItems);
+
+    var memosType = _checkMemosType(selectedItems);
+    var canMerge =
+        selectedItems.length > 1 && availableMergeType.contains(memosType);
 
     return [
-      if (selectedItems.length > 1)
+      if (canMerge)
         IconButton(
           icon: Icon(Icons.merge_type),
           onPressed: () {
-            var selectedMemo = List.castFrom<dynamic, Memo>(selectedItems);
-            memoBloc.dispatch(MergeMemo(selectedMemo));
+            memoBloc.dispatch(MergeMemo(memosType, selectedItems));
             listBloc.dispatch(UnSelectable());
           },
         ),
@@ -186,6 +192,17 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
           },
         )
     ];
+  }
+
+  String _checkMemosType(List<Memo> memos) {
+    var type = memos.first.type;
+    for (var index = 1; index < memos.length; index++) {
+      var memo = memos[index];
+      if (memo.type != type) {
+        return null;
+      }
+    }
+    return type;
   }
 
   Future<String> _selectFolder(BuildContext context) async {
