@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelMarkdown" : MessageLookupByLibrary.simpleMessage("Markdown"),
     "labelName" : MessageLookupByLibrary.simpleMessage("Name"),
     "labelNoHostWaited" : MessageLookupByLibrary.simpleMessage("No host waited"),
+    "labelNoTitle" : MessageLookupByLibrary.simpleMessage("No Title"),
     "labelNone" : MessageLookupByLibrary.simpleMessage("None"),
     "labelQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("Quick folder classification"),
     "labelRejectHost" : MessageLookupByLibrary.simpleMessage("Reject by host"),

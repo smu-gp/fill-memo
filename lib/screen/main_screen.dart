@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/model/memo_list_type.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/util/constants.dart';
@@ -21,32 +22,38 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final MainDrawerBloc _drawerBloc = MainDrawerBloc();
   final ListBloc _listBloc = ListBloc();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _navigateNewMemo(onStartup: true));
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _navigateNewMemo(onStartup: true),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     Widget child = Scaffold(
-      key: _scaffoldKey,
       appBar: MainAppBar(),
       drawer: !Util.isLarge(context) ? MainDrawer() : null,
-      body: BlocBuilder<MainDrawerBloc, MainDrawerState>(
-        bloc: _drawerBloc,
-        builder: (context, state) {
-          return MemoList(folderId: state.folderId);
-        },
+      body: Consumer<MemoListType>(builder: (context, listType, child) {
+        return BlocBuilder<MainDrawerBloc, MainDrawerState>(
+          bloc: _drawerBloc,
+          builder: (context, state) {
+            return MemoList(
+              folderId: state.folderId,
+              listType: listType.value,
+              onTap: _onMemoTapped,
+              onLongPress: _onMemoLongPressed,
+            );
+          },
+        );
+      }),
+      floatingActionButton: MainFloatingActionButton(
+        onPressed: _navigateNewMemo,
       ),
-      floatingActionButton:
-          MainFloatingActionButton(onPressed: _navigateNewMemo),
       resizeToAvoidBottomPadding: false,
     );
 
@@ -73,8 +80,17 @@ class _MainScreenState extends State<MainScreen> {
             builder: (context) => _listBloc,
           ),
         ],
-        child: ChangeNotifierProvider<MemoSort>(
-          builder: (_) => MemoSort(),
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider<MemoSort>(
+              builder: (_) => MemoSort(),
+            ),
+            ChangeNotifierProvider<MemoListType>(
+              builder: (_) => MemoListType(
+                AppConfig.runOnWeb ? ListType.list : ListType.grid,
+              ),
+            ),
+          ],
           child: child,
         ),
       ),
@@ -86,6 +102,18 @@ class _MainScreenState extends State<MainScreen> {
     _drawerBloc.dispose();
     _listBloc.dispose();
     super.dispose();
+  }
+
+  void _onMemoTapped(Memo memo, bool selectable, bool selected) {
+    if (selectable) {
+      _listBloc.dispatch(selected ? UnSelectItem(memo) : SelectItem(memo));
+    } else {
+      Navigator.push(context, Routes().memo(memo));
+    }
+  }
+
+  void _onMemoLongPressed(Memo memo, bool selectable) {
+    _listBloc.dispatch(SelectItem(memo));
   }
 
   void _navigateNewMemo({bool onStartup = false}) {
@@ -107,15 +135,6 @@ class _MainScreenState extends State<MainScreen> {
     var defaultMemoType =
         preferenceRepository.getString(AppPreferences.keyDefaultMemoType) ??
             typeRichText;
-
-    if (defaultMemoType != typeRichText) {
-      _scaffoldKey.currentState
-        ..removeCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text("Not supported type : $defaultMemoType"),
-        ));
-      return;
-    }
 
     var destination;
     if (quickFolderClassification) {

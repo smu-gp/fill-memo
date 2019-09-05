@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelMarkdown" : MessageLookupByLibrary.simpleMessage("마크다운"),
     "labelName" : MessageLookupByLibrary.simpleMessage("이름"),
     "labelNoHostWaited" : MessageLookupByLibrary.simpleMessage("연결하려는 기기가 기다리지 않음"),
+    "labelNoTitle" : MessageLookupByLibrary.simpleMessage("제목없음"),
     "labelNone" : MessageLookupByLibrary.simpleMessage("없음"),
     "labelQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("빠른 폴더 분류"),
     "labelRejectHost" : MessageLookupByLibrary.simpleMessage("연결하려는 기기가 거부함"),

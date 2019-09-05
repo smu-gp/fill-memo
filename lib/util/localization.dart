@@ -320,6 +320,11 @@ class AppLocalizations {
         name: 'labelServiceUnavailable',
       );
 
+  String get labelNoTitle => Intl.message(
+        'No Title',
+        name: 'labelNoTitle',
+      );
+
   String get labelUnnamed => Intl.message(
         'Unnamed',
         name: 'labelUnnamed',

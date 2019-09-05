@@ -101,7 +101,26 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   List<Widget> _buildNotesActions(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
     var memoSort = Provider.of<MemoSort>(context);
+    var memoListType = Provider.of<MemoListType>(context);
+
     return [
+      if (!AppConfig.runOnWeb)
+        Consumer<MemoListType>(builder: (context, listType, _) {
+          return IconButton(
+            icon: Icon(
+              listType.value == ListType.list
+                  ? Icons.dashboard
+                  : Icons.view_list,
+            ),
+            onPressed: () {
+              if (listType.value == ListType.grid) {
+                memoListType.value = ListType.list;
+              } else {
+                memoListType.value = ListType.grid;
+              }
+            },
+          );
+        }),
       PopupMenuButton<NotesMenuItem>(
         onSelected: (NotesMenuItem selected) {
           if (selected == NotesMenuItem.actionEdit) {
