@@ -151,18 +151,22 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         title: Text(""),
         actions: <Widget>[
           new IconButton(
-              icon:new Icon(Icons.undo),
-              onPressed: ()=>undo(_controller),
+            icon:new Icon(Icons.undo),
+            onPressed: ()=>undo(_controller),
+          ),
+          new IconButton(
+            icon:new Icon(OMIcons.image),
+            onPressed:  ()=>_showAddImageBottomSheet(),
           ),
         ],
-        //bottom: PreferredSize(
-        //  child: Container(
-        //    height: kToolbarHeight+3,
-        //    padding: const EdgeInsets.only(left: 16.0),
-        //    child: _TitleEditText(controller: _editTitleTextController),
-        //  ),
-        //  preferredSize: Size.fromHeight(kToolbarHeight),
-        //),
+        bottom: PreferredSize(
+          child: Container(
+            height: kToolbarHeight+3,
+            padding: const EdgeInsets.only(left: 16.0),
+            child: _TitleEditText(controller: _editTitleTextController),
+          ),
+          preferredSize: Size.fromHeight(kToolbarHeight),
+        ),
         elevation: 0.0,
       ),
       body: Center(
@@ -220,18 +224,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
             ),
             title: Text(""),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              OMIcons.image,
-              color: Colors.black,
-            ),
-            activeIcon: Icon(
-              OMIcons.image,
-              size: 30,
-              color: Colors.blue,
-            ),
-            title: Text(""),
-          ),
+
         ],
         selectedItemColor: Colors.amber[800],
         currentIndex: _curInx,
@@ -250,9 +243,6 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
                 break;
               case 3:
                 _controller.erase();
-                break;
-              case 4:
-                _showAddImageBottomSheet();
                 break;
             }
           });
@@ -451,6 +441,35 @@ class _penSettingBottomSheet extends StatefulWidget {
   _penSettingBottomSheetState createState() => _penSettingBottomSheetState();
 }
 
+//class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
+//  Color _color;
+//  @override
+//  Widget build(BuildContext context) {
+//    return Container(
+//      child: Wrap(
+//        children: <Widget>[
+//          ListItem(
+//            leading: Icon(
+//                Icons.color_lens,
+//                color: Colors.deepOrangeAccent,
+//            ),
+//            title: '펜 색깔',
+//            onTap: () => _openColorPicker(),
+//          ),
+//          ListItem(
+//            leading: Icon(
+//              Icons.border_color,
+//              color: Colors.deepOrangeAccent,
+//            ),
+//            title: '펜 굵기',
+//            onTap: () => _showThicknessBottomSheet(context, widget.controller),
+//          )
+//        ],
+//      ),
+//    );
+//  }
+
+
 class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
   Color _color;
   @override
@@ -460,22 +479,68 @@ class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
         children: <Widget>[
           ListItem(
             leading: Icon(
-                Icons.color_lens,
-                color: Colors.deepOrangeAccent,
-            ),
-            title: '펜 색깔',
-            onTap: () => _openColorPicker(),
-          ),
-          ListItem(
-            leading: Icon(
               Icons.border_color,
               color: Colors.deepOrangeAccent,
             ),
             title: '펜 굵기',
             onTap: () => _showThicknessBottomSheet(context, widget.controller),
+          ),
+          Row(
+            children: <Widget>[
+              new IconButton(
+                //icon: new Icon(OMIcons.lens),
+                icon:new Icon(Icons.lens),
+                color: Colors.black,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.black);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.red,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.red);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.blue,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.blue);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.green,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.green);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.purple,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.purple);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.pinkAccent,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.pinkAccent);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.amber,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.amber);
+                },
+              ),
+            ],
           )
         ],
-      ),
+      )
     );
   }
 
@@ -559,12 +624,7 @@ class _TitleEditText extends StatelessWidget {
         autofocus: false,
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: Icon(
-            Icons.description,
-            size: 30,
-            color: Colors.amber,
-          ),
-          //border: InputBorder.none,
+          border: InputBorder.none,
           //border: UnderlineInputBorder(
           //  borderSide: BorderSide(
           //    color: Colors.amber,
