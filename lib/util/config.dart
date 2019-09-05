@@ -1,14 +1,16 @@
 class AppConfig {
+  /// Static config constants
+  static const bool runOnWeb = false;
+
+  /// Runtime config constants
   final bool useFingerprint;
-  final bool runOnWeb;
 
   AppConfig({
     this.useFingerprint = false,
-    this.runOnWeb = false,
   });
 
   @override
   String toString() {
-    return '$runtimeType(useFingerprint: $useFingerprint, runOnWeb: $runOnWeb)';
+    return '$runtimeType(useFingerprint: $useFingerprint)';
   }
 }

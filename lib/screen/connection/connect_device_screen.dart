@@ -32,8 +32,7 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var config = Provider.of<AppConfig>(context, listen: false);
-    return config.runOnWeb ? _buildOnWeb() : _build();
+    return AppConfig.runOnWeb ? _buildOnWeb() : _build();
   }
 
   Widget _build() {

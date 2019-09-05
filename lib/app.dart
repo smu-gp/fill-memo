@@ -56,7 +56,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     var providers = <SingleChildCloneableWidget>[
       Provider<AppConfig>.value(value: widget.config),
-      if (widget.config.runOnWeb)
+      if (AppConfig.runOnWeb)
         ChangeNotifierProvider<WebAuthenticate>(
           builder: (context) => WebAuthenticate(),
         ),
@@ -90,7 +90,7 @@ class _AppState extends State<App> {
 
     var home = main;
 
-    if (widget.config.runOnWeb) {
+    if (AppConfig.runOnWeb) {
       home = Consumer<WebAuthenticate>(
         builder: (context, authenticate, _) {
           if (authenticate.value) {
@@ -158,7 +158,7 @@ class _AppState extends State<App> {
     _initTheme =
         (darkMode ?? false) ? AppThemes.darkTheme : AppThemes.lightTheme;
 
-    if (!widget.config.runOnWeb) {
+    if (!AppConfig.runOnWeb) {
       _userId = widget.preferenceRepository.getString(
         AppPreferences.keyUserId,
       );
@@ -181,7 +181,7 @@ class _AppState extends State<App> {
     _memoBloc = MemoBloc(memoRepository: _memoRepository);
     _folderBloc = FolderBloc(folderRepository: _folderRepository);
 
-    if (!widget.config.runOnWeb) {
+    if (!AppConfig.runOnWeb) {
       _authBloc.dispatch(AppStarted(_userId));
     }
   }
