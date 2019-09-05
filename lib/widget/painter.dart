@@ -1,5 +1,5 @@
 
-import 'dart:developer';
+import 'dart:developer' as de;
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/gestures.dart';
@@ -12,9 +12,11 @@ import 'dart:typed_data';
 class Painter extends StatefulWidget {
   final PainterController painterController;
 
+
   Painter(PainterController painterController):
-        this.painterController=painterController,
-        super(key:new ValueKey<PainterController>(painterController));
+    this.painterController=painterController,
+    super(key:new ValueKey<PainterController>(painterController)
+  );
 
   @override
   _PainterState createState() => new _PainterState();
@@ -31,12 +33,13 @@ class _PainterState extends State<Painter> {
   void initState() {
     super.initState();
     _finished=false;
+
     widget.painterController._widgetFinish=_finish;
 
     //widget.painterController.capture = capture;
   }
-  
-  
+
+
   
   Size _finish(){
     setState((){
@@ -55,27 +58,36 @@ class _PainterState extends State<Painter> {
     var controller =widget.painterController;
     Widget child;
     if(controller.pictureOn){
-      child = new RepaintBoundary(
-        key : controller.capture,
-        //key : capture
-        child:new GestureDetector(
-          child: new CustomPaint(
-            willChange: true,
-            foregroundPainter: new PicturePainter(
-              controller._pathHistory,
-              repaint: controller,
-            ),
-            child: Container(
-              child:Image.file(controller.onDrawing)
-            ),
-          ),
-          onPanStart: _onPanStart,
-          onPanUpdate: _onPanUpdate,
-          onPanEnd: _onPanEnd,
+      child =new CustomPaint(
+        willChange: true,
+        foregroundPainter: new PicturePainter(
+          controller._pathHistory,
+          repaint: controller,
+        ),
+        child: Container(
+            child:Image.file(controller.onDrawing)
         ),
       );
-
-      return child;
+      return new RepaintBoundary(
+        key : controller.capture,
+        //key : capture
+        child:RawGestureDetector(
+          gestures: <Type, GestureRecognizerFactory>{
+            CustomPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                CustomPanGestureRecognizer>(
+                  () =>
+                  CustomPanGestureRecognizer(
+                    onPanStart: _onPanStart,
+                    onPanUpdate: _onPanUpdate,
+                    onPanEnd: _onPanEnd,
+                    context: context,
+                  ),
+                  (CustomPanGestureRecognizer instance) {},
+            ),
+          },
+          child:child,
+        ),
+      );
     }
     else{
       child=new CustomPaint(
@@ -87,13 +99,27 @@ class _PainterState extends State<Painter> {
       );
       child=new ClipRect(child:child);
       if(!_finished){
-        child=new GestureDetector(
-
-
+        //child=new GestureDetector(
+        //  child:child,
+        //  onPanStart: _onPanStart,
+        //  onPanUpdate: _onPanUpdate,
+        //  onPanEnd: _onPanEnd,
+        //);
+        child= RawGestureDetector(
+          gestures: <Type, GestureRecognizerFactory>{
+            CustomPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                CustomPanGestureRecognizer>(
+                  () =>
+                  CustomPanGestureRecognizer(
+                      onPanStart: _onPanStart,
+                      onPanUpdate: _onPanUpdate,
+                      onPanEnd: _onPanEnd,
+                      context: context,
+                  ),
+                  (CustomPanGestureRecognizer instance) {},
+            ),
+          },
           child:child,
-          onPanStart: _onPanStart,
-          onPanUpdate: _onPanUpdate,
-          onPanEnd: _onPanEnd,
         );
       }
       return new Container(
@@ -102,35 +128,42 @@ class _PainterState extends State<Painter> {
         height: double.infinity,
       );
     }
-
   }
 
 
   void _onPanStart(DragStartDetails start){
     if(widget.painterController.removeon){
-      if(widget.painterController.removeon){
-        var savedpath = widget.painterController.pathHistory.savedpath;
-        var path = widget.painterController.pathHistory.paths;
-        Offset pos=(context.findRenderObject() as RenderBox)
-            .globalToLocal(start.globalPosition);
-        int removepath;
-        for(int i=0; i<path.length ; i++){
-          if(path[i].key.contains(pos)){
-            removepath = i;
+      var savedpath = widget.painterController.pathHistory.savedpath;
+      var path = widget.painterController.pathHistory.paths;
+      Offset pos=(context.findRenderObject() as RenderBox)
+          .globalToLocal(start.globalPosition);
+      //int removepath;
+      //for(int i=0; i<path.length ; i++){
+      // de.log("pos : "+pos.toString() +"     표적" + savedpath[i].value.toString());
+      //  if(path[i].key.contains(pos)){
+      //    removepath = i;
+      //  }
+      //}
+      //savedpath.removeAt(removepath);
+      //path.removeAt(removepath);
+      int i;
+      int j;
+      for(i=0; i<savedpath.length;i++){
+        for(j=0; j<savedpath[i].value.length;j++){
+          if(sqrt((savedpath[i].value[j].dx-pos.dx)*(savedpath[i].value[j].dx-pos.dx)+(savedpath[i].value[j].dy-pos.dy)*(savedpath[i].value[j].dy-pos.dy))<10){
+            savedpath.removeAt(i);
+            path.removeAt(i);
+            break;
           }
         }
-        savedpath.removeAt(removepath);
-        path.removeAt(removepath);
       }
     }
     else{
-
       Offset pos=(context.findRenderObject() as RenderBox)
           .globalToLocal(start.globalPosition);
       before = pos;
       widget.painterController._pathHistory.add(pos);
       widget.painterController._notifyListeners();
-
     }
   }
 
@@ -140,17 +173,28 @@ class _PainterState extends State<Painter> {
       var path = widget.painterController.pathHistory.paths;
       Offset pos=(context.findRenderObject() as RenderBox)
           .globalToLocal(update.globalPosition);
-      int removepath;
-      for(int i=0; i<path.length ; i++){
-        if(path[i].key.contains(pos)){
-          removepath = i;
+      //int removepath;
+      //for(int i=0; i<path.length ; i++){
+      //  if(path[i].key.contains(pos)){
+      //    removepath = i;
+      //  }
+      //}
+      //savedpath.removeAt(removepath);
+      //path.removeAt(removepath);
+      int i;
+      int j;
+      for(i=0; i<savedpath.length;i++){
+        for(j=0; j<savedpath[i].value.length;j++){
+          if(sqrt((savedpath[i].value[j].dx-pos.dx)*(savedpath[i].value[j].dx-pos.dx)+(savedpath[i].value[j].dy-pos.dy)*(savedpath[i].value[j].dy-pos.dy))<10){
+            savedpath.removeAt(i);
+            path.removeAt(i);
+            break;
+          }
         }
       }
-      savedpath.removeAt(removepath);
-      path.removeAt(removepath);
+
     }
     else{
-
       Offset pos=(context.findRenderObject() as RenderBox)
             .globalToLocal(update.globalPosition);
       if(sqrt((pos.dx-before.dx)*(pos.dx-before.dx)+(pos.dy-before.dy)*(pos.dy-before.dy))<50 ){
@@ -163,8 +207,10 @@ class _PainterState extends State<Painter> {
   }
 
   void _onPanEnd(DragEndDetails end){
-    Future <Uint8List> data = capturePng(widget.painterController.capture);
-    getimg(data);
+    if(widget.painterController.pictureOn){
+      Future <Uint8List> data = capturePng(widget.painterController.capture);
+      getimg(data);
+    }
 
     widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
@@ -187,7 +233,66 @@ class _PainterState extends State<Painter> {
 
 }
 
+class CustomPanGestureRecognizer extends PanGestureRecognizer {
+  final Function onPanStart;
+  final Function onPanUpdate;
+  final Function onPanEnd;
+  final BuildContext context;
+  CustomPanGestureRecognizer(
+      {@required this.onPanStart,
+        @required this.onPanUpdate,
+        @required this.onPanEnd,
+        @required this.context,
+      });
 
+  static bool isLarge(BuildContext context) {
+    assert(context != null);
+    var size = MediaQuery.of(context).size;
+    return min(size.width, size.height) > 600;
+  }
+
+  @override
+  void addPointer(PointerEvent event) {
+    if(isLarge(context)){
+      if(event.kind == PointerDeviceKind.stylus){
+        startTrackingPointer(event.pointer);
+        resolve(GestureDisposition.accepted);
+      }
+      else{
+        stopTrackingPointer(event.pointer);
+      }
+    }
+    else{
+      startTrackingPointer(event.pointer);
+      resolve(GestureDisposition.accepted);
+    }
+  }
+
+
+  @override
+  void handleEvent(PointerEvent event) {
+    DragStartDetails start = new DragStartDetails( globalPosition: event.position);
+    DragUpdateDetails update = new DragUpdateDetails(globalPosition: event.position);
+    DragEndDetails end = new DragEndDetails();
+
+    if (event is PointerDownEvent) {
+      //onPanStart(event.position);
+      onPanStart(start);
+    }
+    else if (event is PointerMoveEvent) {
+      onPanUpdate(update);
+    }
+    else if(event is PointerUpEvent){
+      onPanEnd(end);
+    }
+  }
+
+  @override
+  String get debugDescription => 'customPan';
+
+  @override
+  void didStopTrackingLastPointer(int pointer) {}
+}
 
 class _PainterPainter extends CustomPainter{
   final _PathHistory _path;
