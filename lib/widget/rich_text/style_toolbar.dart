@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sp_client/widget/rich_text_field/service/spannable_text.dart';
-import 'package:sp_client/widget/rich_text_field/util/spannable_style.dart';
+import 'package:sp_client/widget/rich_text/spannable_text.dart';
+
+import 'spannable_style.dart';
 
 class StyleToolbar extends StatefulWidget {
-  final SpannableTextController controller;
+  final SpannableTextEditingController controller;
 
   StyleToolbar({
     Key key,
@@ -17,7 +18,7 @@ class StyleToolbar extends StatefulWidget {
 }
 
 class _StyleToolbarState extends State<StyleToolbar> {
-  final StreamController<SpannableTextValue> _streamController =
+  final StreamController<TextEditingValue> _streamController =
       StreamController();
 
   @override
@@ -30,7 +31,7 @@ class _StyleToolbarState extends State<StyleToolbar> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<SpannableTextValue>(
+    return StreamBuilder<TextEditingValue>(
       stream: _streamController.stream,
       builder: (context, snapshot) {
         var currentStyle;
@@ -40,9 +41,9 @@ class _StyleToolbarState extends State<StyleToolbar> {
           var selection = value.selection;
           if (selection != null && !selection.isCollapsed) {
             currentSelection = selection;
-            currentStyle = widget.controller.getSelectionStyle(selection);
+            currentStyle = widget.controller.getSelectionStyle();
           } else {
-            currentStyle = value.composingStyle;
+            currentStyle = widget.controller.currentComposingStyle;
           }
         }
         return Row(
@@ -95,16 +96,16 @@ class _StyleToolbarState extends State<StyleToolbar> {
     bool hasSelection = selection != null;
     if (spannableStyle.hasStyle(textStyle)) {
       if (hasSelection) {
-        widget.controller.updateSelectionStyle(
-            selection, (style) => style..clearStyle(textStyle));
+        widget.controller
+            .setSelectionStyle((style) => style..clearStyle(textStyle));
       } else {
         widget.controller.composingStyle = spannableStyle
           ..clearStyle(textStyle);
       }
     } else {
       if (hasSelection) {
-        widget.controller.updateSelectionStyle(
-            selection, (style) => style..setStyle(textStyle));
+        widget.controller
+            .setSelectionStyle((style) => style..setStyle(textStyle));
       } else {
         widget.controller.composingStyle = spannableStyle..setStyle(textStyle);
       }

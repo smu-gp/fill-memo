@@ -7,7 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/rich_text_field/rich_text_field.dart';
+import 'package:sp_client/widget/rich_text/spannable_list.dart';
 
 import 'loading_progress.dart';
 

@@ -24,6 +24,10 @@ class SpannableList {
     _list = decodedList.cast<SpannableStyle>();
   }
 
+  SpannableList.generate(int length) {
+    _list = List.filled(length, SpannableStyle(value: 0), growable: true);
+  }
+
   void insert(int offset, SpannableStyle style) {
     _list.insert(offset, style);
   }

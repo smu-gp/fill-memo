@@ -15,7 +15,9 @@ import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:sp_client/widget/loading_progress.dart';
-import 'package:sp_client/widget/rich_text_field/rich_text_field.dart';
+import 'package:sp_client/widget/rich_text/spannable_list.dart';
+import 'package:sp_client/widget/rich_text/spannable_text.dart';
+import 'package:sp_client/widget/rich_text/style_toolbar.dart';
 import 'package:uuid/uuid.dart';
 
 typedef ImageListCallback = void Function(int);
@@ -34,8 +36,7 @@ class MemoScreen extends StatefulWidget {
 
 class _MemoScreenState extends State<MemoScreen> {
   TextEditingController _editTitleTextController;
-  TextEditingController _editContentTextController;
-  SpannableTextController _editContentSpannableController;
+  SpannableTextEditingController _editContentTextController;
 
   MemoBloc _memoBloc;
   PreferenceRepository _preferenceRepository;
@@ -53,17 +54,17 @@ class _MemoScreenState extends State<MemoScreen> {
 
     _editTitleTextController =
         TextEditingController(text: widget.memo.title ?? "");
-    _editContentTextController =
-        TextEditingController(text: widget.memo.content ?? "");
+
+    var styleList;
     if (widget.memo.contentStyle != null) {
-      _editContentSpannableController = SpannableTextController.fromJson(
-        sourceText: widget.memo.content ?? '',
-        jsonText: widget.memo.contentStyle,
-      );
-    } else {
-      _editContentSpannableController =
-          SpannableTextController(sourceText: widget.memo.content ?? "");
+      styleList = SpannableList.fromJson(widget.memo.contentStyle);
     }
+
+    _editContentTextController = SpannableTextEditingController(
+      text: widget.memo.content ?? "",
+      styleList: styleList,
+    );
+
     _memoContentImages = []..addAll(widget.memo.contentImages ?? []);
   }
 
@@ -101,7 +102,6 @@ class _MemoScreenState extends State<MemoScreen> {
                 _ContentEditText(
                   autofocus: widget.memo.id == null,
                   controller: _editContentTextController,
-                  spannableController: _editContentSpannableController,
                 ),
               ],
             ),
@@ -120,7 +120,7 @@ class _MemoScreenState extends State<MemoScreen> {
                     ),
                     VerticalDivider(),
                     StyleToolbar(
-                      controller: _editContentSpannableController,
+                      controller: _editContentTextController,
                     ),
                   ],
                 ),
@@ -143,7 +143,7 @@ class _MemoScreenState extends State<MemoScreen> {
   void _updateMemo() {
     var titleText = _editTitleTextController.text;
     var contentText = _editContentTextController.text;
-    var contentStyleText = _editContentSpannableController.getJson();
+    var contentStyleText = _editContentTextController.currentStyleList.toJson();
 
     var memo = widget.memo;
     var isChanged = memo.title != titleText ||
@@ -315,7 +315,6 @@ class _MemoScreenState extends State<MemoScreen> {
     _updateMemo();
     _editTitleTextController.dispose();
     _editContentTextController.dispose();
-    _editContentSpannableController.dispose();
     super.dispose();
   }
 }
@@ -351,14 +350,12 @@ class _TitleEditText extends StatelessWidget {
 
 class _ContentEditText extends StatelessWidget {
   final TextEditingController controller;
-  final SpannableTextController spannableController;
   final bool autofocus;
 
   _ContentEditText({
     Key key,
     this.autofocus = false,
     @required this.controller,
-    @required this.spannableController,
   }) : super(key: key);
 
   @override
@@ -368,10 +365,9 @@ class _ContentEditText extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Scrollbar(
-          child: RichTextField(
+          child: TextField(
             autofocus: autofocus,
             controller: controller,
-            spannableController: spannableController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             decoration: InputDecoration(
