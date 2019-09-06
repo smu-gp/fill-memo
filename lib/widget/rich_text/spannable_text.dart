@@ -19,22 +19,24 @@ class SpannableTextEditingController extends TextEditingController {
     currentComposingStyle = composingStyle ?? SpannableStyle();
   }
 
-  SpannableStyle get composingStyle => currentComposingStyle.copy();
-
-  set composingStyle(SpannableStyle newComposingStyle) {
-    currentComposingStyle = newComposingStyle;
-    notifyListeners();
-  }
-
   @override
-  set text(String newText) {
-    _updateList(text, newText);
-    super.text = newText;
+  set value(TextEditingValue newValue) {
+    if (value.text != newValue.text) {
+      _updateList(value.text, newValue.text);
+    }
+    super.value = newValue;
   }
 
   @override
   TextSpan buildTextSpan({TextStyle style, bool withComposing}) {
     return currentStyleList.toTextSpan(text, defaultStyle: style);
+  }
+
+  SpannableStyle get composingStyle => currentComposingStyle.copy();
+
+  set composingStyle(SpannableStyle newComposingStyle) {
+    currentComposingStyle = newComposingStyle;
+    notifyListeners();
   }
 
   void setSelectionStyle(SetStyleCallback callback) {
