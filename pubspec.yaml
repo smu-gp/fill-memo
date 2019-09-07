@@ -24,8 +24,9 @@ dependencies:
   uuid: ^2.0.2
   flutter_staggered_grid_view: ^0.3.0
   cached_network_image: ^1.1.1
-  diff_match_patch:
-    path: packages/diff_match_patch
+  rich_text_editor:
+    git:
+      url: https://github.com/namhyun-gu/flutter_rich_text_editor
   # Firebase
   firebase_core: ^0.4.0+8
   firebase_storage: ^3.0.5
