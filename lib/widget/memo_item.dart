@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/rich_text/spannable_list.dart';
 
 class MemoItem extends StatelessWidget {
   final Memo memo;

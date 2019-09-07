@@ -4,10 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/rich_text/spannable_list.dart';
 
 import 'loading_progress.dart';
 

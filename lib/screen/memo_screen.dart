@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/repository/repositories.dart';
@@ -15,9 +16,6 @@ import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:sp_client/widget/loading_progress.dart';
-import 'package:sp_client/widget/rich_text/spannable_list.dart';
-import 'package:sp_client/widget/rich_text/spannable_text.dart';
-import 'package:sp_client/widget/rich_text/style_toolbar.dart';
 import 'package:uuid/uuid.dart';
 
 typedef ImageListCallback = void Function(int);

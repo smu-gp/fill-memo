@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/util/constants.dart';
-import 'package:sp_client/widget/rich_text/spannable_list.dart';
 
 import 'memo_event.dart';
 import 'memo_state.dart';
