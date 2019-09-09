@@ -114,9 +114,9 @@ class Routes {
     );
   }
 
-  PageRoute markdownMemo(BuildContext context) {
+  PageRoute markdownMemo(Memo memo) {
     return MaterialPageRoute(
-      builder: (context) => MemoMarkdownScreen(),
+      builder: (context) => MemoMarkdownScreen(memo),
     );
   }
 

@@ -108,7 +108,7 @@ class _MainScreenState extends State<MainScreen> {
         preferenceRepository.getString(AppPreferences.keyDefaultMemoType) ??
             typeRichText;
 
-    if (defaultMemoType != typeRichText) {
+    if (defaultMemoType == null) {
       _scaffoldKey.currentState
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
@@ -118,7 +118,7 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     var destination;
-    if (quickFolderClassification) {
+    if(quickFolderClassification) {
       destination = Routes().memoTitle(defaultMemoType);
     } else {
       destination = Routes().memo(Memo.empty(defaultMemoType));

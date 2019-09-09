@@ -4,6 +4,7 @@ import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/rich_text_field/util/spannable_list.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class MemoItem extends StatelessWidget {
   final Memo memo;
@@ -32,6 +33,12 @@ class MemoItem extends StatelessWidget {
         text: list.toTextSpan(memo.content, defaultStyle: style),
         maxLines: 7,
         overflow: TextOverflow.ellipsis,
+      );
+    } else if(memo.type == typeMarkdown) {
+      content = Container(
+        child: MarkdownBody(
+          data: memo.content,
+        )
       );
     }
 
