@@ -1,22 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 
-class MemoItem extends StatelessWidget {
+class MemoGridTile extends StatelessWidget {
   final Memo memo;
-  final int date;
+  final bool useUpdatedAt;
+  final bool selected;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
-  final bool selected;
 
-  MemoItem(
-    this.memo, {
+  MemoGridTile({
     Key key,
-    this.date,
+    this.memo,
+    this.useUpdatedAt = false,
     this.onTap,
     this.onLongPress,
     this.selected,
@@ -34,12 +34,13 @@ class MemoItem extends StatelessWidget {
         maxLines: 7,
         overflow: TextOverflow.ellipsis,
       );
-    } else if(memo.type == typeMarkdown) {
+    } else if (memo.type == typeHandWriting) {
+      content = null;
+    } else if (memo.type == typeMarkdown) {
       content = Container(
-        child: MarkdownBody(
-          data: memo.content,
-        )
-      );
+          child: MarkdownBody(
+        data: memo.content,
+      ));
     }
 
     return Card(
@@ -80,7 +81,8 @@ class MemoItem extends StatelessWidget {
                   content,
                   SizedBox(height: 8.0),
                   Text(
-                    Util.formatDate(date ?? memo.createdAt),
+                    Util.formatDate(
+                        useUpdatedAt ? memo.updatedAt : memo.createdAt),
                     style: Theme.of(context)
                         .textTheme
                         .caption
