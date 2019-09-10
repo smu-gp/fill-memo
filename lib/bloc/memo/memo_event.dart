@@ -40,12 +40,13 @@ class DeleteMemo extends MemoEvent {
 }
 
 class MergeMemo extends MemoEvent {
+  final String type;
   final List<Memo> memos;
 
-  MergeMemo(this.memos);
+  MergeMemo(this.type, this.memos);
 
   @override
-  String toString() => '$runtimeType(memos: $memos)';
+  String toString() => '$runtimeType(type: $type, memos: $memos)';
 }
 
 class MemosUpdated extends MemoEvent {

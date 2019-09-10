@@ -4,8 +4,9 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/sort_dialog.dart';
+import 'package:sp_client/widget/memo_sort.dart';
 
 class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   final PreferredSizeWidget bottom;
@@ -100,7 +101,26 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   List<Widget> _buildNotesActions(BuildContext context) {
     var listBloc = BlocProvider.of<ListBloc>(context);
     var memoSort = Provider.of<MemoSort>(context);
+    var memoListType = Provider.of<MemoListType>(context);
+
     return [
+      if (!AppConfig.runOnWeb)
+        Consumer<MemoListType>(builder: (context, listType, _) {
+          return IconButton(
+            icon: Icon(
+              listType.value == ListType.list
+                  ? Icons.dashboard
+                  : Icons.view_list,
+            ),
+            onPressed: () {
+              if (listType.value == ListType.grid) {
+                memoListType.value = ListType.list;
+              } else {
+                memoListType.value = ListType.grid;
+              }
+            },
+          );
+        }),
       PopupMenuButton<NotesMenuItem>(
         onSelected: (NotesMenuItem selected) {
           if (selected == NotesMenuItem.actionEdit) {
@@ -111,7 +131,16 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
               builder: (context) {
                 return ChangeNotifierProvider<MemoSort>.value(
                   value: memoSort,
-                  child: SortDialog(),
+                  child: AlertDialog(
+                    title: Text(AppLocalizations.of(context).actionSort),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 24.0,
+                      horizontal: 0.0,
+                    ),
+                    content: MemoSortPanel(
+                      onSortSelected: () => Navigator.pop(context),
+                    ),
+                  ),
                 );
               },
             );
@@ -134,21 +163,29 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   List<Widget> _buildSelectableActions(BuildContext context) {
+    final availableMergeType = [typeRichText];
+
     var memoBloc = BlocProvider.of<MemoBloc>(context);
     var drawerBloc = BlocProvider.of<MainDrawerBloc>(context);
     var listBloc = BlocProvider.of<ListBloc>(context);
 
     var drawerState = drawerBloc.currentState;
     var listState = listBloc.currentState as SelectableList;
-    var selectedItems = listState.selectedItems;
+    var selectedItems = List.castFrom<dynamic, Memo>(listState.selectedItems);
+
+    var canMerge = false;
+    var memosType;
+    if (selectedItems.length > 1) {
+      memosType = _checkMemosType(selectedItems);
+      canMerge = availableMergeType.contains(memosType);
+    }
 
     return [
-      if (selectedItems.length > 1)
+      if (canMerge)
         IconButton(
           icon: Icon(Icons.merge_type),
           onPressed: () {
-            var selectedMemo = List.castFrom<dynamic, Memo>(selectedItems);
-            memoBloc.dispatch(MergeMemo(selectedMemo));
+            memoBloc.dispatch(MergeMemo(memosType, selectedItems));
             listBloc.dispatch(UnSelectable());
           },
         ),
@@ -169,7 +206,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
               var folderId = await _selectFolder(context);
               if (folderId != null) {
                 selectedItems.forEach((item) {
-                  var updatedMemo = (item as Memo)..folderId = folderId;
+                  var updatedMemo = item..folderId = folderId;
                   memoBloc.dispatch(UpdateMemo(updatedMemo));
                 });
               }
@@ -186,6 +223,17 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
           },
         )
     ];
+  }
+
+  String _checkMemosType(List<Memo> memos) {
+    var type = memos.first.type;
+    for (var index = 1; index < memos.length; index++) {
+      var memo = memos[index];
+      if (memo.type != type) {
+        return null;
+      }
+    }
+    return type;
   }
 
   Future<String> _selectFolder(BuildContext context) async {

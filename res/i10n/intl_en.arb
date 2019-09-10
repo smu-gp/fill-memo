@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-08-13T13:25:51.363063",
+  "@@last_modified": "2019-09-05T16:32:16.677736",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -241,6 +241,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelDisconnect": "Disconnect",
+  "@labelDisconnect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelDisconnectAnother": "Disconnect another device",
   "@labelDisconnectAnother": {
     "type": "text",
@@ -311,6 +316,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelNoTitle": "No Title",
+  "@labelNoTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelUnnamed": "Unnamed",
   "@labelUnnamed": {
     "type": "text",
@@ -338,6 +348,11 @@
   },
   "labelWaitHostResponse": "Waiting host response",
   "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWebConnectionRequest": "Web requests connection",
+  "@labelWebConnectionRequest": {
     "type": "text",
     "placeholders": {}
   },

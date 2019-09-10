@@ -17,6 +17,7 @@ class ConnectionAuthorizationScreen extends StatelessWidget {
 
     var deviceName;
     var deviceIcon;
+    var isWebConnection = false;
     if (deviceType == AuthDeviceInfo_DeviceType.DEVICE_ANDROID) {
       var separateName = deviceInfo.deviceName.split("|");
       if (separateName[0].isEmpty) {
@@ -26,6 +27,7 @@ class ConnectionAuthorizationScreen extends StatelessWidget {
       }
       deviceIcon = Icons.android;
     } else if (deviceType == AuthDeviceInfo_DeviceType.DEVICE_WEB) {
+      isWebConnection = true;
       deviceName = deviceInfo.deviceName;
       deviceIcon = Icons.public;
     } else {
@@ -53,7 +55,9 @@ class ConnectionAuthorizationScreen extends StatelessWidget {
               backgroundColor: themeData.accentColor,
             ),
             SizedBox(height: 8),
-            Text(localization.labelConnectionRequest(deviceName)),
+            Text(isWebConnection
+                ? localization.labelWebConnectionRequest
+                : localization.labelConnectionRequest(deviceName)),
             ButtonBar(
               children: <Widget>[
                 FlatButton(

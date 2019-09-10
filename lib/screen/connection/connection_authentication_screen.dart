@@ -140,7 +140,7 @@ class _ConnectionAuthenticationScreenState
       case AuthResponse_FailedReason.RESPONSE_TIMEOUT:
         return AppLocalizations.of(context).labelResponseTimeout;
       case AuthResponse_FailedReason.REJECT_HOST:
-        return AppLocalizations.of(context).actionReject;
+        return AppLocalizations.of(context).labelRejectHost;
       case AuthResponse_FailedReason.NO_HOST_WAITED:
         return AppLocalizations.of(context).labelNoHostWaited;
       case AuthResponse_FailedReason.INTERNAL_ERR:

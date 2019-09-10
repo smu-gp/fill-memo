@@ -65,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<Widget> _buildItems(Preferences preferences) {
     return <Widget>[
       ..._buildNoteItems(preferences),
-      ..._buildSecurityItems(preferences),
+      if (!AppConfig.runOnWeb) ..._buildSecurityItems(preferences),
       if (!bool.fromEnvironment('dart.vm.product'))
         ..._buildDebugItems(preferences),
       ..._buildInfoItems(preferences),
@@ -91,15 +91,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
         },
       ),
-      SwitchListItem(
-        title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
-        value: prefNewNoteOnStartup.value,
-        onChanged: (bool value) {
-          _preferenceBloc.dispatch(
-            UpdatePreference(prefNewNoteOnStartup..value = value),
-          );
-        },
-      ),
+      if (!AppConfig.runOnWeb)
+        SwitchListItem(
+          title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
+          value: prefNewNoteOnStartup.value,
+          onChanged: (bool value) {
+            _preferenceBloc.dispatch(
+              UpdatePreference(prefNewNoteOnStartup..value = value),
+            );
+          },
+        ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelQuickFolderClassification,
         subtitle:
