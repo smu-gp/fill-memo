@@ -117,8 +117,13 @@ class _MemoScreenState extends State<MemoScreen> {
                       onPressed: _showAddImageBottomSheet,
                     ),
                     VerticalDivider(),
-                    StyleToolbar(
-                      controller: _editContentTextController,
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: StyleToolbar(
+                          controller: _editContentTextController,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -141,7 +146,7 @@ class _MemoScreenState extends State<MemoScreen> {
   void _updateMemo() {
     var titleText = _editTitleTextController.text;
     var contentText = _editContentTextController.text;
-    var contentStyleText = _editContentTextController.currentStyleList.toJson();
+    var contentStyleText = _editContentTextController.styleList.toJson();
 
     var memo = widget.memo;
     var isChanged = memo.title != titleText ||
