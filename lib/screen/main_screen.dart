@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
             typeRichText;
 
     var destination;
-    if (quickFolderClassification) {
+    if(quickFolderClassification) {
       destination = Routes().memoTitle(defaultMemoType);
     } else {
       destination = Routes().memo(Memo.empty(defaultMemoType));
