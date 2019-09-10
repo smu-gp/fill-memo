@@ -5,7 +5,6 @@ import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/util/constants.dart';
 
 class MemoTitleScreen extends StatefulWidget {
   final String memoType;
@@ -115,13 +114,7 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       ..title = title.isNotEmpty ? title : null
       ..folderId = _currentFolder?.id ?? Folder.defaultId;
 
-    if(widget.memoType == typeMarkdown)
-      Navigator.pushReplacement(context, Routes().markdownMemo(newMemo));
-    else if(widget.memoType == typeHandWriting) {
-      //Navigator.pushReplacementNamed(context, Routes().handwritingMemo(context, newMemo));
-    }
-    else if(widget.memoType == typeRichText)
-      Navigator.pushReplacement(context, Routes().memo(newMemo));
+    Navigator.pushReplacement(context, Routes().memo(newMemo));
   }
 }
 

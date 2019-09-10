@@ -10,15 +10,16 @@ import 'package:sp_client/screen/connection/menu_screen.dart';
 import 'package:sp_client/screen/connection/profile_screen.dart';
 import 'package:sp_client/screen/folder_manage_screen.dart';
 import 'package:sp_client/screen/memo_image_screen.dart';
+import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
+import 'package:sp_client/screen/memo_markdown_screen.dart';
 import 'package:sp_client/screen/memo_screen.dart';
 import 'package:sp_client/screen/memo_title_screen.dart';
 import 'package:sp_client/screen/settings/memo_type_screen.dart';
 import 'package:sp_client/screen/settings/settings_screen.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
-import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
-import 'package:sp_client/screen/memo_markdown_screen.dart';
 
 class Routes {
   PageRoute memoTitle(String memoType) {
@@ -26,7 +27,15 @@ class Routes {
   }
 
   PageRoute memo(Memo memo) {
-    return MaterialPageRoute(builder: (context) => MemoScreen(memo));
+    var dest;
+    if (memo.type == typeRichText) {
+      dest = MemoScreen(memo);
+    } else if (memo.type == typeHandWriting) {
+      dest = null;
+    } else if (memo.type == typeMarkdown) {
+      dest = MemoMarkdownScreen(memo);
+    }
+    return MaterialPageRoute(builder: (context) => dest);
   }
 
   PageRoute memoImage({List<String> contentImages, int initIndex}) {
@@ -111,12 +120,6 @@ class Routes {
         value: preferenceBloc,
         child: SettingsMemoTypeScreen(),
       ),
-    );
-  }
-
-  PageRoute markdownMemo(Memo memo) {
-    return MaterialPageRoute(
-      builder: (context) => MemoMarkdownScreen(memo),
     );
   }
 
