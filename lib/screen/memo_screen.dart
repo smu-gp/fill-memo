@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +15,7 @@ import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:sp_client/widget/loading_progress.dart';
+import 'package:sp_client/widget/network_image.dart';
 import 'package:uuid/uuid.dart';
 
 typedef ImageListCallback = void Function(int);
@@ -439,11 +439,10 @@ class _ContentImageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: CachedNetworkImage(
-        imageUrl: url,
+      child: PlatformNetworkImage(
+        url: url,
         fit: BoxFit.fitWidth,
-        placeholder: (context, url) => LoadingProgress(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
+        placeholder: LoadingProgress(),
       ),
     );
   }
