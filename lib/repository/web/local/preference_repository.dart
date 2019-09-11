@@ -1,40 +1,39 @@
 import 'package:sp_client/repository/repositories.dart';
+import 'package:universal_html/html.dart';
 
 class LocalWebPreferenceRepository implements PreferenceRepository {
-  Map<String, dynamic> storage = Map();
-
   LocalWebPreferenceRepository();
 
   @override
   bool getBool(String key) {
-    return storage[key] == "true";
+    return window.localStorage[key] == "true";
   }
 
   @override
   int getInt(String key) {
-    return int.parse(storage[key]);
+    return int.parse(window.localStorage[key]);
   }
 
   @override
   String getString(String key) {
-    return storage[key];
+    return window.localStorage[key];
   }
 
   @override
   Future<bool> setBool(String key, bool value) async {
-    storage[key] = value ? "true" : "false";
+    window.localStorage[key] = value ? "true" : "false";
     return false;
   }
 
   @override
   Future<bool> setInt(String key, int value) async {
-    storage[key] = value.toString();
+    window.localStorage[key] = value.toString();
     return false;
   }
 
   @override
   Future<bool> setString(String key, String value) async {
-    storage[key] = value;
+    window.localStorage[key] = value;
     return false;
   }
 }

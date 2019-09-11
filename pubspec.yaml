@@ -43,6 +43,7 @@ dependencies:
   # local_auth: ^0.5.2+4
   # Web packages
   firebase: ^5.0.4
+  universal_html: ^1.1.6
 
 dev_dependencies:
   flutter_test:
