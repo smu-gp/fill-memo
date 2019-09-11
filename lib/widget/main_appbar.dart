@@ -105,23 +105,20 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
     var memoListType = Provider.of<MemoListType>(context);
 
     return [
-      if (!kIsWeb)
-        Consumer<MemoListType>(builder: (context, listType, _) {
-          return IconButton(
-            icon: Icon(
-              listType.value == ListType.list
-                  ? Icons.dashboard
-                  : Icons.view_list,
-            ),
-            onPressed: () {
-              if (listType.value == ListType.grid) {
-                memoListType.value = ListType.list;
-              } else {
-                memoListType.value = ListType.grid;
-              }
-            },
-          );
-        }),
+      Consumer<MemoListType>(builder: (context, listType, _) {
+        return IconButton(
+          icon: Icon(
+            listType.value == ListType.list ? Icons.dashboard : Icons.view_list,
+          ),
+          onPressed: () {
+            if (listType.value == ListType.grid) {
+              memoListType.value = ListType.list;
+            } else {
+              memoListType.value = ListType.grid;
+            }
+          },
+        );
+      }),
       PopupMenuButton<NotesMenuItem>(
         onSelected: (NotesMenuItem selected) {
           if (selected == NotesMenuItem.actionEdit) {

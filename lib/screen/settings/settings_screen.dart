@@ -67,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       ..._buildNoteItems(preferences),
       if (!kIsWeb) ..._buildSecurityItems(preferences),
-      if (!bool.fromEnvironment('dart.vm.product'))
+      if (!kIsWeb && bool.fromEnvironment("dart.vm.product"))
         ..._buildDebugItems(preferences),
       ..._buildInfoItems(preferences),
     ];
@@ -162,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (context, snapshot) {
-          var subtitle;
+          var subtitle = "v1.0";
           if (snapshot.hasData) {
             subtitle = "v${snapshot.data.version}";
           }
