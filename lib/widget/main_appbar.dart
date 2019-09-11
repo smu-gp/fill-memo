@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -104,7 +105,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
     var memoListType = Provider.of<MemoListType>(context);
 
     return [
-      if (!AppConfig.runOnWeb)
+      if (!kIsWeb)
         Consumer<MemoListType>(builder: (context, listType, _) {
           return IconButton(
             icon: Icon(

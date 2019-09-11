@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -62,7 +63,7 @@ class MainDrawerMenu extends StatelessWidget {
               selectedFolder: state.folderId,
             ),
             Divider(),
-            if (!AppConfig.runOnWeb)
+            if (!kIsWeb)
               _DrawerItem(
                 icon: OMIcons.phonelink,
                 title: Text(AppLocalizations.of(context).actionConnection),
@@ -401,7 +402,7 @@ class WebDisconnectButton extends StatelessWidget {
     var localizations = AppLocalizations.of(context);
 
     return Visibility(
-      visible: AppConfig.runOnWeb,
+      visible: kIsWeb,
       child: Material(
         color: theme.accentColor,
         child: InkWell(
