@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +63,15 @@ class MemoGridTile extends StatelessWidget {
         );
       }
     } else if (memo.type == typeHandWriting) {
-      content = null;
+      String imgPosLod = memo.content;
+      List<String> devide = imgPosLod.split("ㄱ");
+      Uint8List image = Uint8List.fromList(devide[0].codeUnits);
+      content = new Container(
+        child: ClipRRect(
+          child: Image.memory(image),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+      );
     } else if (memo.type == typeMarkdown) {
       content = Container(
           child: MarkdownBody(
