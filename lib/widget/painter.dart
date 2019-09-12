@@ -1,19 +1,25 @@
 
-import 'dart:developer';
+import 'dart:developer' as de;
 import 'dart:io';
-
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' as ui;
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'CustomPanGestureRecognizer.dart';
+
 class Painter extends StatefulWidget {
   final PainterController painterController;
 
+
   Painter(PainterController painterController):
-        this.painterController=painterController,
-        super(key:new ValueKey<PainterController>(painterController));
+    this.painterController=painterController,
+    super(key:new ValueKey<PainterController>(painterController)
+  );
 
   @override
   _PainterState createState() => new _PainterState();
@@ -22,6 +28,9 @@ class Painter extends StatefulWidget {
 class _PainterState extends State<Painter> {
 
   bool _finished;
+
+  Offset before;
+
   //GlobalKey capture = GlobalKey();
   @override
   void initState() {
@@ -31,8 +40,8 @@ class _PainterState extends State<Painter> {
 
     //widget.painterController.capture = capture;
   }
-  
-  
+
+
   
   Size _finish(){
     setState((){
@@ -51,27 +60,37 @@ class _PainterState extends State<Painter> {
     var controller =widget.painterController;
     Widget child;
     if(controller.pictureOn){
-      child = new RepaintBoundary(
-        key : controller.capture,
-        //key : capture
-        child:new GestureDetector(
-          child: new CustomPaint(
-            willChange: true,
-            foregroundPainter: new PicturePainter(
-              controller._pathHistory,
-              repaint: controller,
-            ),
-            child: Container(
-              child:Image.file(controller.onDrawing)
-            ),
-          ),
-          onPanStart: _onPanStart,
-          onPanUpdate: _onPanUpdate,
-          onPanEnd: _onPanEnd,
+      child =new CustomPaint(
+        willChange: true,
+        foregroundPainter: new PicturePainter(
+          controller._pathHistory,
+          repaint: controller,
+        ),
+        child: Container(
+            child:Image.file(controller.onDrawing)
         ),
       );
-
-      return child;
+      return new RepaintBoundary(
+        key : controller.capture,
+        //key : capture
+        child:RawGestureDetector(
+          gestures: <Type, GestureRecognizerFactory>{
+            CustomPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                CustomPanGestureRecognizer>(
+                  () =>
+                  CustomPanGestureRecognizer(
+                    onPanStart: _onPanStart,
+                    onPanUpdate: _onPanUpdate,
+                    onPanEnd: _onPanEnd,
+                    context: context,
+                    controller:controller,
+                  ),
+                  (CustomPanGestureRecognizer instance) {},
+            ),
+          },
+          child:child,
+        ),
+      );
     }
     else{
       child=new CustomPaint(
@@ -83,27 +102,69 @@ class _PainterState extends State<Painter> {
       );
       child=new ClipRect(child:child);
       if(!_finished){
-        child=new GestureDetector(
+        //child=new GestureDetector(
+        //  child:child,
+        //  onPanStart: _onPanStart,
+        //  onPanUpdate: _onPanUpdate,
+        //  onPanEnd: _onPanEnd,
+        //);
+        child= RawGestureDetector(
+          gestures: <Type, GestureRecognizerFactory>{
+            CustomPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                CustomPanGestureRecognizer>(
+                  () =>
+                  CustomPanGestureRecognizer(
+                      onPanStart: _onPanStart,
+                      onPanUpdate: _onPanUpdate,
+                      onPanEnd: _onPanEnd,
+                      context: context,
+                      controller:controller
+                  ),
+                  (CustomPanGestureRecognizer instance) {},
+            ),
+          },
           child:child,
-          onPanStart: _onPanStart,
-          onPanUpdate: _onPanUpdate,
-          onPanEnd: _onPanEnd,
         );
       }
-      return new Container(
-        child: child,
-        width: double.infinity,
-        height: double.infinity,
+      return new RepaintBoundary(
+        key: controller.noImageCap,
+        child:
+        new Container(
+          child: child,
+          width: double.infinity,
+          height: double.infinity,
+        ),
       );
     }
-
   }
 
+
   void _onPanStart(DragStartDetails start){
-    Offset pos=(context.findRenderObject() as RenderBox)
-        .globalToLocal(start.globalPosition);
-    widget.painterController._pathHistory.add(pos);
-    widget.painterController._notifyListeners();
+    if(widget.painterController.removeon){
+      var savedpath = widget.painterController.pathHistory.savedpath;
+      var path = widget.painterController.pathHistory.paths;
+      Offset pos=(context.findRenderObject() as RenderBox)
+          .globalToLocal(start.globalPosition);
+      int i;
+      int j;
+      for(i=0; i<savedpath.length;i++){
+        for(j=0; j<savedpath[i].value.length;j++){
+          if(sqrt((savedpath[i].value[j].dx-pos.dx)*(savedpath[i].value[j].dx-pos.dx)+(savedpath[i].value[j].dy-pos.dy)*(savedpath[i].value[j].dy-pos.dy))<10){
+            savedpath.removeAt(i);
+            path.removeAt(i);
+            break;
+          }
+        }
+      }
+    }
+    else{
+      Offset pos=(context.findRenderObject() as RenderBox)
+          .globalToLocal(start.globalPosition);
+      before = pos;
+      widget.painterController._pathHistory.add(pos);
+      widget.painterController._notifyListeners();
+
+    }
   }
 
   void _onPanUpdate(DragUpdateDetails update){
@@ -112,46 +173,72 @@ class _PainterState extends State<Painter> {
       var path = widget.painterController.pathHistory.paths;
       Offset pos=(context.findRenderObject() as RenderBox)
           .globalToLocal(update.globalPosition);
-      int removepath;
-      for(int i=0; i<path.length ; i++){
-        if(path[i].key.contains(pos)){
-          removepath = i;
+      int i;
+      int j;
+      for(i=0; i<savedpath.length;i++){
+        for(j=0; j<savedpath[i].value.length;j++){
+          if(sqrt((savedpath[i].value[j].dx-pos.dx)*(savedpath[i].value[j].dx-pos.dx)+(savedpath[i].value[j].dy-pos.dy)*(savedpath[i].value[j].dy-pos.dy))<10){
+            savedpath.removeAt(i);
+            path.removeAt(i);
+            break;
+          }
         }
       }
-      savedpath.removeAt(removepath);
-      path.removeAt(removepath);
+
     }
     else{
       Offset pos=(context.findRenderObject() as RenderBox)
-          .globalToLocal(update.globalPosition);
-      widget.painterController._pathHistory.updateCurrent(pos);
-      widget.painterController._notifyListeners();
+            .globalToLocal(update.globalPosition);
+
+      if(sqrt((pos.dx-before.dx)*(pos.dx-before.dx)+(pos.dy-before.dy)*(pos.dy-before.dy))<50 ){
+        before = pos;
+        widget.painterController._pathHistory.updateCurrent(pos);
+        widget.painterController._notifyListeners();
+      }
     }
   }
 
   void _onPanEnd(DragEndDetails end){
-    Future <Uint8List> data = capturePng(widget.painterController.capture);
-    getimg(data);
     widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
+    if(widget.painterController.pictureOn){
+      capturePng(widget.painterController.capture, widget.painterController);
+    }
   }
 
 
-  Future<Uint8List> capturePng(GlobalKey capture) async{
+
+
+
+
+  Future<void> capturePng(GlobalKey capture, PainterController controller) async{
+    ui.Image image;
+    bool catched = false;
     RenderRepaintBoundary boundary = capture.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage();
-    return (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
+    try{
+      image = await boundary.toImage(pixelRatio:3.0);
+      catched = true;
+    }catch(exception){
+      catched = false;
+      Timer(Duration(milliseconds: 1),(){
+        capturePng(capture, controller);
+      });
+    }
+    if(catched) {
+      Uint8List data = (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
+      setState(() {
+        controller.display = data;
+      });
+    }
   }
 
-  void getimg(Future<Uint8List> val) {
-    val.then((data)=>setState((){
-      widget.painterController.display = data;
-    }));
-  }
+  //void getimg(Future<Uint8List> val) {
+  //  val.then((data)=>setState((){
+  //    widget.painterController.display = data;
+  //  }));
+ // }
 
 }
-
-
 
 class _PainterPainter extends CustomPainter{
   final _PathHistory _path;
@@ -203,7 +290,6 @@ class _PathHistory {
     //_paXyPaint=new MapEntry<Offset,Paint>(Offset() , Paint());
     //_pathload=new List<Offset>();
     _savedpath = new List<MapEntry<MapEntry<Offset,Paint>, List<Offset>>>();
-
     _inDrag = false;
     _backgroundPaint = new Paint();
   }
@@ -239,11 +325,12 @@ class _PathHistory {
   }
 
   void updateCurrent(Offset nextPoint) {
-    if (_inDrag) {
-      Path path = _paths.last.key;
-      _savedpath.last.value.add(nextPoint);
-      path.lineTo(nextPoint.dx, nextPoint.dy);
-    }
+      if (_inDrag) {
+        Path path = _paths.last.key;
+        _savedpath.last.value.add(nextPoint);
+        path.lineTo(nextPoint.dx, nextPoint.dy);
+      }
+
   }
 
   void endCurrent() {
@@ -270,7 +357,6 @@ class _PathHistory {
   void draw(Canvas canvas, Size size) {
     canvas.drawRect(
         new Rect.fromLTWH(0.0, 0.0, size.width, size.height), _backgroundPaint);
-
     for (MapEntry<Path, Paint> path in _paths) {
       canvas.drawPath(path.key, path.value);
     }
@@ -315,23 +401,27 @@ class PainterController extends ChangeNotifier{
 
 
   bool _pictureOn=false;
-  ui.Image _image;
+  bool _penOrfinger = false;
+
   File _onDrawing;
   Uint8List display;
   GlobalKey _capture = GlobalKey();
+  GlobalKey _noImageCap = GlobalKey();
   /////////////////////////////////////////
   GlobalKey get capture => _capture;
+  GlobalKey get noImageCap => _noImageCap;
   PictureDetails get cached=>_cached;
+
   ///////////////////////////////////////
   PainterController(){
     _pathHistory=new _PathHistory();
   }
-  ui.Image get image =>_image;
-  set image(ui.Image img){
-    _image = img;
+
+  bool get penOrfinger => _penOrfinger;
+  set penOrfinger(bool penOrfinger){
+    _penOrfinger = penOrfinger;
     notifyListeners();
   }
-
 
   bool get pictureOn => _pictureOn;
   set pictureOn(bool pictureOn){
@@ -414,16 +504,11 @@ class PainterController extends ChangeNotifier{
     return _render(size);
   }
 
-
-  /////////////////////////////////
   PictureDetails _render(Size size){
-    
-
     ui.PictureRecorder recorder =new ui.PictureRecorder();
     Canvas canvas=new Canvas(recorder);
     _pathHistory.draw(canvas, size);
     return new PictureDetails(recorder.endRecording(),size.width.floor(),size.height.floor());
-    //}
   }
 
   bool isFinished(){

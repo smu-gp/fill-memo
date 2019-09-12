@@ -1,32 +1,212 @@
+import 'dart:developer';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:sp_client/model/memo.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class MemoMarkdownScreen extends StatefulWidget {
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sp_client/bloc/blocs.dart';
+import 'package:sp_client/model/models.dart';
+import 'package:sp_client/repository/repositories.dart';
 
+class MemoMarkdownScreen extends StatefulWidget {
+  final Memo memo;
+  MemoMarkdownScreen(
+    this.memo, {
+      Key key,
+  }) : super(key: key);
   @override
   _MemoMarkdownScreenState createState() => _MemoMarkdownScreenState();
 }
 
 class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
-  TextEditingController _editingController = TextEditingController();
-  String content = "";
+  //TextEditingController _editingController = TextEditingController();
+  TextEditingController _editTitleTextController;
+  TextEditingController _editingController;
+  String content;
+  MemoBloc _memoBloc;
+  PreferenceRepository _preferenceRepository;
 
   @override
   void initState() {
     super.initState();
+    _memoBloc = BlocProvider.of<MemoBloc>(context);
+    _preferenceRepository =
+        RepositoryProvider.of<PreferenceRepository>(context);
+    _editTitleTextController=TextEditingController(text: widget.memo.title ?? "");;
+    _editingController = TextEditingController(text: widget.memo.content ?? "");
     _editingController.addListener(() {
       setState(() {
         content = _editingController.value.text;
       });
     });
   }
-
+  static bool isLarge(BuildContext context) {
+    assert(context != null);
+    var size = MediaQuery.of(context).size;
+    return min(size.width, size.height) > 600;
+  }
   @override
   Widget build(BuildContext context) {
+    if(isLarge(context)){
+      return tabletUI(context);
+    }
+    else{
+      return phoneUI(context);
+    }
+  }
+  Widget tabletUI(BuildContext context){
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("markdown"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.content_copy),
+            onPressed: () {
+              _showPreviewScreen();
+            },
+          )
+        ],
+      ),
+      body:Column(
+        children: <Widget>[
+          Expanded(
+            child:Row(
+              children: <Widget>[
+                Expanded(
+                  child: Markdown(
+                    //data: content,
+                    data : _editingController.text,
+                  ),
+                  flex: 1,
+                ),
+                VerticalDivider(),
+                Expanded(
+                    child:TextField(
+                      controller: _editingController,
+                      enableInteractiveSelection: true,
+                      keyboardType: TextInputType.multiline,
+                      maxLength: null,
+                      textInputAction: TextInputAction.newline,
+                      textAlign: TextAlign.start,
+                      maxLengthEnforced: true,
+                      maxLines: 100,
+                      minLines: 10,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'input text'
+                      ),
+                    ),
+                    flex: 1
+                ),
+              ],
+            ),
+          ),
+          Material(
+            elevation: 8.0,
+            child: Container(
+              height: 48.0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.format_bold),
+                      onPressed: () {
+                        _wrapContent('**');
+                      },
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.format_italic),
+                        onPressed: () {
+                          _wrapContent('*');
+                        }
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.image),
+                      onPressed: () {
+                        _showImageSettingBottomSheet();
+                      },
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.looks_one),
+                        onPressed: () {
+                          _prefixContent('# ');
+                        }
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.looks_two),
+                        onPressed: () {
+                          _prefixContent('## ');
+                        }
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.looks_3),
+                        onPressed: () {
+                          _prefixContent('### ');
+                        }
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.format_strikethrough),
+                        onPressed: () {
+                          _wrapContent('~~');
+                        }
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.format_quote),
+                      onPressed: () {
+                        _prefixContent('> ');
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.code),
+                      onPressed: () {
+                        _wrapContent('`');
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        _clear();
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.link),
+                      onPressed: () {
+                        _linkContent();
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.list),
+                      onPressed: () {
+                        _prefixContent('- ');
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.format_list_numbered),
+                      onPressed: () {
+                        _prefixContent('1. ');
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget phoneUI(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         title: Text("markdown"),
@@ -43,14 +223,14 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
         children: <Widget>[
           Expanded(
             child: Markdown(
-              data: content,
-
+              //data: content,
+              data : _editingController.text,
             ),
             flex: 1,
           ),
           Divider(),
           Expanded(
-            child: TextField(
+            child:TextField(
               controller: _editingController,
               enableInteractiveSelection: true,
               keyboardType: TextInputType.multiline,
@@ -163,6 +343,47 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
       ),
     );
   }
+  void _updataMarkDownMemo(){
+    var memo = widget.memo;
+    var titleText = _editTitleTextController.text;
+    var contentText = content;
+    var isChanged = memo.content != contentText ||
+        memo.title != titleText ;
+
+    memo.title = titleText.isNotEmpty ? titleText : null;
+    memo.content = contentText.isNotEmpty ? contentText : null;
+
+    if (isChanged) {
+      memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
+    }
+
+    var isValid = memo.content != null;
+
+    if (widget.memo.id != null) {
+      if (isValid) {
+        if (isChanged) {
+          _memoBloc.dispatch(UpdateMemo(memo));
+        }
+      } else {
+        _memoBloc.dispatch(DeleteMemo(widget.memo));
+      }
+    } else {
+      if (isValid) {
+        _memoBloc.dispatch(AddMemo(memo));
+      }
+    }
+
+
+  }
+
+
+  void dispose(){
+    _updataMarkDownMemo();
+    _editTitleTextController.dispose();
+    _editingController.dispose();
+    super.dispose();
+  }
+
 
   Future _showPreviewScreen() async{
     await Navigator.push(

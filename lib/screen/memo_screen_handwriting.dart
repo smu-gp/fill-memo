@@ -1,14 +1,18 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as de;
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sp_client/service/services.dart' as Service;
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission/permission.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/repository/repositories.dart';
@@ -16,19 +20,18 @@ import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/painter.dart';
-import 'package:sp_client/widget/rich_text_field/rich_text_field.dart';
 
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:sp_client/util/routes.dart';
 import 'package:uuid/uuid.dart';
 
 import 'dart:ui' as ui;
 
 final _slider = PublishSubject<double>();
 Observable<double> get sliderStream => _slider.stream;
+
+
 
 class MemoHandwritingScreen extends StatefulWidget {
   final Memo memo;
@@ -55,13 +58,16 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
   List<String> _memoContentImages;
 
   bool onPicture=false;
-
+  IconData swc;
   GlobalKey outCapture = new GlobalKey();
+
+  int _curInx=0;
 
 
   @override
   void initState() {
     super.initState();
+    swc = Icons.create;
     _memoBloc = BlocProvider.of<MemoBloc>(context);
     _editTitleTextController =
         TextEditingController(text: widget.memo.title ?? "");
@@ -134,100 +140,251 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       }
     }
   }
+  static bool isLarge(BuildContext context) {
+    assert(context != null);
+    var size = MediaQuery.of(context).size;
+    return min(size.width, size.height) > 600;
+  }
+
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height - kToolbarHeight-48.0;
     Finishsize = new Size(width,height);
+    List<Widget> btns;
+    if(isLarge(context)){
+      btns= <Widget>[
+        new IconButton(
+          icon:_controller.pictureOn? new Icon(Icons.block):new Icon(Icons.image),
+          onPressed: (){
+            if(!_controller.pictureOn){
+              _showAddImageBottomSheet();
+            }
+            else{
+              setState(() {
+                _controller.pictureOn = !_controller.pictureOn;
+                _memoContentImages.removeLast();
+                clear(_controller);
+              });
+            }
+          },
+        ),
+        new IconButton(
+          icon:_controller.penOrfinger? new Icon(Icons.touch_app) : new Icon(Icons.create),
+          onPressed: (){
+            setState(() {
+              _controller.penOrfinger = !_controller.penOrfinger;
+            });
+          },
+        ),
+        new IconButton(
+          icon: new Icon(Icons.save),
+          onPressed: ()=>save(outCapture),
+        ),
+      ];
+    }
+    else{
+      btns= <Widget>[
+        new IconButton(
+          icon:_controller.pictureOn? new Icon(Icons.block):new Icon(Icons.image),
+          onPressed: (){
+            if(!_controller.pictureOn){
+              _showAddImageBottomSheet();
+            }
+            else{
+              setState(() {
+                _controller.pictureOn = !_controller.pictureOn;
+                _memoContentImages.removeLast();
+                clear(_controller);
+              });
+            }
+          },
+        ),
+        new IconButton(
+          icon: new Icon(Icons.save),
+          onPressed: ()=>save(outCapture),
+        ),
+      ];
+    }
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: _controller.backgroundColor,
         title: Text(""),
+        actions: btns,
         bottom: PreferredSize(
           child: Container(
-            height: kToolbarHeight,
+            height: kToolbarHeight+3,
             padding: const EdgeInsets.only(left: 16.0),
             child: _TitleEditText(controller: _editTitleTextController),
           ),
-          preferredSize: Size.fromHeight(kToolbarHeight),
+          preferredSize: Size.fromHeight(kToolbarHeight)
         ),
         elevation: 0.0,
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: new RepaintBoundary(
-              key : outCapture,
-              child: Painter(_controller)
-            )
 
-          ),
-          Material(
-            elevation: 8.0,
-            child: Container(
-              color: Colors.white,
-              height: 48.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Opacity(
-                    opacity: 0.99,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.border_color),
-                          color: Colors.black,
-                          onPressed: () => restart(),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.brush),
-                          color: Colors.black,
-                          onPressed: () => _showPenSettingBottomSheet(),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.undo),
-                            color: Colors.black,
-                            //onPressed: () => _controller.undo(),
-                            onPressed: () => undo(_controller),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.clear),
-                            color: Colors.black,
-                            //onPressed: () => _controller.clear(),
-                            onPressed: () => clear(_controller),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.delete),
-                            color: Colors.black,
-                            onPressed: () => _controller.erase(),
-                        ),
-                        IconButton(
-                          icon: Icon(OMIcons.image),
-                          onPressed: _showAddImageBottomSheet,
-                        ),
-                      ],
-                    ),
-                )
-              ),
+      body: Center(
+        child: new RepaintBoundary(
+          key : outCapture,
+           child: Painter(_controller)
+        ),
+      ),
+
+      bottomNavigationBar : BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.gesture,
+              color: Colors.black,
             ),
+            activeIcon: Icon(
+              Icons.gesture,
+              size: 30,
+            ),
+            title: Text(""),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.create,
+              color: Colors.black,),
+            activeIcon: Icon(
+              Icons.create,
+              size: 30,
+            ),
+            title: Text(""),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.black,
+            ),
+            activeIcon: Icon(
+              Icons.delete,
+              size: 30,
+            ),
+            title: Text(""),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.loop,
+              color: Colors.black,
+            ),
+            activeIcon: Icon(
+              Icons.loop,
+              size: 30,
+            ),
+            title: Text(""),
           ),
         ],
+        selectedItemColor: _controller.drawColor,
+        currentIndex: _curInx,
+        onTap: (index){
+          setState(() {
+            _curInx = index;
+            switch(index){
+              case 0:
+                restart();
+                break;
+              case 1:
+                _showPenSettingBottomSheet();
+                break;
+              case 2:
+                _controller.erase();
+                break;
+              case 3:
+                clear(_controller);
+                break;
+            }
+          });
+        },
       ),
     );
   }
   
   void clear(PainterController controller){
     controller.clear();
-    capturePng(controller);
+    capturePng(controller.capture, controller);
+
   }
 
-  void undo(PainterController controller){
-    controller.undo();
-    capturePng(controller);
+  Future<String> get _localPath async {
+    var dir = await getExternalStorageDirectory();
+    return dir.path;
   }
-  
+
+
+
+
+  Future _uploadFirebaseStorage(File imageFile) async {
+    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
+    final uuid = Uuid().v1();
+    final ext = imageFile.path.split(".")[1];
+    final storage = FirebaseStorage.instance;
+    final storageRef = storage.ref().child(userId).child('$uuid.$ext');
+    final uploadTask = storageRef.putFile(imageFile);
+
+    setState(() {
+      _showProgress = true;
+    });
+
+    await for (final event in uploadTask.events) {
+      if (event.type == StorageTaskEventType.progress) {
+        setState(() {
+          _progressValue =
+              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
+          debugPrint(_progressValue.toString());
+        });
+      } else if (event.type == StorageTaskEventType.success) {
+        final downloadURL = await event.snapshot.ref.getDownloadURL();
+        setState(() {
+          _progressValue = 0;
+          _showProgress = false;
+        });
+      }
+    }
+  }
+
+
+
+  Future<File> save(GlobalKey capture) async{
+    //if(!AppConfig.runOnWeb){
+    //}
+    var permissionNames = await Permission.requestPermissions(
+        [PermissionName.Storage]);
+
+    final path = await _localPath;
+    //de.log("dir" + '$path');
+    String name = widget.memo.title+"_"+DateTime.now().millisecondsSinceEpoch.toString();
+    final file = File('$path/$name.png');
+    if(_controller.pictureOn){
+      final image = capturePng(_controller.capture, _controller);
+
+      image.then((data){
+        file.writeAsBytesSync(data);
+      });
+      //de.log(_controller.display.toString());
+    }
+    //else{
+    //  cached = _controller.noSetFinish(Finishsize);
+    //  final image = cached.toPNG();
+    //  image.then((data){
+    //    file.writeAsBytesSync(data);
+    //  });
+    //}
+    //_uploadFirebaseStorage(file);
+    else{
+      final image = capturePng(_controller.noImageCap, _controller);
+
+      image.then((data){
+        file.writeAsBytesSync(data);
+      });
+    }
+
+
+    return file;
+  }
+
+
   void _updateDrawingMemo(Size size){
     //The error _debugLifecycleState != _ElementLifecycle.defunct is because setState is called after widget dispose()
 
@@ -239,11 +396,8 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
 
     var contentText;
 
-    //Finishsize = MediaQuery.of(context).size;
-    //Future<Uint8List> getimage =  cached.toPNG();
     String img;
     if(_controller.pictureOn){
-      log("_controller.display : " + _controller.display.toString());
       savedInfo(memo, contentText, img, _controller.display, titleText);
     }
     else{
@@ -252,11 +406,13 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       getimage =  cached.toPNG();
       getimage.then((data){
         savedInfo(memo, contentText, img, data, titleText);
+
       },onError: (e)
       {
       });
+
     }
-    //log("contentImg: "+ img);
+
 
   }
 
@@ -318,42 +474,26 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
   }
 
 
-  //Future<Uint8List> capturePng(GlobalKey capture) async {
-  //  ui.Image image;
-  //  bool catched = false;
-  //  RenderRepaintBoundary boundary = capture.currentContext.findRenderObject();
-  //  try{
-  //    image = await boundary.toImage();
-  //    catched = true;
-  //  }catch(exception){
-  //    catched = false;
-  //    Timer(Duration(milliseconds: 1),() {
-  //      capturePng(capture);
-  //    });
-  //  }
-  //  if(catched){
-  //    return (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
-  //  }
- // }
-
-  Future<void> capturePng(PainterController controller) async{
+  Future<Uint8List> capturePng(GlobalKey capture, PainterController controller) async{
     ui.Image image;
     bool catched = false;
-    RenderRepaintBoundary boundary = controller.capture.currentContext.findRenderObject();
+    RenderRepaintBoundary boundary = capture.currentContext.findRenderObject();
     try{
-      image = await boundary.toImage();
+      image = await boundary.toImage(pixelRatio: 3.0);
       catched = true;
     }catch(exception){
       catched = false;
       Timer(Duration(milliseconds: 1),(){
-        capturePng(controller);
+        capturePng(capture, controller);
       });
     }
     if(catched) {
       Uint8List data = (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
+      //var redata = (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asInt8List();
       setState(() {
         _controller.display = data;
       });
+      return data;
     }
   }
 
@@ -373,12 +513,10 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         _controller.pictureOn = true;
         _controller.onDrawing = result.file;
       });
-      capturePng(_controller);
+      clear(_controller);
+      capturePng(outCapture,_controller);
     }
   }
-
-
-
 
 
   Future _showPenSettingBottomSheet() async {
@@ -407,66 +545,104 @@ class _penSettingBottomSheet extends StatefulWidget {
   _penSettingBottomSheetState createState() => _penSettingBottomSheetState();
 }
 
+
 class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
   Color _color;
   @override
   Widget build(BuildContext context) {
+
     return Container(
       child: Wrap(
         children: <Widget>[
-          ListItem(
-            leading: Icon(
-                Icons.color_lens,
-                color: Colors.deepOrangeAccent,
-            ),
-            title: '펜 색깔',
-            onTap: () => _openColorPicker(),
-          ),
-          ListItem(
-            leading: Icon(
-              Icons.border_color,
-              color: Colors.deepOrangeAccent,
-            ),
-            title: '펜 굵기',
-            onTap: () => _showThicknessBottomSheet(context, widget.controller),
-          )
-        ],
-      ),
-    );
-  }
-
-  void _openColorPicker() async {
-    _openDialog(
-      MaterialColorPicker(
-        selectedColor: _color,
-        onColorChange: (color) => setState(() => _color = color),
-
-      ),
-    );
-  }
-
-  void _openDialog(Widget content) {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            contentPadding: const EdgeInsets.all(6.0),
-            content: content,
-            actions: [
-              FlatButton(
-                child: Text('CANCEL'),
-                onPressed: Navigator.of(context).pop,
+          Row(
+            children:<Widget>[
+              new Container(
+                width: 20,
+                height: 20,
+                padding: EdgeInsets.only(left:5.0),
+                child:new Icon(
+                  Icons.lens,
+                  color: widget.controller.drawColor,
+                  size:widget.controller.thickness*1.2,
+                )
               ),
-              FlatButton(
-                child: Text('SUBMIT'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  setState(() => widget.controller.drawColor = _color);
+              new Expanded(
+                child:StreamBuilder(
+                  builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+                    return Slider(
+                      activeColor: widget.controller.drawColor,
+                      min: 5.0,
+                      max: 20.0,
+                      onChanged: (newRating) {
+                        _slider.sink.add(newRating);
+                        setState(() {
+                          widget.controller.thickness = newRating;
+                        });
+                      },
+                      value: widget.controller.thickness,
+                    );
+                  },
+                  initialData: 0.0,
+                  stream: sliderStream,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              new IconButton(
+                icon:new Icon(Icons.lens),
+                color: Colors.black,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.black);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.red,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.red);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.blue,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.blue);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.green,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.green);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.purple,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.purple);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.pinkAccent,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.pinkAccent);
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.lens),
+                color: Colors.amber,
+                onPressed:(){
+                  setState(() => widget.controller.drawColor = Colors.amber);
                 },
               ),
             ],
-          );
-        }
+          )
+        ],
+      )
     );
   }
 
@@ -480,7 +656,7 @@ class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
               return Slider(
                 activeColor: Colors.deepOrangeAccent,
                 min: 0.0,
-                max: 15.0,
+                max: 20.0,
                 onChanged: (newRating) {
                   _slider.sink.add(newRating);
                   _controller.thickness = newRating;

@@ -17,8 +17,11 @@ import 'package:sp_client/screen/settings/settings_screen.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
-import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
 import 'package:sp_client/screen/memo_markdown_screen.dart';
+import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
+
+import '../screen/memo_screen_handwriting.dart';
+import 'constants.dart';
 
 class Routes {
   PageRoute memoTitle(String memoType) {
@@ -26,7 +29,20 @@ class Routes {
   }
 
   PageRoute memo(Memo memo) {
-    return MaterialPageRoute(builder: (context) => MemoScreen(memo));
+    if(memo.type == typeMarkdown){
+      return MaterialPageRoute(
+        builder: (context) => MemoMarkdownScreen(memo),
+      );
+    }
+    else if(memo.type == typeHandWriting){
+      return MaterialPageRoute(
+        builder: (context) => MemoHandwritingScreen(memo),
+      );
+    }
+    else {
+      return MaterialPageRoute(builder: (context) => MemoScreen(memo));
+    }
+    //return MaterialPageRoute(builder: (context) => MemoScreen(memo));
   }
 
   PageRoute memoImage({List<String> contentImages, int initIndex}) {
@@ -114,9 +130,15 @@ class Routes {
     );
   }
 
-  PageRoute markdownMemo(BuildContext context) {
+  PageRoute handwritingMemo(BuildContext context, Memo memo) {
     return MaterialPageRoute(
-      builder: (context) => MemoMarkdownScreen(),
+      builder: (context) => MemoHandwritingScreen(memo),
+    );
+  }
+
+  PageRoute markdownMemo(BuildContext context,Memo memo) {
+    return MaterialPageRoute(
+      builder: (context) => MemoMarkdownScreen(memo),
     );
   }
 
