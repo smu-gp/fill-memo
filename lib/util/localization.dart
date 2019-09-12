@@ -110,6 +110,11 @@ class AppLocalizations {
         name: 'actionRetry',
       );
 
+  String get actionSelectionAll => Intl.message(
+        'Selection All',
+        name: 'actionSelectionAll',
+      );
+
   String get actionSecretFolder => Intl.message(
         'Secret folder',
         name: 'actionSecretFolder',
@@ -457,7 +462,7 @@ class AppLocalizations {
       );
 
   String get titleResult => Intl.message(
-        'Result',
+        'Process result',
         name: 'titleResult',
       );
 
