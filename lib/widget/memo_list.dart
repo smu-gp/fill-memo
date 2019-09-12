@@ -10,7 +10,7 @@ import 'package:sp_client/util/utils.dart';
 import 'empty_memo.dart';
 import 'error_memo.dart';
 import 'loading_progress.dart';
-import 'memo_item.dart';
+import 'memo_grid_tile.dart';
 import 'memo_list_tile.dart';
 
 typedef MemoTapCallback = void Function(Memo, bool selectable, bool selected);
@@ -72,11 +72,9 @@ class MemoList extends StatelessWidget {
                         onLongPress: () => onLongPress(memo, selectable),
                       );
                     } else {
-                      return MemoItem(
-                        memo,
-                        date: sort.orderType == SortOrderBy.updatedAt
-                            ? memo.updatedAt
-                            : null,
+                      return MemoGridTile(
+                        memo: memo,
+                        useUpdatedAt: sort.orderBy == SortOrderBy.updatedAt,
                         selected: selected,
                         onTap: () => onTap(memo, selectable, selected),
                         onLongPress: () => onLongPress(memo, selectable),

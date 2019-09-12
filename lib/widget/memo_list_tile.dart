@@ -46,7 +46,7 @@ class MemoListTile extends StatelessWidget {
                 children: <Widget>[
                   _MemoIcon(type: memo.type, selected: selected),
                   SizedBox(width: 16),
-                  _MemoContent(memo, useUpdatedAt),
+                  Expanded(child: _MemoContent(memo, useUpdatedAt)),
                 ],
               ),
             ),
@@ -118,11 +118,14 @@ class _MemoContent extends StatelessWidget {
     } else if (memo.type == typeHandWriting) {
       content = null;
     } else if (memo.type == typeMarkdown) {
-      content = null;
+      content = Text(
+        memo.content,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      );
     }
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
@@ -181,7 +184,7 @@ class _MemoContentImage extends StatelessWidget {
       aspectRatio: 1,
       child: CachedNetworkImage(
         imageUrl: url,
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.fill,
         placeholder: (context, url) => LoadingProgress(),
         errorWidget: (context, url, error) => Icon(Icons.error),
       ),
