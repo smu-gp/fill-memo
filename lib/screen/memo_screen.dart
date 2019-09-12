@@ -16,6 +16,7 @@ import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:sp_client/widget/loading_progress.dart';
+import 'package:sp_client/widget/process_result.dart';
 import 'package:uuid/uuid.dart';
 
 typedef ImageListCallback = void Function(int);
@@ -33,6 +34,8 @@ class MemoScreen extends StatefulWidget {
 }
 
 class _MemoScreenState extends State<MemoScreen> {
+  GlobalKey<ProcessResultPanelState> _processResultPanelKey = GlobalKey();
+
   TextEditingController _editTitleTextController;
   SpannableTextEditingController _editContentTextController;
 
@@ -89,6 +92,7 @@ class _MemoScreenState extends State<MemoScreen> {
                   visible: _memoContentImages.isNotEmpty,
                   child: _ContentImageList(
                     imageList: _memoContentImages,
+                    heroTagId: widget.memo.id,
                     onItemTap: _handleImageItemTapped,
                   ),
                 ),
@@ -181,12 +185,14 @@ class _MemoScreenState extends State<MemoScreen> {
   }
 
   Future _showAddImageBottomSheet() async {
+    TextSelection currentSelection = _editContentTextController.selection;
+
     _AddImageSheetResult result = await showModalBottomSheet(
       context: context,
       builder: (context) => _AddImageSheet(),
     );
     if (result != null && result.file != null) {
-      _addImage(result.file, result.enableTextRecognition);
+      _addImage(result.file, result.enableTextRecognition, currentSelection);
     }
   }
 
@@ -230,9 +236,77 @@ class _MemoScreenState extends State<MemoScreen> {
     );
   }
 
-  Future _addImage(File file, bool enableTextRecognition) async {
+  void _showProcessResults(
+    List<Service.ProcessResult> results,
+    TextSelection selection,
+  ) async {
+    var selectedItems = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context).titleResult),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16.0,
+            ),
+            content: Container(
+              width: 300,
+              height: 400,
+              child: ProcessResultPanel(
+                key: _processResultPanelKey,
+                results: results,
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  MaterialLocalizations.of(context).cancelButtonLabel,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                child: Text(AppLocalizations.of(context).actionAdd),
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                    _processResultPanelKey.currentState.selectedItems,
+                  );
+                },
+              ),
+            ],
+          );
+        });
+
+    if (selectedItems != null) {
+      var processedText = "";
+      selectedItems.forEach((result) {
+        processedText += (result as Service.ProcessResult).content;
+      });
+
+      var text = _editContentTextController.text;
+      if (selection.isNormalized && selection.isValid) {
+        text = selection.textBefore(text) +
+            selection.textInside(text) +
+            processedText +
+            selection.textAfter(text);
+      } else {
+        text = text += processedText;
+      }
+      _editContentTextController.text = text;
+    }
+  }
+
+  Future _addImage(
+    File file,
+    bool enableTextRecognition,
+    TextSelection selection,
+  ) async {
     if (enableTextRecognition) {
-      _uploadProcessingServer(file);
+      var results = await _uploadProcessingServer(file);
+      if (results != null) {
+        _showProcessResults(results, selection);
+      }
     } else {
       _uploadFirebaseStorage(file);
     }
@@ -270,7 +344,9 @@ class _MemoScreenState extends State<MemoScreen> {
     }
   }
 
-  void _uploadProcessingServer(File imageFile) async {
+  Future<List<Service.ProcessResult>> _uploadProcessingServer(
+    File imageFile,
+  ) async {
     _showProgressDialog();
 
     try {
@@ -284,32 +360,11 @@ class _MemoScreenState extends State<MemoScreen> {
       );
 
       Navigator.pop(context); // Hide progress dialog
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(AppLocalizations.of(context).titleResult),
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 16.0,
-                horizontal: 8.0,
-              ),
-              content: Container(
-                width: 300,
-                height: 400,
-                child: ListView(
-                  children: results
-                      .map((result) => ListItem(
-                            title: result.content,
-                            onTap: () {},
-                          ))
-                      .toList(),
-                ),
-              ),
-            );
-          });
+      return results;
     } catch (e) {
       Navigator.pop(context); // Hide progress dialog
-      _showSendErrorDialog(e);
+      await _showSendErrorDialog(e);
+      return null;
     }
   }
 
@@ -388,11 +443,13 @@ class _ContentEditText extends StatelessWidget {
 
 class _ContentImageList extends StatelessWidget {
   final List<String> imageList;
+  final String heroTagId;
   final ImageListCallback onItemTap;
 
   _ContentImageList({
     Key key,
     this.imageList = const [],
+    this.heroTagId,
     this.onItemTap,
   }) : super(key: key);
 
@@ -414,9 +471,14 @@ class _ContentImageList extends StatelessWidget {
                               right: (entry.key != imageList.length - 1)
                                   ? 4.0
                                   : 0),
-                          child: _ContentImageItem(
-                            url: entry.value,
-                            onTap: () => onItemTap(entry.key),
+                          child: Hero(
+                            tag: "image_${heroTagId}_${entry.key}",
+                            child: Material(
+                              child: _ContentImageItem(
+                                url: entry.value,
+                                onTap: () => onItemTap(entry.key),
+                              ),
+                            ),
                           ),
                         ))
                     .toList())
