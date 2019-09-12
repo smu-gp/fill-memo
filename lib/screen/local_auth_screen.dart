@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:local_auth/auth_strings.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:provider/provider.dart';
-import 'package:sp_client/model/local_auth.dart';
 import 'package:sp_client/util/localization.dart';
 
 class LocalAuthScreen extends StatefulWidget {
@@ -62,29 +58,29 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
 
   Future _requestAuthenticate() async {
     var localizations = AppLocalizations.of(context);
-    var messages = AndroidAuthMessages(
-      fingerprintHint: localizations.androidFingerprintHint,
-      fingerprintNotRecognized: localizations.androidFingerprintNotRecognized,
-      fingerprintSuccess: localizations.androidFingerprintSuccess,
-      cancelButton: localizations.androidCancelButton,
-      signInTitle: localizations.androidSignInTitle,
-      fingerprintRequiredTitle: localizations.androidFingerprintRequiredTitle,
-      goToSettingsButton: localizations.goToSettings,
-      goToSettingsDescription: localizations.androidGoToSettingsDescription,
-    );
-    var localAuth = LocalAuthentication();
-    bool authenticated = await localAuth.authenticateWithBiometrics(
-      localizedReason: localizations.authenticatedReason,
-      stickyAuth: true,
-      androidAuthStrings: messages,
-    );
-    if (authenticated) {
-      var authState = Provider.of<LocalAuthenticate>(context, listen: false);
-      authState.authenticated = true;
-    } else {
-      setState(() {
-        _authenticateFailed = true;
-      });
-    }
+//    var messages = AndroidAuthMessages(
+//      fingerprintHint: localizations.androidFingerprintHint,
+//      fingerprintNotRecognized: localizations.androidFingerprintNotRecognized,
+//      fingerprintSuccess: localizations.androidFingerprintSuccess,
+//      cancelButton: localizations.androidCancelButton,
+//      signInTitle: localizations.androidSignInTitle,
+//      fingerprintRequiredTitle: localizations.androidFingerprintRequiredTitle,
+//      goToSettingsButton: localizations.goToSettings,
+//      goToSettingsDescription: localizations.androidGoToSettingsDescription,
+//    );
+//    var localAuth = LocalAuthentication();
+//    bool authenticated = await localAuth.authenticateWithBiometrics(
+//      localizedReason: localizations.authenticatedReason,
+//      stickyAuth: true,
+//      androidAuthStrings: messages,
+//    );
+//    if (authenticated) {
+//      var authState = Provider.of<LocalAuthenticate>(context, listen: false);
+//      authState.authenticated = true;
+//    } else {
+//      setState(() {
+//        _authenticateFailed = true;
+//      });
+//    }
   }
 }
