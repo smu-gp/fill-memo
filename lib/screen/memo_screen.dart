@@ -89,6 +89,7 @@ class _MemoScreenState extends State<MemoScreen> {
                   visible: _memoContentImages.isNotEmpty,
                   child: _ContentImageList(
                     imageList: _memoContentImages,
+                    heroTagId: widget.memo.id,
                     onItemTap: _handleImageItemTapped,
                   ),
                 ),
@@ -388,11 +389,13 @@ class _ContentEditText extends StatelessWidget {
 
 class _ContentImageList extends StatelessWidget {
   final List<String> imageList;
+  final String heroTagId;
   final ImageListCallback onItemTap;
 
   _ContentImageList({
     Key key,
     this.imageList = const [],
+    this.heroTagId,
     this.onItemTap,
   }) : super(key: key);
 
@@ -414,9 +417,14 @@ class _ContentImageList extends StatelessWidget {
                               right: (entry.key != imageList.length - 1)
                                   ? 4.0
                                   : 0),
-                          child: _ContentImageItem(
-                            url: entry.value,
-                            onTap: () => onItemTap(entry.key),
+                          child: Hero(
+                            tag: "image_${heroTagId}_${entry.key}",
+                            child: Material(
+                              child: _ContentImageItem(
+                                url: entry.value,
+                                onTap: () => onItemTap(entry.key),
+                              ),
+                            ),
                           ),
                         ))
                     .toList())
