@@ -5,6 +5,7 @@ import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/edit_text_dialog.dart';
+import 'package:sp_client/widget/list_item.dart';
 import 'package:sp_client/widget/loading_progress.dart';
 
 class FolderManageScreen extends StatefulWidget {
@@ -155,8 +156,9 @@ class _FolderListState extends State<_FolderList> {
                 selectItems = (listState as SelectableList).selectedItems;
               }
               return ListView.separated(
-                itemBuilder: (context, index) => _FolderItem(
-                  folders[index],
+                itemBuilder: (context, index) => SelectableListItem(
+                  title: folders[index].name,
+                  icon: Icon(Icons.folder),
                   selected:
                       (isSelectable && selectItems.contains(folders[index])),
                   selectable: isSelectable,
@@ -207,76 +209,6 @@ class _FolderListState extends State<_FolderList> {
           return LoadingProgress();
         }
       },
-    );
-  }
-}
-
-class _FolderItem extends StatefulWidget {
-  final Folder folder;
-  final bool selectable;
-  final bool selected;
-  final VoidCallback onTap;
-  final VoidCallback onLongPress;
-  final ValueChanged<bool> onCheckboxChanged;
-  final VoidCallback onEditButtonPress;
-
-  _FolderItem(
-    this.folder, {
-    Key key,
-    this.selectable = false,
-    this.selected = false,
-    @required this.onTap,
-    @required this.onLongPress,
-    @required this.onCheckboxChanged,
-    this.onEditButtonPress,
-  }) : super(key: key);
-
-  @override
-  _FolderItemState createState() => _FolderItemState();
-}
-
-class _FolderItemState extends State<_FolderItem> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      onLongPress: widget.onLongPress,
-      child: Container(
-        height: 56.0,
-        padding:
-            EdgeInsets.symmetric(horizontal: widget.selectable ? 4.0 : 16.0),
-        child: Row(
-          children: <Widget>[
-            if (widget.selectable)
-              Checkbox(
-                value: widget.selected,
-                onChanged: widget.onCheckboxChanged,
-              )
-            else
-              Icon(OMIcons.folder),
-            SizedBox(width: widget.selectable ? 20.0 : 32.0),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    widget.folder.name,
-                    style: Theme.of(context).textTheme.subhead.copyWith(
-                          fontSize: 16.0,
-                        ),
-                  )
-                ],
-              ),
-            ),
-            if (!widget.selectable)
-              IconButton(
-                icon: Icon(OMIcons.edit),
-                onPressed: widget.onEditButtonPress,
-              ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -84,6 +84,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (await _userRepository.isSignedIn()) {
       await _userRepository.signOut();
       await _userRepository.signIn(event.changeUserId);
+    } else {
+      await _userRepository.signIn(event.changeUserId);
     }
     dispatch(LoggedIn());
   }

@@ -3,22 +3,21 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+// Ignore issues from commonly used lints in this file.
+// ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
+// ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
+// ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
+// ignore_for_file:unused_import, file_names
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
-// ignore: unnecessary_new
 final messages = new MessageLookup();
 
-// ignore: unused_element
-final _keepAnalysisHappy = Intl.defaultLocale;
-
-// ignore: non_constant_identifier_names
-typedef MessageIfAbsent(String message_str, List args);
+typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  get localeName => 'en';
+  String get localeName => 'en';
 
   static m0(displayName, modelName) => "${displayName}\'s ${modelName}";
 
@@ -50,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("Rename folder"),
     "actionRetry" : MessageLookupByLibrary.simpleMessage("Retry"),
     "actionSecretFolder" : MessageLookupByLibrary.simpleMessage("Secret folder"),
+    "actionSelectionAll" : MessageLookupByLibrary.simpleMessage("Selection All"),
     "actionSendImage" : MessageLookupByLibrary.simpleMessage("Send image"),
     "actionSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),
@@ -87,6 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelConnectionCode" : MessageLookupByLibrary.simpleMessage("Connection code"),
     "labelConnectionRequest" : m1,
     "labelDefaultMemoType" : MessageLookupByLibrary.simpleMessage("Default memo type"),
+    "labelDisconnect" : MessageLookupByLibrary.simpleMessage("Disconnect"),
     "labelDisconnectAnother" : MessageLookupByLibrary.simpleMessage("Disconnect another device"),
     "labelFingerprint" : MessageLookupByLibrary.simpleMessage("Use fingerprint to unlock"),
     "labelHandWriting" : MessageLookupByLibrary.simpleMessage("Hand writing"),
@@ -95,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelMarkdown" : MessageLookupByLibrary.simpleMessage("Markdown"),
     "labelName" : MessageLookupByLibrary.simpleMessage("Name"),
     "labelNoHostWaited" : MessageLookupByLibrary.simpleMessage("No host waited"),
+    "labelNoTitle" : MessageLookupByLibrary.simpleMessage("No Title"),
     "labelNone" : MessageLookupByLibrary.simpleMessage("None"),
     "labelQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("Quick folder classification"),
     "labelRejectHost" : MessageLookupByLibrary.simpleMessage("Reject by host"),
@@ -108,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelVersion" : MessageLookupByLibrary.simpleMessage("Version"),
     "labelWaitConnection" : MessageLookupByLibrary.simpleMessage("Connection..."),
     "labelWaitHostResponse" : MessageLookupByLibrary.simpleMessage("Waiting host response"),
+    "labelWebConnectionRequest" : MessageLookupByLibrary.simpleMessage("Web requests connection"),
     "labelWriteNewNoteOnStartup" : MessageLookupByLibrary.simpleMessage("Write new note on startup"),
     "memoEmpty" : MessageLookupByLibrary.simpleMessage("Empty memo"),
     "memoError" : MessageLookupByLibrary.simpleMessage("Error occurred"),
@@ -128,7 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "titleGuestConnection" : MessageLookupByLibrary.simpleMessage("Connect another device"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("History"),
     "titleHostConnection" : MessageLookupByLibrary.simpleMessage("Get connection code"),
-    "titleResult" : MessageLookupByLibrary.simpleMessage("Result"),
+    "titleResult" : MessageLookupByLibrary.simpleMessage("Process result"),
     "validationServiceHost" : MessageLookupByLibrary.simpleMessage("Error: service host is not empty"),
     "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("If you close the screen before connecting from another device, you will not receive a connection request.")
   };

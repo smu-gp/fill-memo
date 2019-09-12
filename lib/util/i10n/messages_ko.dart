@@ -3,22 +3,21 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+// Ignore issues from commonly used lints in this file.
+// ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
+// ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
+// ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
+// ignore_for_file:unused_import, file_names
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
-// ignore: unnecessary_new
 final messages = new MessageLookup();
 
-// ignore: unused_element
-final _keepAnalysisHappy = Intl.defaultLocale;
-
-// ignore: non_constant_identifier_names
-typedef MessageIfAbsent(String message_str, List args);
+typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  get localeName => 'ko';
+  String get localeName => 'ko';
 
   static m0(displayName, modelName) => "${displayName}의 ${modelName}";
 
@@ -50,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("폴더 이름 변경"),
     "actionRetry" : MessageLookupByLibrary.simpleMessage("재시도"),
     "actionSecretFolder" : MessageLookupByLibrary.simpleMessage("비밀 폴더"),
+    "actionSelectionAll" : MessageLookupByLibrary.simpleMessage("전체 선택"),
     "actionSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내기"),
     "actionSettings" : MessageLookupByLibrary.simpleMessage("설정"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),
@@ -87,6 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelConnectionCode" : MessageLookupByLibrary.simpleMessage("연결코드"),
     "labelConnectionRequest" : m1,
     "labelDefaultMemoType" : MessageLookupByLibrary.simpleMessage("기본 메모 유형"),
+    "labelDisconnect" : MessageLookupByLibrary.simpleMessage("연결 해제"),
     "labelDisconnectAnother" : MessageLookupByLibrary.simpleMessage("다른 기기에서 연결 해제"),
     "labelFingerprint" : MessageLookupByLibrary.simpleMessage("지문을 사용하여 잠금해제"),
     "labelHandWriting" : MessageLookupByLibrary.simpleMessage("손글씨"),
@@ -95,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelMarkdown" : MessageLookupByLibrary.simpleMessage("마크다운"),
     "labelName" : MessageLookupByLibrary.simpleMessage("이름"),
     "labelNoHostWaited" : MessageLookupByLibrary.simpleMessage("연결하려는 기기가 기다리지 않음"),
+    "labelNoTitle" : MessageLookupByLibrary.simpleMessage("제목없음"),
     "labelNone" : MessageLookupByLibrary.simpleMessage("없음"),
     "labelQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("빠른 폴더 분류"),
     "labelRejectHost" : MessageLookupByLibrary.simpleMessage("연결하려는 기기가 거부함"),
@@ -108,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelVersion" : MessageLookupByLibrary.simpleMessage("버전"),
     "labelWaitConnection" : MessageLookupByLibrary.simpleMessage("연결 중..."),
     "labelWaitHostResponse" : MessageLookupByLibrary.simpleMessage("연결하려는 기기의 응답을 기다리는 중"),
+    "labelWebConnectionRequest" : MessageLookupByLibrary.simpleMessage("웹에서 연결을 요청합니다"),
     "labelWriteNewNoteOnStartup" : MessageLookupByLibrary.simpleMessage("앱 시작 시 새 메모 작성"),
     "memoEmpty" : MessageLookupByLibrary.simpleMessage("메모가 비어있습니다"),
     "memoError" : MessageLookupByLibrary.simpleMessage("메모를 불러오는 데 오류가 발생하였습니다"),
@@ -128,7 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "titleGuestConnection" : MessageLookupByLibrary.simpleMessage("다른 기기에 연결"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("기록"),
     "titleHostConnection" : MessageLookupByLibrary.simpleMessage("연결코드 생성"),
-    "titleResult" : MessageLookupByLibrary.simpleMessage("결과"),
+    "titleResult" : MessageLookupByLibrary.simpleMessage("처리 결과"),
     "validationServiceHost" : MessageLookupByLibrary.simpleMessage("오류: 서비스 호스트는 비워둘 수 없습니다"),
     "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("다른 기기에서 연결하기 전에 화면을 닫으면 연결 요청을 받을 수 없습니다.")
   };

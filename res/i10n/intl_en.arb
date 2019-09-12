@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-08-13T13:25:51.363063",
+  "@@last_modified": "2019-09-12T14:01:02.664333",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -103,6 +103,11 @@
   },
   "actionRetry": "Retry",
   "@actionRetry": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSelectionAll": "Selection All",
+  "@actionSelectionAll": {
     "type": "text",
     "placeholders": {}
   },
@@ -241,6 +246,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelDisconnect": "Disconnect",
+  "@labelDisconnect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelDisconnectAnother": "Disconnect another device",
   "@labelDisconnectAnother": {
     "type": "text",
@@ -311,6 +321,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelNoTitle": "No Title",
+  "@labelNoTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelUnnamed": "Unnamed",
   "@labelUnnamed": {
     "type": "text",
@@ -338,6 +353,11 @@
   },
   "labelWaitHostResponse": "Waiting host response",
   "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWebConnectionRequest": "Web requests connection",
+  "@labelWebConnectionRequest": {
     "type": "text",
     "placeholders": {}
   },
@@ -436,7 +456,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "titleResult": "Result",
+  "titleResult": "Process result",
   "@titleResult": {
     "type": "text",
     "placeholders": {}

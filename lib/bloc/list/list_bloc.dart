@@ -34,10 +34,19 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   }
 
   Stream<ListState> _mapSelectItemToState(SelectItem event) async* {
-    var items = (currentState is SelectableList
-        ? (currentState as SelectableList).selectedItems
-        : <dynamic>[])
-      ..add(event.selectedItem);
+    List<dynamic> items;
+    var state = currentState;
+    if (state is SelectableList) {
+      items = state.selectedItems;
+    } else {
+      items = <dynamic>[];
+    }
+
+    if (items.contains(event.selectedItem)) {
+      return;
+    }
+    items.add(event.selectedItem);
+
     yield SelectableList(
       selectedItemCount: items.length,
       selectedItems: items,

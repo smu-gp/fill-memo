@@ -1,27 +1,26 @@
-import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/painter.dart';
-import 'package:sp_client/widget/rich_text_field/util/spannable_list.dart';
+import 'package:sp_client/widget/loading_progress.dart';
 
-class MemoItem extends StatelessWidget {
+class MemoGridTile extends StatelessWidget {
   final Memo memo;
-  final int date;
+  final bool useUpdatedAt;
+  final bool selected;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
-  final bool selected;
 
-  MemoItem(
-    this.memo, {
+  MemoGridTile({
     Key key,
-    this.date,
+    this.memo,
+    this.useUpdatedAt = false,
     this.onTap,
     this.onLongPress,
     this.selected,
@@ -30,58 +29,55 @@ class MemoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget content;
+    Widget contentImage;
     if (memo.type == typeRichText) {
-      if(memo.contentImages.isNotEmpty){
-        var style = Theme.of(context).textTheme.body1;
-        var list = SpannableList.fromJson(memo.contentStyle);
+      var style = Theme.of(context).textTheme.body1;
+      var list = SpannableList.fromJson(memo.contentStyle);
 
-        content = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            new Container(
-              child: ClipRRect(
-                child:Image.network(memo.contentImages.first),
-                borderRadius:BorderRadius.circular(5.0),
+      content = RichText(
+        text: list.toTextSpan(memo.content, defaultStyle: style),
+        maxLines: 5,
+        overflow: TextOverflow.ellipsis,
+      );
+
+      if (memo.contentImages != null && memo.contentImages.isNotEmpty) {
+        contentImage = ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8.0),
+            topRight: Radius.circular(8.0),
+          ),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Hero(
+              tag: "image_${memo.id}_0",
+              child: Material(
+                child: CachedNetworkImage(
+                  imageUrl: memo.contentImages.first,
+                  fit: BoxFit.fill,
+                  placeholder: (context, _) => LoadingProgress(),
+                  errorWidget: (context, url, _) => Icon(Icons.error),
+                ),
               ),
             ),
-            new RichText(
-              text: list.toTextSpan(memo.content, defaultStyle: style),
-              maxLines: 7,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+          ),
         );
       }
-      else{
-        var style = Theme.of(context).textTheme.body1;
-        var list = SpannableList.fromJson(memo.contentStyle);
-
-        content = RichText(
-          text: list.toTextSpan(memo.content, defaultStyle: style),
-          maxLines: 7,
-          overflow: TextOverflow.ellipsis,
-        );
-      }
-    }
-    else if(memo.type == typeHandWriting){//&& memo?.content != null
+    } else if (memo.type == typeHandWriting) {
       String imgPosLod = memo.content;
       List<String> devide = imgPosLod.split("ㄱ");
-      Uint8List image= Uint8List.fromList(devide[0].codeUnits);
+      Uint8List image = Uint8List.fromList(devide[0].codeUnits);
       content = new Container(
         child: ClipRRect(
           child: Image.memory(image),
-           borderRadius:BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(5.0),
         ),
       );
-    }
-    else if(memo.type == typeMarkdown){
+    } else if (memo.type == typeMarkdown) {
       content = Container(
-        child: MarkdownBody(
-          data: memo.content,
-        ),
-      );
+          child: MarkdownBody(
+        data: memo.content,
+      ));
     }
-
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -96,8 +92,9 @@ class MemoItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         onLongPress: onLongPress,
-        child: Stack(
-          children: [
+        child: Column(
+          children: <Widget>[
+            if (contentImage != null) contentImage,
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -121,7 +118,8 @@ class MemoItem extends StatelessWidget {
                   content,
                   SizedBox(height: 8.0),
                   Text(
-                    Util.formatDate(date ?? memo.createdAt),
+                    Util.formatDate(
+                        useUpdatedAt ? memo.updatedAt : memo.createdAt),
                     style: Theme.of(context)
                         .textTheme
                         .caption

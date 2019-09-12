@@ -106,6 +106,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionSelectionAll": "전체 선택",
+  "@actionSelectionAll": {
+    "type": "text",
+    "placeholders": {}
+  },
   "actionSecretFolder": "비밀 폴더",
   "@actionSecretFolder": {
     "type": "text",
@@ -241,6 +246,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelDisconnect": "연결 해제",
+  "@labelDisconnect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelDisconnectAnother": "다른 기기에서 연결 해제",
   "@labelDisconnectAnother": {
     "type": "text",
@@ -311,6 +321,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelNoTitle": "제목없음",
+  "@labelNoTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelUnnamed": "이름 없음",
   "@labelUnnamed": {
     "type": "text",
@@ -338,6 +353,11 @@
   },
   "labelWaitHostResponse": "연결하려는 기기의 응답을 기다리는 중",
   "@labelWaitHostResponse": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelWebConnectionRequest": "웹에서 연결을 요청합니다",
+  "@labelWebConnectionRequest": {
     "type": "text",
     "placeholders": {}
   },
@@ -436,7 +456,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "titleResult": "결과",
+  "titleResult": "처리 결과",
   "@titleResult": {
     "type": "text",
     "placeholders": {}

@@ -1,67 +1,69 @@
-import 'dart:developer';
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:sp_client/model/memo.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/list_item.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/repository/repositories.dart';
+import 'package:sp_client/util/util.dart';
+import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/list_item.dart';
+import 'package:uuid/uuid.dart';
 
 class MemoMarkdownScreen extends StatefulWidget {
   final Memo memo;
+
   MemoMarkdownScreen(
     this.memo, {
-      Key key,
+    Key key,
   }) : super(key: key);
+
   @override
   _MemoMarkdownScreenState createState() => _MemoMarkdownScreenState();
 }
 
 class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
-  //TextEditingController _editingController = TextEditingController();
-  TextEditingController _editTitleTextController;
-  TextEditingController _editingController;
-  String content;
+  TextEditingController _editingContentController;
+  TextEditingController _editingTitleController;
+  String content = "";
+  bool _showProgress = false;
+  double _progressValue = 0;
   MemoBloc _memoBloc;
+
   PreferenceRepository _preferenceRepository;
+  List<String> _memoContentImages;
 
   @override
   void initState() {
     super.initState();
-    _memoBloc = BlocProvider.of<MemoBloc>(context);
+    _editingContentController =
+        TextEditingController(text: widget.memo.content ?? "");
+    _editingTitleController =
+        TextEditingController(text: widget.memo.title ?? "");
     _preferenceRepository =
         RepositoryProvider.of<PreferenceRepository>(context);
-    _editTitleTextController=TextEditingController(text: widget.memo.title ?? "");;
-    _editingController = TextEditingController(text: widget.memo.content ?? "");
-    _editingController.addListener(() {
+    _memoBloc = BlocProvider.of<MemoBloc>(context);
+    _editingContentController.addListener(() {
       setState(() {
-        content = _editingController.value.text;
+        content = _editingContentController.value.text;
       });
     });
+    _memoContentImages = []..addAll(widget.memo.contentImages ?? []);
   }
-  static bool isLarge(BuildContext context) {
-    assert(context != null);
-    var size = MediaQuery.of(context).size;
-    return min(size.width, size.height) > 600;
-  }
+
   @override
   Widget build(BuildContext context) {
-    if(isLarge(context)){
-      return tabletUI(context);
-    }
-    else{
-      return phoneUI(context);
+    if (Util.isLarge(context)) {
+      tabletUI(context);
+    } else {
+      phoneUI(context);
     }
   }
-  Widget tabletUI(BuildContext context){
 
+  Widget tabletUI(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("markdown"),
@@ -74,22 +76,22 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
           )
         ],
       ),
-      body:Column(
+      body: Column(
         children: <Widget>[
           Expanded(
-            child:Row(
+            child: Row(
               children: <Widget>[
                 Expanded(
                   child: Markdown(
                     //data: content,
-                    data : _editingController.text,
+                    data: _editingContentController.text,
                   ),
                   flex: 1,
                 ),
                 VerticalDivider(),
                 Expanded(
-                    child:TextField(
-                      controller: _editingController,
+                    child: TextField(
+                      controller: _editingContentController,
                       enableInteractiveSelection: true,
                       keyboardType: TextInputType.multiline,
                       maxLength: null,
@@ -99,12 +101,9 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
                       maxLines: 100,
                       minLines: 10,
                       decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'input text'
-                      ),
+                          border: InputBorder.none, hintText: 'input text'),
                     ),
-                    flex: 1
-                ),
+                    flex: 1),
               ],
             ),
           ),
@@ -127,38 +126,33 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
                         icon: Icon(Icons.format_italic),
                         onPressed: () {
                           _wrapContent('*');
-                        }
-                    ),
+                        }),
                     IconButton(
                       icon: Icon(Icons.image),
                       onPressed: () {
-                        _showImageSettingBottomSheet();
+                        _insertImageDialog();
                       },
                     ),
                     IconButton(
                         icon: Icon(Icons.looks_one),
                         onPressed: () {
                           _prefixContent('# ');
-                        }
-                    ),
+                        }),
                     IconButton(
                         icon: Icon(Icons.looks_two),
                         onPressed: () {
                           _prefixContent('## ');
-                        }
-                    ),
+                        }),
                     IconButton(
                         icon: Icon(Icons.looks_3),
                         onPressed: () {
                           _prefixContent('### ');
-                        }
-                    ),
+                        }),
                     IconButton(
                         icon: Icon(Icons.format_strikethrough),
                         onPressed: () {
                           _wrapContent('~~');
-                        }
-                    ),
+                        }),
                     IconButton(
                       icon: Icon(Icons.format_quote),
                       onPressed: () {
@@ -205,8 +199,7 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
     );
   }
 
-
-  Widget phoneUI(BuildContext context){
+  Widget phoneUI(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("markdown"),
@@ -221,17 +214,31 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
       ),
       body: Column(
         children: <Widget>[
+          Visibility(
+            visible: _showProgress,
+            child: SizedBox(
+              child: LinearProgressIndicator(
+                backgroundColor: AppColors.accentColor.withOpacity(0.2),
+                value: _progressValue,
+              ),
+              height: 4,
+            ),
+          ),
+          Container(
+            height: kToolbarHeight,
+            padding: const EdgeInsets.only(left: 16.0),
+            child: _TitleEditText(controller: _editingTitleController),
+          ),
           Expanded(
             child: Markdown(
-              //data: content,
-              data : _editingController.text,
+              data: _editingContentController.text,
             ),
             flex: 1,
           ),
           Divider(),
           Expanded(
-            child:TextField(
-              controller: _editingController,
+            child: TextField(
+              controller: _editingContentController,
               enableInteractiveSelection: true,
               keyboardType: TextInputType.multiline,
               maxLength: null,
@@ -240,10 +247,9 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
               maxLengthEnforced: true,
               maxLines: 100,
               minLines: 10,
+              autofocus: true,
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'input text'
-              ),
+                  border: InputBorder.none, hintText: 'input text'),
             ),
             flex: 1,
           ),
@@ -266,38 +272,33 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
                         icon: Icon(Icons.format_italic),
                         onPressed: () {
                           _wrapContent('*');
-                        }
-                    ),
+                        }),
                     IconButton(
                       icon: Icon(Icons.image),
                       onPressed: () {
-                        _showImageSettingBottomSheet();
+                        _insertImageDialog();
                       },
                     ),
                     IconButton(
                         icon: Icon(Icons.looks_one),
                         onPressed: () {
                           _prefixContent('# ');
-                        }
-                    ),
+                        }),
                     IconButton(
                         icon: Icon(Icons.looks_two),
                         onPressed: () {
                           _prefixContent('## ');
-                        }
-                    ),
+                        }),
                     IconButton(
                         icon: Icon(Icons.looks_3),
                         onPressed: () {
                           _prefixContent('### ');
-                        }
-                    ),
+                        }),
                     IconButton(
                         icon: Icon(Icons.format_strikethrough),
                         onPressed: () {
                           _wrapContent('~~');
-                        }
-                    ),
+                        }),
                     IconButton(
                       icon: Icon(Icons.format_quote),
                       onPressed: () {
@@ -343,117 +344,107 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
       ),
     );
   }
-  void _updataMarkDownMemo(){
-    var memo = widget.memo;
-    var titleText = _editTitleTextController.text;
-    var contentText = content;
-    var isChanged = memo.content != contentText ||
-        memo.title != titleText ;
 
-    memo.title = titleText.isNotEmpty ? titleText : null;
-    memo.content = contentText.isNotEmpty ? contentText : null;
-
-    if (isChanged) {
-      memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
-    }
-
-    var isValid = memo.content != null;
-
-    if (widget.memo.id != null) {
-      if (isValid) {
-        if (isChanged) {
-          _memoBloc.dispatch(UpdateMemo(memo));
-        }
-      } else {
-        _memoBloc.dispatch(DeleteMemo(widget.memo));
-      }
+  void _insertImageDialog() async {
+    var selection = _editingContentController.selection;
+    var text = _editingContentController.text;
+    TextEditingController controller = TextEditingController();
+    var result = await showDialog(
+        context: context,
+        builder: (_) => urlDialog(
+              controller: controller,
+              preferenceRepository: _preferenceRepository,
+            ));
+    if (result != "") {
+      String before = selection.textBefore(text);
+      String inner = '![link](' + result + ')';
+      String after = '' + selection.textAfter(text);
+      _editingContentController.value =
+          _editingContentController.value.copyWith(
+        text: before + inner + after,
+        selection: selection,
+      );
     } else {
-      if (isValid) {
-        _memoBloc.dispatch(AddMemo(memo));
-      }
+      _editingContentController.value =
+          _editingContentController.value.copyWith(
+        text: text,
+        selection: selection,
+      );
     }
-
-
   }
 
-
-  void dispose(){
-    _updataMarkDownMemo();
-    _editTitleTextController.dispose();
-    _editingController.dispose();
-    super.dispose();
-  }
-
-
-  Future _showPreviewScreen() async{
+  Future _showPreviewScreen() async {
     await Navigator.push(
       context,
       Routes().markdownPreviewMemo(content: content),
     );
-    setState(() {
-    });
+    setState(() {});
   }
 
   void _clear() {
-    _editingController.clear();
+    _editingContentController.clear();
   }
 
   Future _showImageSettingBottomSheet() async {
-    await showModalBottomSheet(
+    _AddImageSheetResult result = await showModalBottomSheet(
         elevation: 1.0,
         context: context,
         builder: (context) => imageSettingBottomSheet(
-          controller: _editingController,
-        )
-    );
+              controller: _editingContentController,
+            ));
+    if (result != null && result.file != null) {
+      _addImage(result.file);
+    }
   }
 
   void _linkContent() {
-    var selection = _editingController.selection;
-    var text = _editingController.value.text;
+    var selection = _editingContentController.selection;
+    var text = _editingContentController.value.text;
     String link = '[link](url)';
 
     String before = selection.textBefore(text);
     String inner = link;
     String after = '' + selection.textAfter(text);
 
-    _editingController.value = _editingController.value.copyWith(
+    _editingContentController.value = _editingContentController.value.copyWith(
       text: before + inner + after,
-      selection: TextSelection(baseOffset: selection.start + link.length - 4, extentOffset: selection.start + link.length - 1),
+      selection: TextSelection(
+          baseOffset: selection.start + link.length - 4,
+          extentOffset: selection.start + link.length - 1),
     );
   }
 
   void _wrapContent(String content) {
-    var selection = _editingController.selection;
-    var text = _editingController.value.text;
+    var selection = _editingContentController.selection;
+    var text = _editingContentController.value.text;
 
     String before = selection.textBefore(text);
     String inner = " ";
-    if(content.contains('~') || content.contains('*') || content.contains('`'))
+    if (content.contains('~') || content.contains('*') || content.contains('`'))
       inner = content + selection.textInside(text) + content;
     else
       inner = content + selection.textInside(text);
     String after = selection.textAfter(text);
 
-    _editingController.value = _editingController.value.copyWith(
+    _editingContentController.value = _editingContentController.value.copyWith(
         text: before + inner + after,
-        selection: TextSelection.collapsed(offset: selection.start + content.length)
+        selection:
+            TextSelection.collapsed(offset: selection.start + content.length)
         //selection: TextSelection(baseOffset: selection.start, extentOffset: selection.end + (content.length) * 2)
-    );
+        );
   }
 
   int _findLineStart(int cursor, String text) {
     int i = cursor - 1;
-    for(;i >= 0; i--) {
-      if(text[i] == '\n')
-        break;
+    for (; i >= 0; i--) {
+      if (text[i] == '\n') break;
     }
     return i + 1;
   }
 
   void _prefixContent(String content) {
-    var text = _editingController.value.text;
-    var selection = _editingController.selection;
+    var text = _editingContentController.value.text;
+    var selection = _editingContentController.selection;
 
     int linestart = _findLineStart(selection.end, text);
     String before = selection.textBefore(text);
@@ -462,21 +453,23 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
     print(text.length);
     print(linestart);
 
-    if(text.substring(linestart, selection.end).startsWith(content)) {
+    if (text.substring(linestart, selection.end).startsWith(content)) {
       print(linestart);
-      bf = before.substring(linestart, selection.start).replaceFirst(content, '');
-      if(linestart == 0)
+      bf = before
+          .substring(linestart, selection.start)
+          .replaceFirst(content, '');
+      if (linestart == 0)
         before = bf;
       else {
         before = before.substring(0, linestart);
         before += bf;
       }
-      _editingController.value = _editingController.value.copyWith(
-          text: before + after,
-          selection: TextSelection.collapsed(offset: before.length)
-      );
+      _editingContentController.value = _editingContentController.value
+          .copyWith(
+              text: before + after,
+              selection: TextSelection.collapsed(offset: before.length));
     } else {
-      if(linestart == 0)
+      if (linestart == 0)
         bf = content + before;
       else {
         String st = before.substring(0, linestart);
@@ -484,89 +477,292 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
         bf = st + content + s;
       }
       before = bf;
-      _editingController.value = _editingController.value.copyWith(
-          text: before + after,
-          selection: TextSelection.collapsed(offset: selection.start + content.length)
-      );
+      _editingContentController.value = _editingContentController.value
+          .copyWith(
+              text: before + after,
+              selection: TextSelection.collapsed(
+                  offset: selection.start + content.length));
     }
+  }
+
+  Future _addImage(File file) async {
+    _uploadFirebaseStorage(file);
+  }
+
+  Future _uploadFirebaseStorage(File imageFile) async {
+    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
+    final uuid = Uuid().v1();
+    final ext = imageFile.path.split(".")[1];
+    final storage = FirebaseStorage.instance;
+    final storageRef = storage.ref().child(userId).child('$uuid.$ext');
+    final uploadTask = storageRef.putFile(imageFile);
+
+    setState(() {
+      _showProgress = true;
+    });
+
+    await for (final event in uploadTask.events) {
+      if (event.type == StorageTaskEventType.progress) {
+        setState(() {
+          _progressValue =
+              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
+          debugPrint(_progressValue.toString());
+        });
+      } else if (event.type == StorageTaskEventType.success) {
+        final downloadURL = await event.snapshot.ref.getDownloadURL();
+        _memoContentImages.add(downloadURL);
+        setState(() {
+          _progressValue = 0;
+          _showProgress = false;
+        });
+      }
+    }
+  }
+
+  void _updateMarkdownMemo() {
+    var memo = widget.memo;
+    var titleText = _editingTitleController.text;
+    var contentText = content;
+
+    var isChanged = memo.title != titleText || memo.content != contentText;
+
+    memo.title = titleText.isNotEmpty ? titleText : null;
+    memo.content = contentText.isNotEmpty ? contentText : null;
+    memo.contentImages = _memoContentImages;
+
+    if (isChanged) {
+      memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
+    }
+
+    var isValid = memo.title != null || memo.content != null;
+
+    if (widget.memo.id != null) {
+      if (isValid) {
+        if (isChanged) {
+          _memoBloc.dispatch(UpdateMemo(memo));
+        }
+      } else {
+        _memoBloc.dispatch(DeleteMemo(memo));
+      }
+    } else {
+      if (isValid) {
+        _memoBloc.dispatch(AddMemo(memo));
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _updateMarkdownMemo();
+    _editingContentController.dispose();
+    _editingTitleController.dispose();
+    super.dispose();
   }
 }
 
-class urlDialog extends StatelessWidget {
+class urlDialog extends StatefulWidget {
   final TextEditingController controller;
+  final PreferenceRepository preferenceRepository;
 
   urlDialog({
     Key key,
     this.controller,
-  }) : super(key : key);
+    this.preferenceRepository,
+  }) : super(key: key);
+
+  @override
+  _urlDialogState createState() => _urlDialogState();
+}
+
+class _urlDialogState extends State<urlDialog> {
+  TextEditingController _controller;
+  PreferenceRepository _preferenceRepository;
+  double _progressValue = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+    _preferenceRepository = widget.preferenceRepository;
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
       title: Text('Input URL'),
-      content: TextField(
-        enableInteractiveSelection: true,
-        controller: controller,
-        decoration: InputDecoration(
-            hintText: 'url'
-        ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TextField(
+            enableInteractiveSelection: true,
+            controller: _controller,
+            decoration: InputDecoration(hintText: 'url'),
+          ),
+          ListItem(
+              leading: Icon(
+                Icons.folder,
+                color: Colors.deepOrangeAccent,
+              ),
+              title: 'Browse local repository',
+              onTap: () async {
+                var file = await _handleMenuTapped(ImageSource.gallery);
+                if (file != null) {
+                  var imageUrl = await _uploadFirebaseStorage(file);
+
+                  _controller.text = imageUrl;
+                }
+              }),
+          ListItem(
+              leading: Icon(
+                Icons.photo_camera,
+                color: Colors.deepOrangeAccent,
+              ),
+              title: 'Camera',
+              onTap: () async {
+                var file = await _handleMenuTapped(ImageSource.camera);
+                if (file != null) {
+                  var imageUrl = await _uploadFirebaseStorage(file);
+
+                  _controller.text = imageUrl;
+                }
+              })
+        ],
       ),
       actions: [
         FlatButton(
           child: Text('CANCEL'),
-          onPressed: Navigator.of(context).pop,
-        ),
-        FlatButton(
-          child: Text('SUBMIT'),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
+        FlatButton(
+          child: Text('SUBMIT'),
+          onPressed: () {
+            Navigator.pop(context, _controller.text);
+          },
+        ),
       ],
+    );
+  }
+
+  Future _handleMenuTapped(ImageSource source) async {
+    var file = await ImagePicker.pickImage(source: source);
+    return file;
+  }
+
+  Future _uploadFirebaseStorage(File imageFile) async {
+    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
+    final uuid = Uuid().v1();
+    final ext = imageFile.path.split(".")[1];
+    final storage = FirebaseStorage.instance;
+    final storageRef = storage.ref().child(userId).child('$uuid.$ext');
+    final uploadTask = storageRef.putFile(imageFile);
+
+    await for (final event in uploadTask.events) {
+      if (event.type == StorageTaskEventType.progress) {
+        print("progerss");
+        if (mounted) {
+          setState(() {
+            _progressValue =
+                event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
+            debugPrint(_progressValue.toString());
+          });
+        }
+      } else if (event.type == StorageTaskEventType.success) {
+        print("succe");
+        final downloadURL = await event.snapshot.ref.getDownloadURL();
+        return downloadURL;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+class _TitleEditText extends StatelessWidget {
+  final TextEditingController controller;
+
+  _TitleEditText({
+    Key key,
+    this.controller,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(splashColor: Colors.transparent),
+      child: TextField(
+        autofocus: false,
+        controller: controller,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          filled: false,
+          hintText: AppLocalizations.of(context).hintInputTitle,
+        ),
+        style: Theme.of(context).textTheme.headline,
+        maxLines: 1,
+        onChanged: (value) {},
+      ),
     );
   }
 }
 
 class imageSettingBottomSheet extends StatefulWidget {
   final TextEditingController controller;
-  
+
   imageSettingBottomSheet({
     Key key,
     this.controller,
-  }) : super(key : key);
+  }) : super(key: key);
 
   @override
-  _imageSettingBottomSheetState createState() => _imageSettingBottomSheetState();
+  _imageSettingBottomSheetState createState() =>
+      _imageSettingBottomSheetState();
 }
 
 class _imageSettingBottomSheetState extends State<imageSettingBottomSheet> {
-  TextEditingController _urlController = TextEditingController();
-  bool _enableTextRecognition = false;
+  TextEditingController _urlController;
+  TextEditingController _editingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _editingController = widget.controller;
+    _urlController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container (
+    return Container(
       child: Wrap(
         children: <Widget>[
           ListItem(
-              leading: Icon(
-                  Icons.link,
-                  color: Colors.deepOrangeAccent,
-              ),
-              title: 'Browse URL',
-              onTap: () => _urlContent(),
+            leading: Icon(
+              Icons.link,
+              color: Colors.deepOrangeAccent,
+            ),
+            title: 'Browse URL',
+            onTap: () => _urlContent(),
           ),
           ListItem(
             leading: Icon(
-                Icons.folder,
-                color: Colors.deepOrangeAccent,
+              Icons.folder,
+              color: Colors.deepOrangeAccent,
             ),
             title: 'Browse local repository',
+            onTap: () => _handleMenuTapped(ImageSource.gallery),
           ),
           ListItem(
             leading: Icon(
-                Icons.photo_camera,
-                color: Colors.deepOrangeAccent,
+              Icons.photo_camera,
+              color: Colors.deepOrangeAccent,
             ),
             title: 'Camera',
             onTap: () => _handleMenuTapped(ImageSource.camera),
@@ -579,26 +775,7 @@ class _imageSettingBottomSheetState extends State<imageSettingBottomSheet> {
   Future _urlContent() async {
     await showDialog(
         context: context,
-        builder: (_) => urlDialog(
-            controller: _urlController
-        )
-    );
-    print(_urlController.text);
-
-    /*var selection = _editingController.selection;
-    var text = _editingController.value.text;
-
-    String url1 = '[link](';
-    String url2 = ')';
-
-    String before = selection.textBefore(text);
-    String inner = url1 + url2;
-    String after = '' + selection.textAfter(text);
-
-    _editingController.value = _editingController.value.copyWith(
-      text: before + inner + after,
-      selection: TextSelection(baseOffset: selection.start + inner.length - 4, extentOffset: selection.start + inner.length - 1),
-    );*/
+        builder: (_) => urlDialog(controller: _urlController));
   }
 
   Future _handleMenuTapped(ImageSource source) async {
@@ -607,7 +784,6 @@ class _imageSettingBottomSheetState extends State<imageSettingBottomSheet> {
       context,
       _AddImageSheetResult(
         file: file,
-        enableTextRecognition: _enableTextRecognition,
       ),
     );
   }
@@ -615,12 +791,11 @@ class _imageSettingBottomSheetState extends State<imageSettingBottomSheet> {
 
 class _AddImageSheetResult {
   final File file;
-  final bool enableTextRecognition;
 
-  _AddImageSheetResult({this.file, this.enableTextRecognition});
+  _AddImageSheetResult({this.file});
 
   @override
   String toString() {
-    return '$runtimeType(file: $file, enableTextRecognition: $enableTextRecognition)';
+    return '$runtimeType(file: $file)';
   }
 }

@@ -10,17 +10,18 @@ import 'package:sp_client/screen/connection/menu_screen.dart';
 import 'package:sp_client/screen/connection/profile_screen.dart';
 import 'package:sp_client/screen/folder_manage_screen.dart';
 import 'package:sp_client/screen/memo_image_screen.dart';
+import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
+import 'package:sp_client/screen/memo_markdown_screen.dart';
 import 'package:sp_client/screen/memo_screen.dart';
+import 'package:sp_client/screen/memo_screen_handwriting.dart';
 import 'package:sp_client/screen/memo_title_screen.dart';
 import 'package:sp_client/screen/settings/memo_type_screen.dart';
 import 'package:sp_client/screen/settings/settings_screen.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
+import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
-import 'package:sp_client/screen/memo_markdown_screen.dart';
-import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
 
-import '../screen/memo_screen_handwriting.dart';
 import 'constants.dart';
 
 class Routes {
@@ -29,20 +30,15 @@ class Routes {
   }
 
   PageRoute memo(Memo memo) {
-    if(memo.type == typeMarkdown){
-      return MaterialPageRoute(
-        builder: (context) => MemoMarkdownScreen(memo),
-      );
+    var dest;
+    if (memo.type == typeRichText) {
+      dest = MemoScreen(memo);
+    } else if (memo.type == typeHandWriting) {
+      dest = MemoHandwritingScreen(memo);
+    } else if (memo.type == typeMarkdown) {
+      dest = MemoMarkdownScreen(memo);
     }
-    else if(memo.type == typeHandWriting){
-      return MaterialPageRoute(
-        builder: (context) => MemoHandwritingScreen(memo),
-      );
-    }
-    else {
-      return MaterialPageRoute(builder: (context) => MemoScreen(memo));
-    }
-    //return MaterialPageRoute(builder: (context) => MemoScreen(memo));
+    return MaterialPageRoute(builder: (context) => dest);
   }
 
   PageRoute memoImage({List<String> contentImages, int initIndex}) {
@@ -127,18 +123,6 @@ class Routes {
         value: preferenceBloc,
         child: SettingsMemoTypeScreen(),
       ),
-    );
-  }
-
-  PageRoute handwritingMemo(BuildContext context, Memo memo) {
-    return MaterialPageRoute(
-      builder: (context) => MemoHandwritingScreen(memo),
-    );
-  }
-
-  PageRoute markdownMemo(BuildContext context,Memo memo) {
-    return MaterialPageRoute(
-      builder: (context) => MemoMarkdownScreen(memo),
     );
   }
 

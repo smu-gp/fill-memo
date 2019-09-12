@@ -110,6 +110,11 @@ class AppLocalizations {
         name: 'actionRetry',
       );
 
+  String get actionSelectionAll => Intl.message(
+        'Selection All',
+        name: 'actionSelectionAll',
+      );
+
   String get actionSecretFolder => Intl.message(
         'Secret folder',
         name: 'actionSecretFolder',
@@ -245,6 +250,11 @@ class AppLocalizations {
         name: 'labelDefaultMemoType',
       );
 
+  String get labelDisconnect => Intl.message(
+        'Disconnect',
+        name: 'labelDisconnect',
+      );
+
   String get labelDisconnectAnother => Intl.message(
         'Disconnect another device',
         name: 'labelDisconnectAnother',
@@ -315,6 +325,11 @@ class AppLocalizations {
         name: 'labelServiceUnavailable',
       );
 
+  String get labelNoTitle => Intl.message(
+        'No Title',
+        name: 'labelNoTitle',
+      );
+
   String get labelUnnamed => Intl.message(
         'Unnamed',
         name: 'labelUnnamed',
@@ -343,6 +358,11 @@ class AppLocalizations {
   String get labelWaitHostResponse => Intl.message(
         'Waiting host response',
         name: 'labelWaitHostResponse',
+      );
+
+  String get labelWebConnectionRequest => Intl.message(
+        'Web requests connection',
+        name: 'labelWebConnectionRequest',
       );
 
   String get labelWriteNewNoteOnStartup => Intl.message(
@@ -442,7 +462,7 @@ class AppLocalizations {
       );
 
   String get titleResult => Intl.message(
-        'Result',
+        'Process result',
         name: 'titleResult',
       );
 
