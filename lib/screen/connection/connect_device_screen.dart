@@ -104,11 +104,9 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
                           borderRadius: BorderRadius.circular(24),
                         ),
                         color: themeData.accentColor,
-                        onPressed: _isServiceAvailable
-                            ? () {
-                                _requestAuth(true);
-                              }
-                            : null,
+                        onPressed: () {
+                          _requestAuth(true);
+                        },
                       ),
                     ),
                   ],

@@ -1,8 +1,11 @@
 export 'folder.dart';
+export 'local_auth.dart';
 export 'memo.dart';
 export 'memo_list_type.dart';
 export 'memo_sort.dart';
 export 'menu_item.dart';
 export 'preference.dart';
 export 'preferences.dart';
+export 'process_result.dart';
 export 'user.dart';
+export 'web_auth.dart';

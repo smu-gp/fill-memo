@@ -5,9 +5,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sp_client/model/local_auth.dart';
 import 'package:sp_client/model/web_auth.dart';
-import 'package:sp_client/repository/web/firebase/folder_repository.dart';
-import 'package:sp_client/repository/web/firebase/memo_repository.dart';
-import 'package:sp_client/repository/web/firebase/user_repository.dart';
 import 'package:sp_client/screen/init_screen.dart';
 import 'package:sp_client/screen/local_auth_screen.dart';
 import 'package:sp_client/screen/web/intro_screen.dart';
@@ -150,15 +147,10 @@ class _AppState extends State<App> {
   }
 
   void _initRepository() {
-    if (kIsWeb) {
-      _userRepository = FirebaseWebUserRepository();
-      _memoRepository = FirebaseWebMemoRepository();
-      _folderRepository = FirebaseWebFolderRepository();
-    } else {
-      _userRepository = FirebaseUserRepository();
-      _memoRepository = FirebaseMemoRepository();
-      _folderRepository = FirebaseFolderRepository();
-    }
+    initFirebase();
+    _userRepository = FirebaseUserRepository();
+    _memoRepository = FirebaseMemoRepository();
+    _folderRepository = FirebaseFolderRepository();
   }
 
   void _fetchSettings() {

@@ -2,7 +2,7 @@ import 'package:firebase/firebase.dart';
 import 'package:sp_client/model/folder.dart';
 import 'package:sp_client/repository/repository.dart';
 
-class FirebaseWebFolderRepository extends FolderRepository {
+class FirebaseFolderRepository extends FolderRepository {
   final folderCollection = firestore().collection(Folder.collectionName);
   String _userId;
 

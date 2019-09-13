@@ -1,12 +1,12 @@
 import 'package:firebase/firebase.dart' as fb;
 import 'package:sp_client/model/user.dart';
-import 'package:sp_client/repository/repositories.dart';
+import 'package:sp_client/repository/repository.dart';
 import 'package:sp_client/service/services.dart' as Service;
 
-class FirebaseWebUserRepository extends UserRepository {
+class FirebaseUserRepository extends UserRepository {
   final fb.Auth _firebaseAuth;
 
-  FirebaseWebUserRepository({fb.Auth firebaseAuth})
+  FirebaseUserRepository({fb.Auth firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? fb.auth();
 
   @override

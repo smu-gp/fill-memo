@@ -1,3 +1,1 @@
-export './grpc_service.dart';
-export './text_process_service.dart';
-export './token_service.dart';
+export 'app/service.dart' if (dart.library.html) 'web/service.dart';

@@ -1,8 +1,8 @@
-import 'package:sp_client/repository/repositories.dart';
+import 'package:sp_client/repository/repository.dart';
 import 'package:universal_html/html.dart';
 
-class LocalWebPreferenceRepository implements PreferenceRepository {
-  LocalWebPreferenceRepository();
+class LocalPreferenceRepository implements PreferenceRepository {
+  LocalPreferenceRepository([Object object]);
 
   @override
   bool getBool(String key) {

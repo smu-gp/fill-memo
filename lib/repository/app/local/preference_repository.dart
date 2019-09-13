@@ -1,10 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sp_client/repository/repositories.dart';
+import 'package:sp_client/repository/repository.dart';
 
 class LocalPreferenceRepository implements PreferenceRepository {
   final SharedPreferences _sharedPreferences;
 
-  LocalPreferenceRepository(this._sharedPreferences);
+  LocalPreferenceRepository([this._sharedPreferences]);
 
   @override
   bool getBool(String key) {

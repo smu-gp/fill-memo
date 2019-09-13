@@ -1,5 +1,2 @@
-export './firebase/folder_repository.dart';
-export './firebase/memo_repository.dart';
-export './firebase/user_repository.dart';
-export './local/preference_repository.dart';
+export 'app/repository.dart' if (dart.library.html) 'web/repository.dart';
 export 'repository.dart';

@@ -4,7 +4,7 @@ import 'package:firebase/firebase.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/repository/repository.dart';
 
-class FirebaseWebMemoRepository extends MemoRepository {
+class FirebaseMemoRepository extends MemoRepository {
   final memoCollection = firestore().collection(Memo.collectionName);
   String _userId;
 
