@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-09-05T16:32:16.677736",
+  "@@last_modified": "2019-09-12T14:01:02.664333",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -103,6 +103,11 @@
   },
   "actionRetry": "Retry",
   "@actionRetry": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionSelectionAll": "Selection All",
+  "@actionSelectionAll": {
     "type": "text",
     "placeholders": {}
   },
@@ -451,7 +456,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "titleResult": "Result",
+  "titleResult": "Process result",
   "@titleResult": {
     "type": "text",
     "placeholders": {}

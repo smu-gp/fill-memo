@@ -13,6 +13,7 @@ import 'package:sp_client/screen/memo_image_screen.dart';
 import 'package:sp_client/screen/memo_markdown_preview_screen.dart';
 import 'package:sp_client/screen/memo_markdown_screen.dart';
 import 'package:sp_client/screen/memo_screen.dart';
+import 'package:sp_client/screen/memo_screen_handwriting.dart';
 import 'package:sp_client/screen/memo_title_screen.dart';
 import 'package:sp_client/screen/settings/memo_type_screen.dart';
 import 'package:sp_client/screen/settings/settings_screen.dart';
@@ -20,6 +21,8 @@ import 'package:sp_client/service/protobuf/connection.pb.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/widget/select_folder_dialog.dart';
+
+import 'constants.dart';
 
 class Routes {
   PageRoute memoTitle(String memoType) {
@@ -31,7 +34,7 @@ class Routes {
     if (memo.type == typeRichText) {
       dest = MemoScreen(memo);
     } else if (memo.type == typeHandWriting) {
-      dest = null;
+      dest = MemoHandwritingScreen(memo);
     } else if (memo.type == typeMarkdown) {
       dest = MemoMarkdownScreen(memo);
     }

@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -5,6 +8,7 @@ import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/loading_progress.dart';
 
 class MemoGridTile extends StatelessWidget {
   final Memo memo;
@@ -25,17 +29,49 @@ class MemoGridTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget content;
+    Widget contentImage;
     if (memo.type == typeRichText) {
       var style = Theme.of(context).textTheme.body1;
       var list = SpannableList.fromJson(memo.contentStyle);
 
       content = RichText(
         text: list.toTextSpan(memo.content, defaultStyle: style),
-        maxLines: 7,
+        maxLines: 5,
         overflow: TextOverflow.ellipsis,
       );
+
+      if (memo.contentImages != null && memo.contentImages.isNotEmpty) {
+        contentImage = ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8.0),
+            topRight: Radius.circular(8.0),
+          ),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Hero(
+              tag: "image_${memo.id}_0",
+              child: Material(
+                child: CachedNetworkImage(
+                  imageUrl: memo.contentImages.first,
+                  fit: BoxFit.fill,
+                  placeholder: (context, _) => LoadingProgress(),
+                  errorWidget: (context, url, _) => Icon(Icons.error),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
     } else if (memo.type == typeHandWriting) {
-      content = null;
+      String imgPosLod = memo.content;
+      List<String> devide = imgPosLod.split("ㄱ");
+      Uint8List image = Uint8List.fromList(devide[0].codeUnits);
+      content = new Container(
+        child: ClipRRect(
+          child: Image.memory(image),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+      );
     } else if (memo.type == typeMarkdown) {
       content = Container(
           child: MarkdownBody(
@@ -56,8 +92,10 @@ class MemoGridTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         onLongPress: onLongPress,
-        child: Stack(
-          children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            if (contentImage != null) contentImage,
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(

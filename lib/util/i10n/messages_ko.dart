@@ -3,22 +3,21 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+// Ignore issues from commonly used lints in this file.
+// ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
+// ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
+// ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
+// ignore_for_file:unused_import, file_names
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
-// ignore: unnecessary_new
 final messages = new MessageLookup();
 
-// ignore: unused_element
-final _keepAnalysisHappy = Intl.defaultLocale;
-
-// ignore: non_constant_identifier_names
-typedef MessageIfAbsent(String message_str, List args);
+typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  get localeName => 'ko';
+  String get localeName => 'ko';
 
   static m0(displayName, modelName) => "${displayName}의 ${modelName}";
 
@@ -50,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("폴더 이름 변경"),
     "actionRetry" : MessageLookupByLibrary.simpleMessage("재시도"),
     "actionSecretFolder" : MessageLookupByLibrary.simpleMessage("비밀 폴더"),
+    "actionSelectionAll" : MessageLookupByLibrary.simpleMessage("전체 선택"),
     "actionSendImage" : MessageLookupByLibrary.simpleMessage("이미지 보내기"),
     "actionSettings" : MessageLookupByLibrary.simpleMessage("설정"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),
@@ -131,7 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "titleGuestConnection" : MessageLookupByLibrary.simpleMessage("다른 기기에 연결"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("기록"),
     "titleHostConnection" : MessageLookupByLibrary.simpleMessage("연결코드 생성"),
-    "titleResult" : MessageLookupByLibrary.simpleMessage("결과"),
+    "titleResult" : MessageLookupByLibrary.simpleMessage("처리 결과"),
     "validationServiceHost" : MessageLookupByLibrary.simpleMessage("오류: 서비스 호스트는 비워둘 수 없습니다"),
     "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("다른 기기에서 연결하기 전에 화면을 닫으면 연결 요청을 받을 수 없습니다.")
   };

@@ -114,3 +114,69 @@ class _SwitchListItemState extends State<SwitchListItem> {
     widget.onChanged(_value);
   }
 }
+
+class SelectableListItem extends StatefulWidget {
+  final String title;
+  final Widget icon;
+  final bool selectable;
+  final bool selected;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+  final ValueChanged<bool> onCheckboxChanged;
+  final VoidCallback onEditButtonPress;
+
+  SelectableListItem({
+    Key key,
+    @required this.title,
+    this.icon,
+    this.selectable = false,
+    this.selected = false,
+    @required this.onTap,
+    @required this.onLongPress,
+    @required this.onCheckboxChanged,
+    this.onEditButtonPress,
+  }) : super(key: key);
+
+  @override
+  _SelectableListItemState createState() => _SelectableListItemState();
+}
+
+class _SelectableListItemState extends State<SelectableListItem> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
+      child: Container(
+        height: 56.0,
+        padding:
+            EdgeInsets.symmetric(horizontal: widget.selectable ? 4.0 : 16.0),
+        child: Row(
+          children: <Widget>[
+            if (widget.selectable)
+              Checkbox(
+                value: widget.selected,
+                onChanged: widget.onCheckboxChanged,
+              ),
+            if (!widget.selectable && widget.icon != null) widget.icon,
+            SizedBox(width: widget.selectable ? 20.0 : 32.0),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.subhead.copyWith(
+                          fontSize: 16.0,
+                        ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
