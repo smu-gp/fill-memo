@@ -57,9 +57,9 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
   @override
   Widget build(BuildContext context) {
     if (Util.isLarge(context)) {
-      tabletUI(context);
+      return tabletUI(context);
     } else {
-      phoneUI(context);
+      return phoneUI(context);
     }
   }
 
@@ -527,7 +527,7 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
     var isChanged = memo.title != titleText || memo.content != contentText;
 
     memo.title = titleText.isNotEmpty ? titleText : null;
-    memo.content = contentText.isNotEmpty ? contentText : null;
+    memo.content = contentText.isNotEmpty ? contentText : "";
     memo.contentImages = _memoContentImages;
 
     if (isChanged) {

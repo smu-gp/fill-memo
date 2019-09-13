@@ -93,6 +93,7 @@ class MemoGridTile extends StatelessWidget {
         onTap: onTap,
         onLongPress: onLongPress,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             if (contentImage != null) contentImage,
             Padding(
