@@ -15,10 +15,19 @@ Future<List<ProcessResult>> sendImage({
 
   var response = await request.send();
   if (response.statusCode == 200) {
-    var body = await response.stream.toStringStream().single;
-    return (json.decode(body) as List)
-        .map((item) => ProcessResult.fromMap(item))
-        .toList();
+    var bodyStream = await response.stream.toStringStream();
+    var responseBody = "";
+    await for (var body in bodyStream) {
+      responseBody += body;
+    }
+
+    if (responseBody.isNotEmpty) {
+      return (json.decode(responseBody) as List)
+          .map((item) => ProcessResult.fromMap(item))
+          .toList();
+    } else {
+      return null;
+    }
   } else {
     return null;
   }
