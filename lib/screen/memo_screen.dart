@@ -143,7 +143,11 @@ class _MemoScreenState extends State<MemoScreen> {
   void _handleImageItemTapped(int index) async {
     await Navigator.push(
       context,
-      Routes().memoImage(contentImages: _memoContentImages, initIndex: index),
+      Routes().memoImage(
+        contentImages: _memoContentImages,
+        initIndex: index,
+        heroTagId: widget.memo.id,
+      ),
     );
     setState(() {});
   }
@@ -462,33 +466,37 @@ class _ContentImageList extends StatelessWidget {
       height: 240,
       child: AspectRatio(
         aspectRatio: 3 / 4,
-        child: (imageList.length > 1
-            ? ListView(
-                scrollDirection: Axis.horizontal,
-                itemExtent: 360,
-                children: imageList
-                    .asMap()
-                    .entries
-                    .map((entry) => Padding(
-                          padding: EdgeInsets.only(
-                              right: (entry.key != imageList.length - 1)
-                                  ? 4.0
-                                  : 0),
-                          child: Hero(
-                            tag: "image_${heroTagId}_${entry.key}",
-                            child: Material(
-                              child: _ContentImageItem(
-                                url: entry.value,
-                                onTap: () => onItemTap(entry.key),
-                              ),
-                            ),
-                          ),
-                        ))
-                    .toList())
-            : _ContentImageItem(
-                url: imageList.first,
-                onTap: () => onItemTap(0),
-              )),
+        child:
+            (imageList.length > 1 ? _buildList() : _buildItem(imageList[0], 0)),
+      ),
+    );
+  }
+
+  Widget _buildList() {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      itemExtent: 360,
+      children: imageList
+          .asMap()
+          .entries
+          .map((entry) => Padding(
+                padding: EdgeInsets.only(
+                  right: (entry.key != imageList.length - 1) ? 4.0 : 0,
+                ),
+                child: _buildItem(entry.value, entry.key),
+              ))
+          .toList(),
+    );
+  }
+
+  Widget _buildItem(String url, int index) {
+    return Hero(
+      tag: "image_${heroTagId}_$index",
+      child: Material(
+        child: _ContentImageItem(
+          url: url,
+          onTap: () => onItemTap(index),
+        ),
       ),
     );
   }

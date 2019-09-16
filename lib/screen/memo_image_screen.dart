@@ -5,11 +5,13 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 
 class MemoImageScreen extends StatefulWidget {
   final List<String> contentImages;
+  final String heroTagId;
   final int initIndex;
 
   MemoImageScreen({
     Key key,
     this.contentImages,
+    this.heroTagId,
     this.initIndex,
   }) : super(key: key);
 
@@ -62,9 +64,14 @@ class _MemoImageScreenState extends State<MemoImageScreen> {
         controller: _pageController,
         itemCount: _contentImages.length,
         itemBuilder: (BuildContext context, int index) {
-          return PlatformNetworkImage(
-            url: _contentImages[index],
-            placeholder: LoadingProgress(),
+          return Hero(
+            tag: "image_${widget.heroTagId}_$index",
+            child: Material(
+              child: PlatformNetworkImage(
+                url: _contentImages[index],
+                placeholder: LoadingProgress(),
+              ),
+            ),
           );
         },
         pageSnapping: true,

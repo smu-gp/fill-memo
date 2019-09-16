@@ -41,11 +41,16 @@ class Routes {
     return MaterialPageRoute(builder: (context) => dest);
   }
 
-  PageRoute memoImage({List<String> contentImages, int initIndex}) {
+  PageRoute memoImage({
+    List<String> contentImages,
+    int initIndex,
+    String heroTagId,
+  }) {
     return MaterialPageRoute(
       builder: (context) => MemoImageScreen(
         contentImages: contentImages,
         initIndex: initIndex,
+        heroTagId: heroTagId,
       ),
     );
   }
