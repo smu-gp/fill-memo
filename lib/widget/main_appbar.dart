@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -104,23 +105,20 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
     var memoListType = Provider.of<MemoListType>(context);
 
     return [
-      if (!AppConfig.runOnWeb)
-        Consumer<MemoListType>(builder: (context, listType, _) {
-          return IconButton(
-            icon: Icon(
-              listType.value == ListType.list
-                  ? Icons.dashboard
-                  : Icons.view_list,
-            ),
-            onPressed: () {
-              if (listType.value == ListType.grid) {
-                memoListType.value = ListType.list;
-              } else {
-                memoListType.value = ListType.grid;
-              }
-            },
-          );
-        }),
+      Consumer<MemoListType>(builder: (context, listType, _) {
+        return IconButton(
+          icon: Icon(
+            listType.value == ListType.list ? Icons.dashboard : Icons.view_list,
+          ),
+          onPressed: () {
+            if (listType.value == ListType.grid) {
+              memoListType.value = ListType.list;
+            } else {
+              memoListType.value = ListType.grid;
+            }
+          },
+        );
+      }),
       PopupMenuButton<NotesMenuItem>(
         onSelected: (NotesMenuItem selected) {
           if (selected == NotesMenuItem.actionEdit) {

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -87,7 +88,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             ChangeNotifierProvider<MemoListType>(
               builder: (_) => MemoListType(
-                AppConfig.runOnWeb ? ListType.list : ListType.grid,
+                kIsWeb ? ListType.list : ListType.grid,
               ),
             ),
           ],
@@ -137,7 +138,7 @@ class _MainScreenState extends State<MainScreen> {
             typeRichText;
 
     var destination;
-    if(quickFolderClassification) {
+    if (quickFolderClassification) {
       destination = Routes().memoTitle(defaultMemoType);
     } else {
       destination = Routes().memo(Memo.empty(defaultMemoType));

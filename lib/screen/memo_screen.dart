@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -16,6 +16,7 @@ import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/list_item.dart';
 import 'package:sp_client/widget/loading_progress.dart';
+import 'package:sp_client/widget/network_image.dart';
 import 'package:sp_client/widget/process_result.dart';
 import 'package:uuid/uuid.dart';
 
@@ -237,9 +238,10 @@ class _MemoScreenState extends State<MemoScreen> {
   }
 
   void _showProcessResults(
-    List<Service.ProcessResult> results,
+    List<ProcessResult> results,
     TextSelection selection,
   ) async {
+    // TODO Fix pixel overflow.
     var selectedItems = await showDialog(
         context: context,
         builder: (context) {
@@ -281,7 +283,7 @@ class _MemoScreenState extends State<MemoScreen> {
     if (selectedItems != null) {
       var processedText = "";
       selectedItems.forEach((result) {
-        processedText += (result as Service.ProcessResult).content;
+        processedText += (result as ProcessResult).content;
       });
 
       var text = _editContentTextController.text;
@@ -344,7 +346,7 @@ class _MemoScreenState extends State<MemoScreen> {
     }
   }
 
-  Future<List<Service.ProcessResult>> _uploadProcessingServer(
+  Future<List<ProcessResult>> _uploadProcessingServer(
     File imageFile,
   ) async {
     _showProgressDialog();
@@ -355,15 +357,16 @@ class _MemoScreenState extends State<MemoScreen> {
               defaultServiceHost;
 
       var results = await Service.sendImage(
-        imageFile: imageFile,
+        imagePath: imageFile.path,
         baseUrl: processingServiceUrl(host),
       );
 
       Navigator.pop(context); // Hide progress dialog
       return results;
-    } catch (e) {
+    } catch (e, stacktrace) {
       Navigator.pop(context); // Hide progress dialog
       await _showSendErrorDialog(e);
+      print(stacktrace);
       return null;
     }
   }
@@ -501,11 +504,10 @@ class _ContentImageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: CachedNetworkImage(
-        imageUrl: url,
+      child: PlatformNetworkImage(
+        url: url,
         fit: BoxFit.fitWidth,
-        placeholder: (context, url) => LoadingProgress(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
+        placeholder: LoadingProgress(),
       ),
     );
   }

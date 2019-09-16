@@ -13,7 +13,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _requestAuthenticate();
+//      _requestAuthenticate();
     });
   }
 
@@ -48,7 +48,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
                   color: themeData.colorScheme.onSurface.withOpacity(0.12),
                 ),
               ),
-              onPressed: () => _requestAuthenticate(),
+//              onPressed: () => _requestAuthenticate(),
             )
           ],
         ),
@@ -56,8 +56,8 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
     );
   }
 
-  Future _requestAuthenticate() async {
-    var localizations = AppLocalizations.of(context);
+//  Future _requestAuthenticate() async {
+//    var localizations = AppLocalizations.of(context);
 //    var messages = AndroidAuthMessages(
 //      fingerprintHint: localizations.androidFingerprintHint,
 //      fingerprintNotRecognized: localizations.androidFingerprintNotRecognized,
@@ -82,5 +82,5 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
 //        _authenticateFailed = true;
 //      });
 //    }
-  }
+//  }
 }

@@ -161,17 +161,11 @@ class _SelectableListItemState extends State<SelectableListItem> {
             if (!widget.selectable && widget.icon != null) widget.icon,
             SizedBox(width: widget.selectable ? 20.0 : 32.0),
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    widget.title,
-                    style: Theme.of(context).textTheme.subhead.copyWith(
-                          fontSize: 16.0,
-                        ),
-                  )
-                ],
+              child: Text(
+                widget.title,
+                style: Theme.of(context).textTheme.subhead.copyWith(
+                      fontSize: 16.0,
+                    ),
               ),
             ),
           ],

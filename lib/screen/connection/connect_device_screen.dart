@@ -1,4 +1,5 @@
 import 'package:device_info/device_info.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +33,7 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppConfig.runOnWeb ? _buildOnWeb() : _build();
+    return kIsWeb ? _buildOnWeb() : _build();
   }
 
   Widget _build() {
@@ -103,11 +104,9 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
                           borderRadius: BorderRadius.circular(24),
                         ),
                         color: themeData.accentColor,
-                        onPressed: _isServiceAvailable
-                            ? () {
-                                _requestAuth(true);
-                              }
-                            : null,
+                        onPressed: () {
+                          _requestAuth(true);
+                        },
                       ),
                     ),
                   ],

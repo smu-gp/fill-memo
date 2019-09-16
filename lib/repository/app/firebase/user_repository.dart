@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sp_client/model/user.dart';
-import 'package:sp_client/repository/repositories.dart';
+import 'package:sp_client/repository/repository.dart';
 import 'package:sp_client/service/services.dart' as Service;
 
 class FirebaseUserRepository extends UserRepository {

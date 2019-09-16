@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -8,6 +7,7 @@ import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
+import 'package:sp_client/widget/network_image.dart';
 
 import 'loading_progress.dart';
 
@@ -182,11 +182,10 @@ class _MemoContentImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1,
-      child: CachedNetworkImage(
-        imageUrl: url,
+      child: PlatformNetworkImage(
+        url: url,
         fit: BoxFit.fill,
-        placeholder: (context, url) => LoadingProgress(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
+        placeholder: LoadingProgress(),
       ),
     );
   }

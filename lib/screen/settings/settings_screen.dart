@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info/package_info.dart';
@@ -65,8 +66,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<Widget> _buildItems(Preferences preferences) {
     return <Widget>[
       ..._buildNoteItems(preferences),
-      if (!AppConfig.runOnWeb) ..._buildSecurityItems(preferences),
-      if (!bool.fromEnvironment('dart.vm.product'))
+      if (!kIsWeb) ..._buildSecurityItems(preferences),
+      if (!kIsWeb && bool.fromEnvironment("dart.vm.product"))
         ..._buildDebugItems(preferences),
       ..._buildInfoItems(preferences),
     ];
@@ -91,7 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
         },
       ),
-      if (!AppConfig.runOnWeb)
+      if (!kIsWeb)
         SwitchListItem(
           title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
           value: prefNewNoteOnStartup.value,
@@ -161,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (context, snapshot) {
-          var subtitle;
+          var subtitle = "v1.0";
           if (snapshot.hasData) {
             subtitle = "v${snapshot.data.version}";
           }

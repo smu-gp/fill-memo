@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/service/grpc_service.dart';
 import 'package:sp_client/service/protobuf/connection.pbgrpc.dart';
+import 'package:sp_client/service/services.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/utils.dart';
 import 'package:sp_client/widget/service_unavailable_label.dart';
@@ -45,7 +45,7 @@ class _GenerateCodeScreenState extends State<GenerateCodeScreen> {
     super.initState();
     _preferenceRepository =
         RepositoryProvider.of<PreferenceRepository>(context);
-    _client = GrpcService(host: host).connectionServiceClient;
+    _client = createConnectionClient(host: host);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _waitAuth();

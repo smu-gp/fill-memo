@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -56,7 +57,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     var providers = <SingleChildCloneableWidget>[
       Provider<AppConfig>.value(value: widget.config),
-      if (AppConfig.runOnWeb)
+      if (kIsWeb)
         ChangeNotifierProvider<WebAuthenticate>(
           builder: (context) => WebAuthenticate(),
         ),
@@ -90,7 +91,7 @@ class _AppState extends State<App> {
 
     var home = main;
 
-    if (AppConfig.runOnWeb) {
+    if (kIsWeb) {
       home = Consumer<WebAuthenticate>(
         builder: (context, authenticate, _) {
           if (authenticate.value) {
@@ -146,6 +147,7 @@ class _AppState extends State<App> {
   }
 
   void _initRepository() {
+    initFirebase();
     _userRepository = FirebaseUserRepository();
     _memoRepository = FirebaseMemoRepository();
     _folderRepository = FirebaseFolderRepository();
@@ -158,7 +160,7 @@ class _AppState extends State<App> {
     _initTheme =
         (darkMode ?? false) ? AppThemes.darkTheme : AppThemes.lightTheme;
 
-    if (!AppConfig.runOnWeb) {
+    if (!kIsWeb) {
       _userId = widget.preferenceRepository.getString(
         AppPreferences.keyUserId,
       );
@@ -181,7 +183,7 @@ class _AppState extends State<App> {
     _memoBloc = MemoBloc(memoRepository: _memoRepository);
     _folderBloc = FolderBloc(folderRepository: _folderRepository);
 
-    if (!AppConfig.runOnWeb) {
+    if (!kIsWeb) {
       _authBloc.dispatch(AppStarted(_userId));
     }
   }

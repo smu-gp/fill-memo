@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
 import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/service/grpc_service.dart';
 import 'package:sp_client/service/protobuf/connection.pb.dart';
 import 'package:sp_client/service/protobuf/connection.pbgrpc.dart';
+import 'package:sp_client/service/services.dart';
 import 'package:sp_client/util/constants.dart';
 import 'package:sp_client/util/localization.dart';
 import 'package:sp_client/util/utils.dart';
@@ -44,7 +44,7 @@ class _ConnectionAuthenticationScreenState
     super.initState();
     _preferenceRepository =
         RepositoryProvider.of<PreferenceRepository>(context);
-    _client = GrpcService(host: host).connectionServiceClient;
+    _client = createConnectionClient(host: host);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _requestAuth();

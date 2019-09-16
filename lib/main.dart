@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sp_client/app.dart';
@@ -8,19 +9,26 @@ import 'package:sp_client/repository/repositories.dart';
 import 'package:sp_client/util/config.dart';
 
 void main() async {
-  bool isProduction = bool.fromEnvironment('dart.vm.product');
-  if (!isProduction) {
-    Crashlytics.instance.enableInDevMode = true;
-    BlocSupervisor.delegate = SimpleBlocDelegate();
-  } else {
-    FlutterError.onError = Crashlytics.instance.recordFlutterError;
-  }
+  AppConfig appConfig;
+  PreferenceRepository preferenceRepository;
 
-  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    appConfig = AppConfig();
+    preferenceRepository = LocalPreferenceRepository();
+  } else {
+    bool isProduction = bool.fromEnvironment('dart.vm.product');
+    if (!isProduction) {
+      Crashlytics.instance.enableInDevMode = true;
+      BlocSupervisor.delegate = SimpleBlocDelegate();
+    } else {
+      FlutterError.onError = Crashlytics.instance.recordFlutterError;
+    }
+
+    WidgetsFlutterBinding.ensureInitialized();
 
 //  LocalAuthentication localAuth = LocalAuthentication();
 //  bool canCheckBiometrics = await localAuth.canCheckBiometrics;
-  bool useFingerprint = false;
+    bool useFingerprint = false;
 //  if (canCheckBiometrics) {
 //    List<BiometricType> availableBiometrics =
 //        await localAuth.getAvailableBiometrics();
@@ -29,11 +37,12 @@ void main() async {
 //    }
 //  }
 
-  final sharedPreferences = await SharedPreferences.getInstance();
+    final sharedPreferences = await SharedPreferences.getInstance();
+    appConfig = AppConfig(useFingerprint: useFingerprint);
+    preferenceRepository = LocalPreferenceRepository(sharedPreferences);
+  }
   runApp(App(
-    config: AppConfig(
-      useFingerprint: useFingerprint,
-    ),
-    preferenceRepository: LocalPreferenceRepository(sharedPreferences),
+    config: appConfig,
+    preferenceRepository: preferenceRepository,
   ));
 }

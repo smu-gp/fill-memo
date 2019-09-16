@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/util/config.dart';
 import 'package:sp_client/util/localization.dart';
 
 class InitScreen extends StatefulWidget {
@@ -25,7 +25,7 @@ class _InitScreenState extends State<InitScreen> {
     super.initState();
     _authBloc = BlocProvider.of<AuthBloc>(context);
     _loginBloc = BlocProvider.of<LoginBloc>(context);
-    if (!AppConfig.runOnWeb) {
+    if (!kIsWeb) {
       _loginBloc.dispatch(LoginSubmitted(widget.userId));
     }
   }
