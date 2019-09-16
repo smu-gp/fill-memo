@@ -108,7 +108,10 @@ class _MainScreenState extends State<MainScreen> {
     if (selectable) {
       _listBloc.dispatch(selected ? UnSelectItem(memo) : SelectItem(memo));
     } else {
-      Navigator.push(context, Routes().memo(memo));
+      if(memo.type == typeRichText)
+        Navigator.push(context, Routes().memo(memo));
+      else if(memo.type == typeMarkdown)
+        Navigator.push(context, Routes().markdownMemo(memo));
     }
   }
 
@@ -135,6 +138,7 @@ class _MainScreenState extends State<MainScreen> {
     var defaultMemoType =
         preferenceRepository.getString(AppPreferences.keyDefaultMemoType) ??
             typeRichText;
+
 
     var destination;
     if(quickFolderClassification) {

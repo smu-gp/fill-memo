@@ -54,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionSettings" : MessageLookupByLibrary.simpleMessage("설정"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("정렬"),
     "androidCancelButton" : MessageLookupByLibrary.simpleMessage("취소"),
+    "androidConfirmButton" : MessageLookupByLibrary.simpleMessage("확인"),
     "androidFingerprintHint" : MessageLookupByLibrary.simpleMessage("지문 센서에 손가락을 올려주세요"),
     "androidFingerprintNotRecognized" : MessageLookupByLibrary.simpleMessage("지문이 인식되지 않았습니다. 다시 시도하세요."),
     "androidFingerprintRequiredTitle" : MessageLookupByLibrary.simpleMessage("지문 필요"),

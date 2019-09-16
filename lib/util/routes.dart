@@ -120,10 +120,11 @@ class Routes {
     );
   }
 
-  PageRoute markdownPreviewMemo({String content}) {
+  PageRoute markdownPreviewMemo({String content, TextEditingController editingController}) {
     return MaterialPageRoute(
       builder: (context) => MemoMarkdownPreviewScreen(
         content: content,
+        editingController: editingController,
       ),
     );
   }

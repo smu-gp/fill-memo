@@ -135,6 +135,11 @@ class AppLocalizations {
         name: 'appName',
       );
 
+  String get confirm => Intl.message(
+    'confirm',
+    name: 'confirm',
+  );
+
   String get dialogConnectionWithDevice => Intl.message(
         'Connection with device?',
         name: 'dialogConnectionWithDevice',
@@ -499,6 +504,11 @@ class AppLocalizations {
   String get androidCancelButton => Intl.message(
         'Cancel',
         name: 'androidCancelButton',
+      );
+
+  String get androidConfirmButton => Intl.message(
+        'Confirm',
+        name: 'androidConfirmButton',
       );
 
   String get androidSignInTitle => Intl.message(

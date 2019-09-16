@@ -9,7 +9,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sp_client/model/models.dart';
 import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/widget/loading_progress.dart';
+import 'package:rich_text_editor/rich_text_editor.dart';
+import 'package:sp_client/service/services.dart' as Service;
+import 'package:sp_client/util/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
+
 import 'dart:io';
 
 class MemoMarkdownScreen extends StatefulWidget {
@@ -25,10 +31,9 @@ class MemoMarkdownScreen extends StatefulWidget {
 }
 
 class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
-  TextEditingController _editingContentController;
+  SpannableTextEditingController _editingContentController;
   TextEditingController _editingTitleController;
   String content = "";
-  bool _showProgress = false;
   double _progressValue = 0;
   MemoBloc _memoBloc;
 
@@ -38,7 +43,7 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
   @override
   void initState() {
     super.initState();
-    _editingContentController = TextEditingController(text: widget.memo.content ?? "");
+    _editingContentController = SpannableTextEditingController(text: widget.memo.content ?? " ");
     _editingTitleController = TextEditingController(text: widget.memo.title ?? "");
     _preferenceRepository =
         RepositoryProvider.of<PreferenceRepository>(context);
@@ -55,8 +60,20 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("markdown"),
+        title: Text(_editingTitleController.text),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.undo),
+            onPressed: () {
+              _undo();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.redo),
+            onPressed: () {
+              _redo();
+            },
+          ),
           IconButton(
             icon: Icon(Icons.content_copy),
             onPressed: () {
@@ -67,24 +84,21 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
       ),
       body: Column(
         children: <Widget>[
-          Visibility(
-            visible: _showProgress,
-            child: SizedBox(
-              child: LinearProgressIndicator(
-                backgroundColor: AppColors.accentColor.withOpacity(0.2),
-                value: _progressValue,
-              ),
-              height: 4,
-            ),
-          ),
-          Container(
+          /*Container(
             height: kToolbarHeight,
             padding: const EdgeInsets.only(left: 16.0),
             child: _TitleEditText(controller: _editingTitleController),
-          ),
+          ),*/
           Expanded(
             child: Markdown(
               data: _editingContentController.text,
+              /*styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                    a: Theme.of(context).textTheme.body1.
+                    copyWith(fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.bold),
+                    blockquote: Theme.of(context).textTheme.body1.
+                    copyWith(backgroundColor: Colors.transparent, fontSize: 22.0, color: Colors.black, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+              ),*/
+              onTapLink: (href) => launch(href),
             ),
             flex: 1,
           ),
@@ -130,9 +144,33 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
                         }
                     ),
                     IconButton(
+                      icon: Icon(Icons.keyboard_arrow_left),
+                      onPressed: () {
+                        _moveCursor(true);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.keyboard_arrow_right),
+                      onPressed: () {
+                        _moveCursor(false);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete_sweep),
+                      onPressed: () {
+                        _lineDelete();
+                      },
+                    ),
+                    IconButton(
                       icon: Icon(Icons.image),
                       onPressed: () {
                         _insertImageDialog();
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.keyboard),
+                      onPressed: () {
+                        //_showHelpKeyDialog();
                       },
                     ),
                     IconButton(
@@ -151,12 +189,6 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
                         icon: Icon(Icons.looks_3),
                         onPressed: () {
                           _prefixContent('### ');
-                        }
-                    ),
-                    IconButton(
-                        icon: Icon(Icons.format_strikethrough),
-                        onPressed: () {
-                          _wrapContent('~~');
                         }
                     ),
                     IconButton(
@@ -194,7 +226,13 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
                       onPressed: () {
                         _prefixContent('1. ');
                       },
-                    )
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.linear_scale),
+                        onPressed: () {
+                          _prefixContent('***');
+                        }
+                    ),
                   ],
                 ),
               ),
@@ -205,25 +243,85 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
     );
   }
 
+  void _moveCursor(bool direction) {
+    var text = _editingContentController.value.text;
+    var selection = _editingContentController.selection;
+
+    if(direction) {
+      if(selection.start == 0)
+        return;
+      else {
+        _editingContentController.value = _editingContentController.value.copyWith(
+            selection: TextSelection.collapsed(offset: selection.start - 1)
+        );
+      }
+    } else {
+      if(selection.start == text.length)
+        return;
+      else {
+        _editingContentController.value = _editingContentController.value.copyWith(
+            selection: TextSelection.collapsed(offset: selection.start + 1)
+        );
+      }
+    }
+  }
+
+  void _lineDelete() {
+    var text = _editingContentController.value.text;
+    var selection = _editingContentController.selection;
+
+    int lineStart = _findLineStart(selection.end, text);
+    int lineEnd = _findLineEnd(selection.end, text);
+
+    String before = selection.textBefore(text).substring(0, lineStart);
+    String after = text.substring(lineEnd, text.length);
+
+    _editingContentController.value = _editingContentController.value.copyWith(
+        text: before + after,
+        selection: TextSelection.collapsed(offset: lineStart)
+    );
+  }
+
+  void _undo() {
+    if(_editingContentController.canUndo()) {
+      _editingContentController.undo();
+    }
+  }
+
+  void _redo() {
+    if(_editingContentController.canRedo())
+      _editingContentController.redo();
+  }
+
   void _insertImageDialog() async{
     var selection = _editingContentController.selection;
     var text = _editingContentController.text;
     TextEditingController controller = TextEditingController();
-    var result = await showDialog(
+    _UrlResult result = await showDialog(
         context: context,
         builder: (_) => urlDialog(
           controller: controller,
           preferenceRepository: _preferenceRepository,
         )
     );
-    if(result != "") {
-      String before = selection.textBefore(text);
-      String inner = '![link]('+ result +')';
-      String after = '' + selection.textAfter(text);
-      _editingContentController.value = _editingContentController.value.copyWith(
-        text: before + inner + after,
-        selection: selection,
-      );
+    if(result.url != "") {
+      if(result.accessServer) {
+        String before = selection.textBefore(text);
+        String inner = result.url;
+        String after = selection.textAfter(text);
+        _editingContentController.value = _editingContentController.value.copyWith(
+          text: before + inner + after,
+          selection: selection,
+        );
+      } else {
+        String before = selection.textBefore(text);
+        String inner = '![link]('+ result.url +')';
+        String after = '' + selection.textAfter(text);
+        _editingContentController.value = _editingContentController.value.copyWith(
+          text: before + inner + after,
+          selection: selection,
+        );
+      }
     } else {
       _editingContentController.value = _editingContentController.value.copyWith(
         text: text,
@@ -235,7 +333,10 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
   Future _showPreviewScreen() async{
     await Navigator.push(
       context,
-      Routes().markdownPreviewMemo(content: content),
+      Routes().markdownPreviewMemo(
+          content: content,
+          editingController: _editingTitleController,
+      ),
     );
     setState(() {
     });
@@ -243,19 +344,6 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
 
   void _clear() {
     _editingContentController.clear();
-  }
-
-  Future _showImageSettingBottomSheet() async {
-    _AddImageSheetResult result = await showModalBottomSheet(
-        elevation: 1.0,
-        context: context,
-        builder: (context) => imageSettingBottomSheet(
-          controller: _editingContentController,
-        )
-    );
-    if(result != null && result.file != null) {
-      _addImage(result.file);
-    }
   }
 
   void _linkContent() {
@@ -288,7 +376,6 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
     _editingContentController.value = _editingContentController.value.copyWith(
         text: before + inner + after,
         selection: TextSelection.collapsed(offset: selection.start + content.length)
-        //selection: TextSelection(baseOffset: selection.start, extentOffset: selection.end + (content.length) * 2)
     );
   }
 
@@ -301,78 +388,55 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
     return i + 1;
   }
 
+  int _findLineEnd(int cursor, String text) {
+    int i = _findLineStart(cursor, text);
+    while(true) {
+      if(i == text.length)
+        break;
+      if(text[i] == '\n')
+        break;
+      i++;
+    }
+    return i;
+  }
+
   void _prefixContent(String content) {
     var text = _editingContentController.value.text;
     var selection = _editingContentController.selection;
 
-    int linestart = _findLineStart(selection.end, text);
+    int lineStart = _findLineStart(selection.start, text);
     String before = selection.textBefore(text);
+    String inner = selection.textInside(text);
     String after = selection.textAfter(text);
     String bf = " ";
-    print(text.length);
-    print(linestart);
-
-    if(text.substring(linestart, selection.end).startsWith(content)) {
-      print(linestart);
-      bf = before.substring(linestart, selection.start).replaceFirst(content, '');
-      if(linestart == 0)
+    if(text.substring(lineStart, selection.end).startsWith(content)) {
+      bf = before.substring(lineStart, selection.start).replaceFirst(content, '');
+      if(lineStart == 0)
         before = bf;
       else {
-        before = before.substring(0, linestart);
+        before = before.substring(0, lineStart);
         before += bf;
       }
       _editingContentController.value = _editingContentController.value.copyWith(
-          text: before + after,
+          text: before + inner + after,
           selection: TextSelection.collapsed(offset: before.length)
       );
     } else {
-      if(linestart == 0)
+      if(lineStart == 0)
         bf = content + before;
       else {
-        String st = before.substring(0, linestart);
-        String s = before.substring(linestart, selection.start);
+        String st = before.substring(0, lineStart);
+        String s = before.substring(lineStart, selection.start);
         bf = st + content + s;
       }
       before = bf;
       _editingContentController.value = _editingContentController.value.copyWith(
-          text: before + after,
+          text: before + inner + after,
           selection: TextSelection.collapsed(offset: selection.start + content.length)
       );
     }
-  }
 
-  Future _addImage(File file) async {
-    _uploadFirebaseStorage(file);
-  }
 
-  Future _uploadFirebaseStorage(File imageFile) async {
-    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
-    final uuid = Uuid().v1();
-    final ext = imageFile.path.split(".")[1];
-    final storage = FirebaseStorage.instance;
-    final storageRef = storage.ref().child(userId).child('$uuid.$ext');
-    final uploadTask = storageRef.putFile(imageFile);
-
-    setState(() {
-      _showProgress = true;
-    });
-
-    await for (final event in uploadTask.events) {
-      if (event.type == StorageTaskEventType.progress) {
-        setState(() {
-          _progressValue =
-              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
-          debugPrint(_progressValue.toString());
-        });
-      } else if (event.type == StorageTaskEventType.success) {
-        final downloadURL = await event.snapshot.ref.getDownloadURL();
-        _memoContentImages.add(downloadURL);
-        setState(() {
-          _progressValue = 0;
-          _showProgress = false;
-        });
-      }
-    }
   }
 
   void _updateMarkdownMemo() {
@@ -436,23 +500,35 @@ class _urlDialogState extends State<urlDialog> {
   TextEditingController _controller;
   PreferenceRepository _preferenceRepository;
   double _progressValue = 0;
+  bool _enableTextRecognition = false;
+  bool _accessFirebase;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller;
     _preferenceRepository = widget.preferenceRepository;
+    _accessFirebase = false;
   }
 
   @override
   Widget build(BuildContext context) {
      return AlertDialog(
-      contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
+      contentPadding: EdgeInsets.only(left: 1.0, right: 1.0),
       title: Text('Input URL'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          SwitchListItem(
+            title: AppLocalizations.of(context).actionAddTextFromImage,
+            value: _enableTextRecognition,
+            onChanged: (bool value) {
+              setState(() {
+                _enableTextRecognition = value;
+              });
+            },
+          ),
           TextField(
             enableInteractiveSelection: true,
             controller: _controller,
@@ -465,13 +541,24 @@ class _urlDialogState extends State<urlDialog> {
               Icons.folder,
               color: Colors.deepOrangeAccent,
             ),
-            title: 'Browse local repository',
+            title: AppLocalizations.of(context).imageFromGallery,
               onTap: () async{
                 var file = await _handleMenuTapped(ImageSource.gallery);
                 if(file != null) {
-                  var imageUrl = await _uploadFirebaseStorage(file);
-
-                  _controller.text = imageUrl;
+                  if(_enableTextRecognition) {
+                    var result = await _uploadProcessingServer(file);
+                    Navigator.pop(context, _UrlResult(
+                      url: result,
+                      accessServer: true,
+                    ));
+                  } else {
+                    var imageUrl = await _uploadFirebaseStorage(file);
+                    _accessFirebase = true;
+                    _controller.text = imageUrl;
+                  }
+                } else {
+                  Navigator.pop(context);
+                  _showSendErrorDialog();
                 }
               }
           ),
@@ -480,13 +567,24 @@ class _urlDialogState extends State<urlDialog> {
               Icons.photo_camera,
               color: Colors.deepOrangeAccent,
             ),
-            title: 'Camera',
+            title: AppLocalizations.of(context).imageFromCamera,
               onTap: () async{
                 var file = await _handleMenuTapped(ImageSource.camera);
                 if(file != null) {
-                  var imageUrl = await _uploadFirebaseStorage(file);
-
-                  _controller.text = imageUrl;
+                  if(_enableTextRecognition) {
+                    var result = await _uploadProcessingServer(file);
+                    Navigator.pop(context, _UrlResult(
+                      url: result,
+                      accessServer: true,
+                    ));
+                  } else {
+                    var imageUrl = await _uploadFirebaseStorage(file);
+                    _accessFirebase = true;
+                    _controller.text = imageUrl;
+                  }
+                } else {
+                  Navigator.pop(context);
+                  _showSendErrorDialog();
                 }
               }
           )
@@ -494,20 +592,62 @@ class _urlDialogState extends State<urlDialog> {
       ),
       actions: [
         FlatButton(
-          child: Text('CANCEL'),
+          child: Text(AppLocalizations.of(context).androidCancelButton),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         FlatButton(
-          child: Text('SUBMIT'),
-          onPressed: () {
-
-            Navigator.pop(context, _controller.text);
+          child: Text(AppLocalizations.of(context).androidConfirmButton),
+          onPressed: () async{
+            if(_controller.text.isNotEmpty &&
+                (_controller.text.startsWith('http://') || _controller.text.startsWith('https://'))) {
+              if(!_accessFirebase) {
+                String url = _controller.text;
+                var file = await _downloadFile(url, url.split('/')[2]);
+                if(file != null) {
+                  if(_enableTextRecognition) { // access server
+                    _controller.text = await _uploadProcessingServer(file);
+                    Navigator.pop(context, _UrlResult(
+                      url: _controller.text,
+                      accessServer: true,
+                    ));
+                  } else { // not access firebase
+                    _controller.text = await _uploadFirebaseStorage(file);
+                    Navigator.pop(context, _UrlResult(
+                      url: _controller.text,
+                      accessServer: false,
+                    ));
+                  }
+                } else {
+                  Navigator.pop(context);
+                  _showSendErrorDialog();
+                }
+              } else { // already access firebase
+                Navigator.pop(context, _UrlResult(
+                  url: _controller.text,
+                  accessServer: false,
+                ));
+              }
+            } else { // not https or http
+              Navigator.pop(context);
+              _showSendErrorDialog();
+            }
           },
         ),
       ],
     );
+  }
+
+  static var httpClient = new HttpClient();
+  Future<File> _downloadFile(String url, String filename) async {
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+    var bytes = await consolidateHttpClientResponseBytes(response);
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$dir/$filename');
+    await file.writeAsBytes(bytes);
+    return file;
   }
 
   Future _handleMenuTapped(ImageSource source) async {
@@ -515,7 +655,144 @@ class _urlDialogState extends State<urlDialog> {
     return file;
   }
 
+  Future _showProgressDialog() async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          content: Row(
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(
+                width: 24.0,
+              ),
+              Text(AppLocalizations.of(context).dialogSendImage)
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showSendErrorDialog([Object e]) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Error occurred'),
+          content: Text(e != null ? e.toString() : 'No results from service'),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(AppLocalizations.of(context).androidConfirmButton),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future _uploadProcessingServer(File imageFile) async {
+    _showProgressDialog();
+
+    try {
+      var host =
+          _preferenceRepository.getString(AppPreferences.keyServiceHost) ??
+              defaultServiceHost;
+
+      var results = await Service.sendImage(
+        imageFile: imageFile,
+        baseUrl: processingServiceUrl(host),
+      );
+
+      Navigator.pop(context); // Hide progress dialog
+      var str =  showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(AppLocalizations.of(context).titleResult),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 16.0,
+                horizontal: 8.0,
+              ),
+              content: Container(
+                width: 300,
+                height: 400,
+                child: Scrollbar(
+                    child: ListView(
+                      scrollDirection: Axis.vertical,
+                      children: results
+                          .map((result) => ListItem(
+                        /*leading: Checkbox(
+                            value: result.isChecked,
+                            onChanged: (bool value) {
+                              setState(() {
+                                result.isChecked = value;
+                              });
+                            }
+                        ),*/
+                        title: result.content.split(" ")[0],
+                        onTap: () {
+                          Navigator.pop(context, result.content);
+                        },
+                        /*trailing: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            IconButton(
+                              iconSize: 15.0,
+                              icon: Icon(Icons.format_bold,),
+                              onPressed: () {
+                                setState(() {
+
+                                });
+                              },
+                            ),
+                            IconButton(
+                              iconSize: 15.0,
+                              icon: Icon(Icons.format_italic,),
+                              onPressed: () {
+                                setState(() {
+                                });
+                              },
+                            )
+                          ],
+                        )*/
+                      )).toList(),
+                      /*children: results
+                          .map((result) => ListItem(
+
+                        title: result.content,
+                        onTap: () {},
+                      ))
+                          .toList(),*/
+                    ),
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(AppLocalizations.of(context).androidCancelButton),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          });
+      return str;
+    } catch (e) {
+      Navigator.pop(context); // Hide progress dialog
+      _showSendErrorDialog(e);
+    }
+  }
+
   Future _uploadFirebaseStorage(File imageFile) async {
+    _showProgressDialog();
+
     final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
     final uuid = Uuid().v1();
     final ext = imageFile.path.split(".")[1];
@@ -525,7 +802,6 @@ class _urlDialogState extends State<urlDialog> {
 
     await for (final event in uploadTask.events) {
       if (event.type == StorageTaskEventType.progress) {
-        print("progerss");
         if(mounted) {
           setState(() {
             _progressValue =
@@ -534,11 +810,12 @@ class _urlDialogState extends State<urlDialog> {
           });
         }
       } else if (event.type == StorageTaskEventType.success) {
-        print("succe");
         final downloadURL = await event.snapshot.ref.getDownloadURL();
+        Navigator.pop(context);
         return downloadURL;
       }
     }
+    //Navigator.pop(context);
   }
   @override
   void dispose() {
@@ -576,91 +853,14 @@ class _TitleEditText extends StatelessWidget {
   }
 }
 
-class imageSettingBottomSheet extends StatefulWidget {
-  final TextEditingController controller;
-  
-  imageSettingBottomSheet({
-    Key key,
-    this.controller,
-  }) : super(key : key);
+class _UrlResult {
+  final String url;
+  final bool accessServer;
 
-  @override
-  _imageSettingBottomSheetState createState() => _imageSettingBottomSheetState();
-}
-
-class _imageSettingBottomSheetState extends State<imageSettingBottomSheet> {
-  TextEditingController _urlController;
-  TextEditingController _editingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _editingController = widget.controller;
-    _urlController = TextEditingController();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container (
-      child: Wrap(
-        children: <Widget>[
-          ListItem(
-              leading: Icon(
-                  Icons.link,
-                  color: Colors.deepOrangeAccent,
-              ),
-              title: 'Browse URL',
-              onTap: () => _urlContent(),
-          ),
-          ListItem(
-            leading: Icon(
-                Icons.folder,
-                color: Colors.deepOrangeAccent,
-            ),
-            title: 'Browse local repository',
-            onTap: () => _handleMenuTapped(ImageSource.gallery),
-
-          ),
-          ListItem(
-            leading: Icon(
-                Icons.photo_camera,
-                color: Colors.deepOrangeAccent,
-            ),
-            title: 'Camera',
-            onTap: () => _handleMenuTapped(ImageSource.camera),
-          )
-        ],
-      ),
-    );
-  }
-
-  Future _urlContent() async {
-    await showDialog(
-        context: context,
-        builder: (_) => urlDialog(
-            controller: _urlController
-        )
-    );
-  }
-
-  Future _handleMenuTapped(ImageSource source) async {
-    var file = await ImagePicker.pickImage(source: source);
-    Navigator.pop(
-      context,
-      _AddImageSheetResult(
-        file: file,
-      ),
-    );
-  }
-}
-
-class _AddImageSheetResult {
-  final File file;
-
-  _AddImageSheetResult({this.file});
+  _UrlResult({this.url, this.accessServer});
 
   @override
   String toString() {
-    return '$runtimeType(file: $file)';
+    return '$runtimeType(url: $url, accessServer: $accessServer)';
   }
 }
