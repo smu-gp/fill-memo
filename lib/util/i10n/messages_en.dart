@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "androidFingerprintSuccess" : MessageLookupByLibrary.simpleMessage("Fingerprint recognized."),
     "androidGoToSettingsDescription" : MessageLookupByLibrary.simpleMessage("Fingerprint is not set up on your device. Go to \'Settings > Security\' to add your fingerprint."),
     "androidSignInTitle" : MessageLookupByLibrary.simpleMessage("Fingerprint Authentication"),
-    "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "appName" : MessageLookupByLibrary.simpleMessage("Fill Memo"),
     "authenticatedReason" : MessageLookupByLibrary.simpleMessage("Please authenticate to use app"),
     "deviceName" : m0,
     "dialogConnectionWithDevice" : MessageLookupByLibrary.simpleMessage("Connection with device?"),

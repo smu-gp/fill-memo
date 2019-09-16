@@ -1,4 +1,4 @@
-package com.smugp.spclient
+package com.smugp.fillmemo
 
 import android.os.Bundle
 import io.flutter.app.FlutterFragmentActivity

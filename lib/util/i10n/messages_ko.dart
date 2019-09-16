@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "androidFingerprintSuccess" : MessageLookupByLibrary.simpleMessage("지문이 인식되었습니다."),
     "androidGoToSettingsDescription" : MessageLookupByLibrary.simpleMessage("기기에 지문이 설정되어 있지 않습니다. 지문을 추가하려면 \'설정 > 보안\'으로 이동하십시오."),
     "androidSignInTitle" : MessageLookupByLibrary.simpleMessage("지문 확인"),
-    "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "appName" : MessageLookupByLibrary.simpleMessage("Fill 메모"),
     "authenticatedReason" : MessageLookupByLibrary.simpleMessage("앱을 사용하기 위해 인증이 필요합니다"),
     "deviceName" : m0,
     "dialogConnectionWithDevice" : MessageLookupByLibrary.simpleMessage("이 기기와 연결할까요?"),

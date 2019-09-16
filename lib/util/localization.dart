@@ -136,7 +136,7 @@ class AppLocalizations {
       );
 
   String get appName => Intl.message(
-        'sp_client',
+        'Fill Memo',
         name: 'appName',
       );
 
