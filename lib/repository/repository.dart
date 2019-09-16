@@ -1,4 +1,4 @@
-import 'package:sp_client/model/models.dart';
+import 'package:fill_memo/model/models.dart';
 
 abstract class MemoRepository {
   Future<void> addNewMemo(Memo memo);

@@ -1,13 +1,13 @@
+import 'package:fill_memo/model/local_auth.dart';
+import 'package:fill_memo/model/web_auth.dart';
+import 'package:fill_memo/screen/init_screen.dart';
+import 'package:fill_memo/screen/local_auth_screen.dart';
+import 'package:fill_memo/screen/web/intro_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:sp_client/model/local_auth.dart';
-import 'package:sp_client/model/web_auth.dart';
-import 'package:sp_client/screen/init_screen.dart';
-import 'package:sp_client/screen/local_auth_screen.dart';
-import 'package:sp_client/screen/web/intro_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import 'bloc/blocs.dart';

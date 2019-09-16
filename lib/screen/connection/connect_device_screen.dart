@@ -1,15 +1,15 @@
 import 'package:device_info/device_info.dart';
+import 'package:fill_memo/bloc/auth/auth_bloc.dart';
+import 'package:fill_memo/bloc/auth/auth_state.dart';
+import 'package:fill_memo/model/web_auth.dart';
+import 'package:fill_memo/service/protobuf/connection.pbgrpc.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/service_unavailable_label.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:sp_client/bloc/auth/auth_bloc.dart';
-import 'package:sp_client/bloc/auth/auth_state.dart';
-import 'package:sp_client/model/web_auth.dart';
-import 'package:sp_client/service/protobuf/connection.pbgrpc.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/service_unavailable_label.dart';
 
 class ConnectDeviceScreen extends StatefulWidget {
   @override

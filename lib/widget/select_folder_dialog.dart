@@ -1,6 +1,6 @@
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/folder_list.dart';
 import 'package:flutter/material.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/folder_list.dart';
 
 class SelectFolderDialog extends StatelessWidget {
   @override

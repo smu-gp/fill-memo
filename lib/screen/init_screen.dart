@@ -1,8 +1,8 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/util/localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/util/localization.dart';
 
 class InitScreen extends StatefulWidget {
   final String userId;

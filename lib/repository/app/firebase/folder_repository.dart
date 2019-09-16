@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sp_client/model/folder.dart';
-import 'package:sp_client/repository/repository.dart';
+import 'package:fill_memo/model/folder.dart';
+import 'package:fill_memo/repository/repository.dart';
 
 class FirebaseFolderRepository extends FolderRepository {
   final folderCollection = Firestore.instance.collection(Folder.collectionName);

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:fill_memo/model/process_result.dart';
 import 'package:http/http.dart' as http;
-import 'package:sp_client/model/process_result.dart';
 
 Future<List<ProcessResult>> sendImage({
   String baseUrl,
@@ -15,7 +15,7 @@ Future<List<ProcessResult>> sendImage({
 
   var response = await request.send();
   if (response.statusCode == 200) {
-    var bodyStream = await response.stream.toStringStream();
+    var bodyStream = response.stream.toStringStream();
     var responseBody = "";
     await for (var body in bodyStream) {
       responseBody += body;

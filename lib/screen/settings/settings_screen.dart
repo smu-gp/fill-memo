@@ -1,16 +1,16 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/edit_text_dialog.dart';
+import 'package:fill_memo/widget/list_item.dart';
+import 'package:fill_memo/widget/sub_header.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/constants.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/edit_text_dialog.dart';
-import 'package:sp_client/widget/list_item.dart';
-import 'package:sp_client/widget/sub_header.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override

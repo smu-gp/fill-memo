@@ -1,14 +1,14 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/model/web_auth.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/loading_progress.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/model/web_auth.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/loading_progress.dart';
 
 import 'edit_text_dialog.dart';
 

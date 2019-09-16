@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:fill_memo/util/i10n/messages_all.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sp_client/util/i10n/messages_all.dart';
 
 class AppLocalizations {
   String get actionAccept => Intl.message(

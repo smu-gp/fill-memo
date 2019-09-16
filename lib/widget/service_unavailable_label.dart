@@ -1,5 +1,5 @@
+import 'package:fill_memo/util/localization.dart';
 import 'package:flutter/material.dart';
-import 'package:sp_client/util/localization.dart';
 
 class ServiceUnavailableLabel extends StatelessWidget {
   @override

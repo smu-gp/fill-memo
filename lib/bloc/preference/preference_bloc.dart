@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:fill_memo/model/preference.dart';
+import 'package:fill_memo/model/preferences.dart';
+import 'package:fill_memo/repository/repositories.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/model/preference.dart';
-import 'package:sp_client/model/preferences.dart';
-import 'package:sp_client/repository/repositories.dart';
 
 import './preference_event.dart';
 import './preference_state.dart';

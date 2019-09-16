@@ -1,4 +1,4 @@
-import 'package:sp_client/repository/repository.dart';
+import 'package:fill_memo/repository/repository.dart';
 import 'package:universal_html/html.dart';
 
 class LocalPreferenceRepository implements PreferenceRepository {

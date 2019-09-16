@@ -1,10 +1,8 @@
-
 import 'dart:math';
 
+import 'package:fill_memo/widget/painter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:sp_client/widget/painter.dart';
-import 'dart:developer' as de;
 
 class CustomPanGestureRecognizer extends PanGestureRecognizer {
   final Function onPanStart;
@@ -13,13 +11,13 @@ class CustomPanGestureRecognizer extends PanGestureRecognizer {
   final BuildContext context;
   final PainterController controller;
   Offset _before;
-  CustomPanGestureRecognizer(
-      {@required this.onPanStart,
-        @required this.onPanUpdate,
-        @required this.onPanEnd,
-        @required this.context,
-        @required this.controller,
-      });
+  CustomPanGestureRecognizer({
+    @required this.onPanStart,
+    @required this.onPanUpdate,
+    @required this.onPanEnd,
+    @required this.context,
+    @required this.controller,
+  });
 
   static bool isLarge(BuildContext context) {
     assert(context != null);
@@ -29,46 +27,36 @@ class CustomPanGestureRecognizer extends PanGestureRecognizer {
 
   @override
   void addPointer(PointerEvent event) {
-    int p=0;
-    if(isLarge(context)){
-      if(!controller.penOrfinger){
-        if(event.kind == PointerDeviceKind.stylus){
+    int p = 0;
+    if (isLarge(context)) {
+      if (!controller.penOrfinger) {
+        if (event.kind == PointerDeviceKind.stylus) {
           startTrackingPointer(event.pointer);
           resolve(GestureDisposition.accepted);
+        } else {
+          stopTrackingPointer(event.pointer);
         }
-        else{
+      } else {
+        if (event.kind == PointerDeviceKind.touch) {
+          startTrackingPointer(event.pointer);
+          resolve(GestureDisposition.accepted);
+        } else {
           stopTrackingPointer(event.pointer);
         }
       }
-      else{
-        if(event.kind == PointerDeviceKind.touch){
-          startTrackingPointer(event.pointer);
-          resolve(GestureDisposition.accepted);
-        }
-        else{
-          stopTrackingPointer(event.pointer);
-        }
-      }
-    }
-    else{
+    } else {
       startTrackingPointer(event.pointer);
       resolve(GestureDisposition.accepted);
     }
   }
 
-
   @override
   void handleEvent(PointerEvent event) {
-
     if (event is PointerDownEvent) {
       onPanStart(new DragStartDetails(globalPosition: event.position));
-
-    }
-    else if (event is PointerMoveEvent){
+    } else if (event is PointerMoveEvent) {
       onPanUpdate(new DragUpdateDetails(globalPosition: event.position));
-
-    }
-    else if(event is PointerUpEvent){
+    } else if (event is PointerUpEvent) {
       onPanEnd(new DragEndDetails());
     }
   }

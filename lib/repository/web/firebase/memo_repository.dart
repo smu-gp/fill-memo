@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/repository/repository.dart';
 import 'package:firebase/firebase.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/repository/repository.dart';
 
 class FirebaseMemoRepository extends MemoRepository {
   final memoCollection = firestore().collection(Memo.collectionName);

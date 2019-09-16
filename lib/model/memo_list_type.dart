@@ -1,4 +1,4 @@
-import 'package:sp_client/util/util.dart';
+import 'package:fill_memo/util/util.dart';
 
 enum ListType { grid, list }
 

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/constants.dart';
 import 'package:meta/meta.dart';
 import 'package:rich_text_editor/rich_text_editor.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/constants.dart';
 
 import 'memo_event.dart';
 import 'memo_state.dart';

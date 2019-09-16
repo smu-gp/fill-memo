@@ -1,15 +1,15 @@
 import 'dart:async';
 
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/service/protobuf/connection.pb.dart';
+import 'package:fill_memo/service/protobuf/connection.pbgrpc.dart';
+import 'package:fill_memo/service/services.dart';
+import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/service/protobuf/connection.pb.dart';
-import 'package:sp_client/service/protobuf/connection.pbgrpc.dart';
-import 'package:sp_client/service/services.dart';
-import 'package:sp_client/util/constants.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/util/utils.dart';
 
 class ConnectionAuthenticationScreen extends StatefulWidget {
   final AuthRequest authRequest;
@@ -84,7 +84,13 @@ class _ConnectionAuthenticationScreenState
     );
   }
 
-  void _requestAuth() async {
+  @override
+  void dispose() {
+    _authResController.close();
+    super.dispose();
+  }
+
+  Future _requestAuth() async {
     try {
       var response = await _client.auth(widget.authRequest);
       _authResController.sink.add(response);

@@ -1,5 +1,5 @@
+import 'package:fill_memo/screen/connection/connect_device_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:sp_client/screen/connection/connect_device_screen.dart';
 
 class WebIntroScreen extends StatefulWidget {
   @override

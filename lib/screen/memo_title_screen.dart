@@ -1,12 +1,10 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/util/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/util/utils.dart';
-
-import '../util/constants.dart';
 
 class MemoTitleScreen extends StatefulWidget {
   final String memoType;
@@ -117,7 +115,6 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
       ..folderId = _currentFolder?.id ?? Folder.defaultId;
 
     Navigator.pushReplacement(context, Routes().memo(newMemo));
-
   }
 }
 

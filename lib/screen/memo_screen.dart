@@ -1,5 +1,16 @@
 import 'dart:io';
 
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/service/services.dart' as Service;
+import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/list_item.dart';
+import 'package:fill_memo/widget/loading_progress.dart';
+import 'package:fill_memo/widget/network_image.dart';
+import 'package:fill_memo/widget/process_result.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -7,17 +18,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:rich_text_editor/rich_text_editor.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/service/services.dart' as Service;
-import 'package:sp_client/util/constants.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/list_item.dart';
-import 'package:sp_client/widget/loading_progress.dart';
-import 'package:sp_client/widget/network_image.dart';
-import 'package:sp_client/widget/process_result.dart';
 import 'package:uuid/uuid.dart';
 
 typedef ImageListCallback = void Function(int);
@@ -217,8 +217,8 @@ class _MemoScreenState extends State<MemoScreen> {
     );
   }
 
-  void _showSendErrorDialog([Object e]) {
-    showDialog(
+  Future _showSendErrorDialog([Object e]) {
+    return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(

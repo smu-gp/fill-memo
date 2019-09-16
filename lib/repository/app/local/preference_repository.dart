@@ -1,5 +1,5 @@
+import 'package:fill_memo/repository/repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sp_client/repository/repository.dart';
 
 class LocalPreferenceRepository implements PreferenceRepository {
   final SharedPreferences _sharedPreferences;

@@ -1,5 +1,5 @@
+import 'package:fill_memo/service/protobuf/connection.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
-import 'package:sp_client/service/protobuf/connection.pbgrpc.dart';
 
 ConnectionServiceClient createConnectionClient({String host}) {
   var channel = ClientChannel(

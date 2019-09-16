@@ -1,7 +1,7 @@
+import 'package:fill_memo/widget/loading_progress.dart';
+import 'package:fill_memo/widget/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:sp_client/widget/loading_progress.dart';
-import 'package:sp_client/widget/network_image.dart';
 
 class MemoImageScreen extends StatefulWidget {
   final List<String> contentImages;

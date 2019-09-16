@@ -1,7 +1,7 @@
+import 'package:fill_memo/model/user.dart';
+import 'package:fill_memo/repository/repository.dart';
+import 'package:fill_memo/service/services.dart' as Service;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sp_client/model/user.dart';
-import 'package:sp_client/repository/repository.dart';
-import 'package:sp_client/service/services.dart' as Service;
 
 class FirebaseUserRepository extends UserRepository {
   final FirebaseAuth _firebaseAuth;

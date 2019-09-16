@@ -1,15 +1,15 @@
 import 'dart:async';
 
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/service/protobuf/connection.pbgrpc.dart';
+import 'package:fill_memo/service/services.dart';
+import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/service_unavailable_label.dart';
+import 'package:fill_memo/widget/timer_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/service/protobuf/connection.pbgrpc.dart';
-import 'package:sp_client/service/services.dart';
-import 'package:sp_client/util/constants.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/service_unavailable_label.dart';
-import 'package:sp_client/widget/timer_text.dart';
 
 class GenerateCodeScreen extends StatefulWidget {
   @override

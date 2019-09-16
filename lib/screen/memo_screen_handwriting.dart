@@ -1,37 +1,31 @@
 import 'dart:async';
-import 'dart:developer' as de;
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/list_item.dart';
+import 'package:fill_memo/widget/painter.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/service/services.dart' as Service;
 import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission/permission.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/constants.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/painter.dart';
-
-import 'package:sp_client/widget/list_item.dart';
-import 'package:flutter/src/widgets/basic.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
-import 'dart:ui' as ui;
-
 final _slider = PublishSubject<double>();
 Observable<double> get sliderStream => _slider.stream;
-
-
 
 class MemoHandwritingScreen extends StatefulWidget {
   final Memo memo;
@@ -57,12 +51,11 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
   double _progressValue = 0;
   List<String> _memoContentImages;
 
-  bool onPicture=false;
+  bool onPicture = false;
   IconData swc;
   GlobalKey outCapture = new GlobalKey();
 
-  int _curInx=0;
-
+  int _curInx = 0;
 
   @override
   void initState() {
@@ -74,23 +67,22 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     _preferenceRepository =
         RepositoryProvider.of<PreferenceRepository>(context);
     _memoContentImages = []..addAll(widget.memo.contentImages ?? []);
-    _controller=_newController();
+    _controller = _newController();
   }
 
-  PainterController getControllor(Memo memo,PainterController controller){
-
+  PainterController getControllor(Memo memo, PainterController controller) {
     List<String> con = memo.content.split("ㄱ");
     String saved = con[1];
     List<String> pa = saved.split("ㄴ");
-    controller.backgroundColor=Colors.white;
-    for(int i=1; i< pa.length; i++){
+    controller.backgroundColor = Colors.white;
+    for (int i = 1; i < pa.length; i++) {
       Paint currentPaint = new Paint();
-      currentPaint.style=PaintingStyle.stroke;
-      currentPaint.strokeCap=StrokeCap.round;
+      currentPaint.style = PaintingStyle.stroke;
+      currentPaint.strokeCap = StrokeCap.round;
 
-      List<String> pxyp= pa[i].split("ㅍ");
+      List<String> pxyp = pa[i].split("ㅍ");
 
-      List<String> xy =  pxyp[0].split("/");
+      List<String> xy = pxyp[0].split("/");
 
       List<String> paint = pxyp[1].split(";");
 
@@ -99,69 +91,72 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       color = color.replaceAll('0x', '');
 
       String th = paint[2].replaceAll('strokeWidth', '');
-      currentPaint.strokeWidth=double.parse(th);
-      currentPaint.color= new Color(int.parse(color, radix:16));
+      currentPaint.strokeWidth = double.parse(th);
+      currentPaint.color = new Color(int.parse(color, radix: 16));
       Path conp = new Path();
       conp.moveTo(double.parse(xy[1]), double.parse(xy[2]));
-      MapEntry<Offset,Paint> cur = new MapEntry(new Offset(double.parse(xy[1]), double.parse(xy[2])), currentPaint);
-      controller.pathHistory.savedpath.add(new MapEntry<MapEntry<Offset,Paint>,List<Offset>>(cur, new List<Offset>()));
+      MapEntry<Offset, Paint> cur = new MapEntry(
+          new Offset(double.parse(xy[1]), double.parse(xy[2])), currentPaint);
+      controller.pathHistory.savedpath.add(
+          new MapEntry<MapEntry<Offset, Paint>, List<Offset>>(
+              cur, new List<Offset>()));
       List<String> line = paint[4].split('ㄷ');
-      for(int j=1; j<line.length; j++){
+      for (int j = 1; j < line.length; j++) {
         List<String> nextxy = line[j].split('/');
         conp.lineTo(double.parse(nextxy[1]), double.parse(nextxy[2]));
-        controller.pathHistory.savedpath.last.value.add(new Offset(double.parse(nextxy[1]), double.parse(nextxy[2])));
+        controller.pathHistory.savedpath.last.value
+            .add(new Offset(double.parse(nextxy[1]), double.parse(nextxy[2])));
       }
-      controller.pathHistory.paths.add(new MapEntry<Path, Paint>(conp,currentPaint));
+      controller.pathHistory.paths
+          .add(new MapEntry<Path, Paint>(conp, currentPaint));
     }
     controller.thickness = 5.0;
-    controller.drawColor=Colors.black;
+    controller.drawColor = Colors.black;
     return controller;
   }
 
   PainterController _newController() {
-
-    if(widget.memo.content == null){
+    if (widget.memo.content == null) {
       PainterController controller = new PainterController();
       controller.thickness = 5.0;
-      controller.drawColor=Colors.black;
-      controller.backgroundColor=Colors.white;
+      controller.drawColor = Colors.black;
+      controller.backgroundColor = Colors.white;
       return controller;
-    }
-    else{
-      if(widget.memo.contentImages?.isNotEmpty != false){
+    } else {
+      if (widget.memo.contentImages?.isNotEmpty != false) {
         PainterController controller = new PainterController();
         controller.pictureOn = true;
-        controller.onDrawing=new File(widget.memo.contentImages[0]);
-        return getControllor(widget.memo,controller);
-      }
-      else{
+        controller.onDrawing = new File(widget.memo.contentImages[0]);
+        return getControllor(widget.memo, controller);
+      } else {
         PainterController controller = new PainterController();
-        return getControllor(widget.memo,controller);
+        return getControllor(widget.memo, controller);
       }
     }
   }
+
   static bool isLarge(BuildContext context) {
     assert(context != null);
     var size = MediaQuery.of(context).size;
     return min(size.width, size.height) > 600;
   }
 
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height - kToolbarHeight-48.0;
-    Finishsize = new Size(width,height);
+    double height = MediaQuery.of(context).size.height - kToolbarHeight - 48.0;
+    Finishsize = new Size(width, height);
     List<Widget> btns;
-    if(isLarge(context)){
-      btns= <Widget>[
+    if (isLarge(context)) {
+      btns = <Widget>[
         new IconButton(
-          icon:_controller.pictureOn? new Icon(Icons.block):new Icon(Icons.image),
-          onPressed: (){
-            if(!_controller.pictureOn){
+          icon: _controller.pictureOn
+              ? new Icon(Icons.block)
+              : new Icon(Icons.image),
+          onPressed: () {
+            if (!_controller.pictureOn) {
               _showAddImageBottomSheet();
-            }
-            else{
+            } else {
               setState(() {
                 _controller.pictureOn = !_controller.pictureOn;
                 _memoContentImages.removeLast();
@@ -171,8 +166,10 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
           },
         ),
         new IconButton(
-          icon:_controller.penOrfinger? new Icon(Icons.touch_app) : new Icon(Icons.create),
-          onPressed: (){
+          icon: _controller.penOrfinger
+              ? new Icon(Icons.touch_app)
+              : new Icon(Icons.create),
+          onPressed: () {
             setState(() {
               _controller.penOrfinger = !_controller.penOrfinger;
             });
@@ -180,19 +177,19 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         ),
         new IconButton(
           icon: new Icon(Icons.save),
-          onPressed: ()=>save(outCapture),
+          onPressed: () => save(outCapture),
         ),
       ];
-    }
-    else{
-      btns= <Widget>[
+    } else {
+      btns = <Widget>[
         new IconButton(
-          icon:_controller.pictureOn? new Icon(Icons.block):new Icon(Icons.image),
-          onPressed: (){
-            if(!_controller.pictureOn){
+          icon: _controller.pictureOn
+              ? new Icon(Icons.block)
+              : new Icon(Icons.image),
+          onPressed: () {
+            if (!_controller.pictureOn) {
               _showAddImageBottomSheet();
-            }
-            else{
+            } else {
               setState(() {
                 _controller.pictureOn = !_controller.pictureOn;
                 _memoContentImages.removeLast();
@@ -203,7 +200,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         ),
         new IconButton(
           icon: new Icon(Icons.save),
-          onPressed: ()=>save(outCapture),
+          onPressed: () => save(outCapture),
         ),
       ];
     }
@@ -213,24 +210,19 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         title: Text(""),
         actions: btns,
         bottom: PreferredSize(
-          child: Container(
-            height: kToolbarHeight+3,
-            padding: const EdgeInsets.only(left: 16.0),
-            child: _TitleEditText(controller: _editTitleTextController),
-          ),
-          preferredSize: Size.fromHeight(kToolbarHeight)
-        ),
+            child: Container(
+              height: kToolbarHeight + 3,
+              padding: const EdgeInsets.only(left: 16.0),
+              child: _TitleEditText(controller: _editTitleTextController),
+            ),
+            preferredSize: Size.fromHeight(kToolbarHeight)),
         elevation: 0.0,
       ),
-
       body: Center(
-        child: new RepaintBoundary(
-          key : outCapture,
-           child: Painter(_controller)
-        ),
+        child:
+            new RepaintBoundary(key: outCapture, child: Painter(_controller)),
       ),
-
-      bottomNavigationBar : BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(
@@ -246,7 +238,8 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.create,
-              color: Colors.black,),
+              color: Colors.black,
+            ),
             activeIcon: Icon(
               Icons.create,
               size: 30,
@@ -278,10 +271,10 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         ],
         selectedItemColor: _controller.drawColor,
         currentIndex: _curInx,
-        onTap: (index){
+        onTap: (index) {
           setState(() {
             _curInx = index;
-            switch(index){
+            switch (index) {
               case 0:
                 restart();
                 break;
@@ -300,20 +293,16 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       ),
     );
   }
-  
-  void clear(PainterController controller){
+
+  void clear(PainterController controller) {
     controller.clear();
     capturePng(controller.capture, controller);
-
   }
 
   Future<String> get _localPath async {
     var dir = await getExternalStorageDirectory();
     return dir.path;
   }
-
-
-
 
   Future _uploadFirebaseStorage(File imageFile) async {
     final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
@@ -344,22 +333,22 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     }
   }
 
-
-
-  Future<File> save(GlobalKey capture) async{
+  Future<File> save(GlobalKey capture) async {
     //if(!AppConfig.runOnWeb){
     //}
-    var permissionNames = await Permission.requestPermissions(
-        [PermissionName.Storage]);
+    var permissionNames =
+        await Permission.requestPermissions([PermissionName.Storage]);
 
     final path = await _localPath;
     //de.log("dir" + '$path');
-    String name = widget.memo.title+"_"+DateTime.now().millisecondsSinceEpoch.toString();
+    String name = widget.memo.title +
+        "_" +
+        DateTime.now().millisecondsSinceEpoch.toString();
     final file = File('$path/$name.png');
-    if(_controller.pictureOn){
+    if (_controller.pictureOn) {
       final image = capturePng(_controller.capture, _controller);
 
-      image.then((data){
+      image.then((data) {
         file.writeAsBytesSync(data);
       });
       //de.log(_controller.display.toString());
@@ -372,20 +361,18 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     //  });
     //}
     //_uploadFirebaseStorage(file);
-    else{
+    else {
       final image = capturePng(_controller.noImageCap, _controller);
 
-      image.then((data){
+      image.then((data) {
         file.writeAsBytesSync(data);
       });
     }
 
-
     return file;
   }
 
-
-  void _updateDrawingMemo(Size size){
+  void _updateDrawingMemo(Size size) {
     //The error _debugLifecycleState != _ElementLifecycle.defunct is because setState is called after widget dispose()
 
     var titleText = _editTitleTextController.text;
@@ -397,39 +384,52 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     var contentText;
 
     String img;
-    if(_controller.pictureOn){
+    if (_controller.pictureOn) {
       savedInfo(memo, contentText, img, _controller.display, titleText);
-    }
-    else{
+    } else {
       cached = _controller.noSetFinish(size);
       Future<Uint8List> getimage;
-      getimage =  cached.toPNG();
-      getimage.then((data){
+      getimage = cached.toPNG();
+      getimage.then((data) {
         savedInfo(memo, contentText, img, data, titleText);
-
-      },onError: (e)
-      {
-      });
-
+      }, onError: (e) {});
     }
-
-
   }
 
-  void savedInfo(Memo memo, String contentText, String img,Uint8List data,String titleText){
+  void savedInfo(Memo memo, String contentText, String img, Uint8List data,
+      String titleText) {
     img = String.fromCharCodes(data);
     contentText = img.isNotEmpty ? img : null;
-    contentText = contentText+'ㄱ';
+    contentText = contentText + 'ㄱ';
     var savedpath = _controller.pathHistory.savedpath;
-    for(int i=0; i<savedpath.length;i++){
-      contentText= contentText+"ㄴ/"+savedpath[i].key.key.dx.toString()+"/"+savedpath[i].key.key.dy.toString();
+    for (int i = 0; i < savedpath.length; i++) {
+      contentText = contentText +
+          "ㄴ/" +
+          savedpath[i].key.key.dx.toString() +
+          "/" +
+          savedpath[i].key.key.dy.toString();
       //1,color 2.style 3.strokeWidth 4.strokeCap
-      contentText = contentText+'ㅍ' + "paint"+ savedpath[i].key.value.color.toString()+';';
-      contentText = contentText + "style"+ savedpath[i].key.value.style.toString()+';';
-      contentText = contentText + "strokeWidth" + savedpath[i].key.value.strokeWidth.toString()+";";
-      contentText = contentText + "strokecap" + savedpath[i].key.value.strokeCap.toString()+";";
-      for(int j=0; j< savedpath[i].value.length;j++){
-        contentText = contentText + "ㄷ/" + savedpath[i].value[j].dx.toString()+'/' + savedpath[i].value[j].dy.toString();
+      contentText = contentText +
+          'ㅍ' +
+          "paint" +
+          savedpath[i].key.value.color.toString() +
+          ';';
+      contentText =
+          contentText + "style" + savedpath[i].key.value.style.toString() + ';';
+      contentText = contentText +
+          "strokeWidth" +
+          savedpath[i].key.value.strokeWidth.toString() +
+          ";";
+      contentText = contentText +
+          "strokecap" +
+          savedpath[i].key.value.strokeCap.toString() +
+          ";";
+      for (int j = 0; j < savedpath[i].value.length; j++) {
+        contentText = contentText +
+            "ㄷ/" +
+            savedpath[i].value[j].dx.toString() +
+            '/' +
+            savedpath[i].value[j].dy.toString();
       }
     }
     var isChanged = memo.title != titleText ||
@@ -444,7 +444,8 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       memo.updatedAt = DateTime.now().millisecondsSinceEpoch;
     }
 
-    var isValid = memo.title != null || _controller.pathHistory.paths.isNotEmpty;
+    var isValid =
+        memo.title != null || _controller.pathHistory.paths.isNotEmpty;
     if (widget.memo.id != null) {
       if (isValid) {
         if (isChanged) {
@@ -458,37 +459,36 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         _memoBloc.dispatch(AddMemo(memo));
       }
     }
-
   }
-
 
   void dispose() {
-   _updateDrawingMemo(Finishsize);
-   _editTitleTextController.dispose();
-   super.dispose();
+    _updateDrawingMemo(Finishsize);
+    _editTitleTextController.dispose();
+    super.dispose();
   }
 
-
-  void restart(){
-    _controller.removeon=false;
+  void restart() {
+    _controller.removeon = false;
   }
 
-
-  Future<Uint8List> capturePng(GlobalKey capture, PainterController controller) async{
+  Future<Uint8List> capturePng(
+      GlobalKey capture, PainterController controller) async {
     ui.Image image;
     bool catched = false;
     RenderRepaintBoundary boundary = capture.currentContext.findRenderObject();
-    try{
+    try {
       image = await boundary.toImage(pixelRatio: 3.0);
       catched = true;
-    }catch(exception){
+    } catch (exception) {
       catched = false;
-      Timer(Duration(milliseconds: 1),(){
+      Timer(Duration(milliseconds: 1), () {
         capturePng(capture, controller);
       });
     }
-    if(catched) {
-      Uint8List data = (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
+    if (catched) {
+      Uint8List data = (await image.toByteData(format: ui.ImageByteFormat.png))
+          .buffer
+          .asUint8List();
       //var redata = (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asInt8List();
       setState(() {
         _controller.display = data;
@@ -502,11 +502,10 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       context: context,
       builder: (context) => _AddImageSheet(),
     );
-    if(result != null && result.file != null){
-      if(_memoContentImages?.isEmpty){
+    if (result != null && result.file != null) {
+      if (_memoContentImages?.isEmpty) {
         _memoContentImages.add(result.file.path);
-      }
-      else{
+      } else {
         _memoContentImages[0] = result.file.path;
       }
       setState(() {
@@ -514,21 +513,18 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         _controller.onDrawing = result.file;
       });
       clear(_controller);
-      capturePng(outCapture,_controller);
+      capturePng(outCapture, _controller);
     }
   }
 
-
   Future _showPenSettingBottomSheet() async {
     await showModalBottomSheet(
-      context: context,
-      builder: (context) => _penSettingBottomSheet(
-        color: _color,
-        controller: _controller,
-      )
-    );
+        context: context,
+        builder: (context) => _penSettingBottomSheet(
+              color: _color,
+              controller: _controller,
+            ));
   }
-
 }
 
 class _penSettingBottomSheet extends StatefulWidget {
@@ -545,105 +541,102 @@ class _penSettingBottomSheet extends StatefulWidget {
   _penSettingBottomSheetState createState() => _penSettingBottomSheetState();
 }
 
-
 class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
   Color _color;
   @override
   Widget build(BuildContext context) {
-
     return Container(
-      child: Wrap(
-        children: <Widget>[
-          Row(
-            children:<Widget>[
-              new Container(
+        child: Wrap(
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            new Container(
                 width: 20,
                 height: 20,
-                padding: EdgeInsets.only(left:5.0),
-                child:new Icon(
+                padding: EdgeInsets.only(left: 5.0),
+                child: new Icon(
                   Icons.lens,
                   color: widget.controller.drawColor,
-                  size:widget.controller.thickness*1.2,
-                )
-              ),
-              new Expanded(
-                child:StreamBuilder(
-                  builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
-                    return Slider(
-                      activeColor: widget.controller.drawColor,
-                      min: 5.0,
-                      max: 20.0,
-                      onChanged: (newRating) {
-                        _slider.sink.add(newRating);
-                        setState(() {
-                          widget.controller.thickness = newRating;
-                        });
-                      },
-                      value: widget.controller.thickness,
-                    );
-                  },
-                  initialData: 0.0,
-                  stream: sliderStream,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              new IconButton(
-                icon:new Icon(Icons.lens),
-                color: Colors.black,
-                onPressed:(){
-                  setState(() => widget.controller.drawColor = Colors.black);
+                  size: widget.controller.thickness * 1.2,
+                )),
+            new Expanded(
+              child: StreamBuilder(
+                builder:
+                    (BuildContext context, AsyncSnapshot<double> snapshot) {
+                  return Slider(
+                    activeColor: widget.controller.drawColor,
+                    min: 5.0,
+                    max: 20.0,
+                    onChanged: (newRating) {
+                      _slider.sink.add(newRating);
+                      setState(() {
+                        widget.controller.thickness = newRating;
+                      });
+                    },
+                    value: widget.controller.thickness,
+                  );
                 },
+                initialData: 0.0,
+                stream: sliderStream,
               ),
-              new IconButton(
-                icon: new Icon(Icons.lens),
-                color: Colors.red,
-                onPressed:(){
-                  setState(() => widget.controller.drawColor = Colors.red);
-                },
-              ),
-              new IconButton(
-                icon: new Icon(Icons.lens),
-                color: Colors.blue,
-                onPressed:(){
-                  setState(() => widget.controller.drawColor = Colors.blue);
-                },
-              ),
-              new IconButton(
-                icon: new Icon(Icons.lens),
-                color: Colors.green,
-                onPressed:(){
-                  setState(() => widget.controller.drawColor = Colors.green);
-                },
-              ),
-              new IconButton(
-                icon: new Icon(Icons.lens),
-                color: Colors.purple,
-                onPressed:(){
-                  setState(() => widget.controller.drawColor = Colors.purple);
-                },
-              ),
-              new IconButton(
-                icon: new Icon(Icons.lens),
-                color: Colors.pinkAccent,
-                onPressed:(){
-                  setState(() => widget.controller.drawColor = Colors.pinkAccent);
-                },
-              ),
-              new IconButton(
-                icon: new Icon(Icons.lens),
-                color: Colors.amber,
-                onPressed:(){
-                  setState(() => widget.controller.drawColor = Colors.amber);
-                },
-              ),
-            ],
-          )
-        ],
-      )
-    );
+            ),
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            new IconButton(
+              icon: new Icon(Icons.lens),
+              color: Colors.black,
+              onPressed: () {
+                setState(() => widget.controller.drawColor = Colors.black);
+              },
+            ),
+            new IconButton(
+              icon: new Icon(Icons.lens),
+              color: Colors.red,
+              onPressed: () {
+                setState(() => widget.controller.drawColor = Colors.red);
+              },
+            ),
+            new IconButton(
+              icon: new Icon(Icons.lens),
+              color: Colors.blue,
+              onPressed: () {
+                setState(() => widget.controller.drawColor = Colors.blue);
+              },
+            ),
+            new IconButton(
+              icon: new Icon(Icons.lens),
+              color: Colors.green,
+              onPressed: () {
+                setState(() => widget.controller.drawColor = Colors.green);
+              },
+            ),
+            new IconButton(
+              icon: new Icon(Icons.lens),
+              color: Colors.purple,
+              onPressed: () {
+                setState(() => widget.controller.drawColor = Colors.purple);
+              },
+            ),
+            new IconButton(
+              icon: new Icon(Icons.lens),
+              color: Colors.pinkAccent,
+              onPressed: () {
+                setState(() => widget.controller.drawColor = Colors.pinkAccent);
+              },
+            ),
+            new IconButton(
+              icon: new Icon(Icons.lens),
+              color: Colors.amber,
+              onPressed: () {
+                setState(() => widget.controller.drawColor = Colors.amber);
+              },
+            ),
+          ],
+        )
+      ],
+    ));
   }
 
   void _showThicknessBottomSheet(context, PainterController _controller) {
@@ -667,13 +660,9 @@ class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
             initialData: 0.0,
             stream: sliderStream,
           );
-        }
-
-    );
+        });
   }
-
 }
-
 
 class _TitleEditText extends StatelessWidget {
   final TextEditingController controller;
@@ -703,8 +692,6 @@ class _TitleEditText extends StatelessWidget {
     );
   }
 }
-
-
 
 class _AddImageSheet extends StatefulWidget {
   @override
@@ -751,9 +738,6 @@ class _AddImageSheetState extends State<_AddImageSheet> {
   }
 }
 
-
-
-
 class _AddImageSheetResult {
   final File file;
 
@@ -764,4 +748,3 @@ class _AddImageSheetResult {
     return '$runtimeType(file: $file)';
   }
 }
-

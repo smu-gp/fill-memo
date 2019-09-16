@@ -1,11 +1,11 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/util/preference.dart';
+import 'package:fill_memo/util/routes.dart';
+import 'package:fill_memo/widget/list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/util/preference.dart';
-import 'package:sp_client/util/routes.dart';
-import 'package:sp_client/widget/list_item.dart';
 
 class ConnectionMenuScreen extends StatefulWidget {
   @override

@@ -1,3 +1,0 @@
-analyzer:
-   exclude:
-     - packages/diff_match_patch/**

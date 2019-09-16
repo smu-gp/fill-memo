@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:fill_memo/model/models.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/model/models.dart';
 
 @immutable
 abstract class MemoEvent extends Equatable {

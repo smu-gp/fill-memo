@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:fill_memo/app.dart';
+import 'package:fill_memo/bloc/simple_bloc_delegate.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/config.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sp_client/app.dart';
-import 'package:sp_client/bloc/simple_bloc_delegate.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/config.dart';
 
 void main() async {
   AppConfig appConfig;

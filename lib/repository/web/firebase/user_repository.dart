@@ -1,7 +1,7 @@
+import 'package:fill_memo/model/user.dart';
+import 'package:fill_memo/repository/repository.dart';
+import 'package:fill_memo/service/services.dart' as Service;
 import 'package:firebase/firebase.dart' as fb;
-import 'package:sp_client/model/user.dart';
-import 'package:sp_client/repository/repository.dart';
-import 'package:sp_client/service/services.dart' as Service;
 
 class FirebaseUserRepository extends UserRepository {
   final fb.Auth _firebaseAuth;
@@ -34,7 +34,7 @@ class FirebaseUserRepository extends UserRepository {
 
   @override
   Future<User> updateProfile({String displayName, String email}) async {
-    var user = await _firebaseAuth.currentUser;
+    var user = _firebaseAuth.currentUser;
     if (displayName != null) {
       await user.updateProfile(fb.UserProfile()..displayName = displayName);
     }
