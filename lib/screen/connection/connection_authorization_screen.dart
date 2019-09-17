@@ -1,5 +1,6 @@
 import 'package:fill_memo/service/protobuf/connection.pb.dart';
 import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/widget/circular_button.dart';
 import 'package:flutter/material.dart';
 
 class ConnectionAuthorizationScreen extends StatelessWidget {
@@ -60,26 +61,21 @@ class ConnectionAuthorizationScreen extends StatelessWidget {
                 : localization.labelConnectionRequest(deviceName)),
             ButtonBar(
               children: <Widget>[
-                FlatButton(
+                CircularButton(
                   child: Text(localization.actionReject),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    side: BorderSide(
-                      color: themeData.colorScheme.onSurface.withOpacity(0.12),
-                    ),
-                  ),
-                  onPressed: () => Navigator.pop(context, false),
+                  outline: true,
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
                 ),
-                FlatButton(
+                CircularButton(
                   child: Text(
                     localization.actionAccept,
                     style: themeData.accentTextTheme.button,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  color: themeData.accentColor,
-                  onPressed: () => Navigator.pop(context, true),
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
                 ),
               ],
             )

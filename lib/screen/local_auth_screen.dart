@@ -1,4 +1,5 @@
 import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/widget/circular_button.dart';
 import 'package:flutter/material.dart';
 
 class LocalAuthScreen extends StatefulWidget {
@@ -40,15 +41,11 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
             Text(_authenticateFailed
                 ? localizations.androidFingerprintNotRecognized
                 : localizations.labelFingerprint),
-            FlatButton(
+            CircularButton(
               child: Text(localizations.actionRetry),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-                side: BorderSide(
-                  color: themeData.colorScheme.onSurface.withOpacity(0.12),
-                ),
-              ),
-//              onPressed: () => _requestAuthenticate(),
+              onPressed: () {
+                // _requestAuthenticate();
+              },
             )
           ],
         ),

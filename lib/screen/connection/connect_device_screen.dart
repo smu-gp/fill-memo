@@ -5,6 +5,7 @@ import 'package:fill_memo/model/web_auth.dart';
 import 'package:fill_memo/service/protobuf/connection.pbgrpc.dart';
 import 'package:fill_memo/util/localization.dart';
 import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/circular_button.dart';
 import 'package:fill_memo/widget/service_unavailable_label.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -95,15 +96,11 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
                   children: <Widget>[
                     ConstrainedBox(
                       constraints: BoxConstraints(minWidth: 240),
-                      child: FlatButton(
+                      child: CircularButton(
                         child: Text(
                           localizations.actionConnect,
                           style: themeData.accentTextTheme.button,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        color: themeData.accentColor,
                         onPressed: () {
                           _requestAuth(true);
                         },
