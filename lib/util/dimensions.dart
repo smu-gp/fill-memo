@@ -40,6 +40,7 @@ class Dimensions {
   // List
   static final double listOneLineHeight = 56.0;
   static final double listTwoLineHeight = 72.0;
+  static final double listHandWritingHeight = 192.0;
   static final double preferenceLargeMargin = 56.0;
 
   static double listHorizontalMargin(BuildContext context) {

@@ -65,11 +65,9 @@ class MemoGridTile extends StatelessWidget {
       String imgPosLod = memo.content;
       List<String> devide = imgPosLod.split("ㄱ");
       Uint8List image = Uint8List.fromList(devide[0].codeUnits);
-      content = new Container(
-        child: ClipRRect(
-          child: Image.memory(image),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
+      content = ClipRRect(
+        child: Image.memory(image),
+        borderRadius: BorderRadius.circular(4.0),
       );
     } else if (memo.type == typeMarkdown) {
       content = Container(

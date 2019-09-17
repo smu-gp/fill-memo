@@ -1,7 +1,9 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -116,7 +118,22 @@ class _MemoContent extends StatelessWidget {
         contentImages = _MemoContentImageList(memo.contentImages);
       }
     } else if (memo.type == typeHandWriting) {
-      content = null;
+      String imgPosLod = memo.content;
+      List<String> devide = imgPosLod.split("ㄱ");
+      Uint8List image = Uint8List.fromList(devide[0].codeUnits);
+      content = Padding(
+        padding: EdgeInsets.only(top: Dimensions.keylineMini),
+        child: ClipRRect(
+          child: Container(
+            height: Dimensions.listHandWritingHeight,
+            child: Image.memory(
+              image,
+              fit: BoxFit.fitHeight,
+            ),
+          ),
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+      );
     } else if (memo.type == typeMarkdown) {
       content = Text(
         memo.content,
