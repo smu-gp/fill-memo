@@ -5,6 +5,7 @@ import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/repository/repositories.dart';
 import 'package:fill_memo/service/services.dart' as Service;
 import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/localization.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/list_item.dart';
@@ -65,6 +66,7 @@ class _MemoScreenState extends State<MemoScreen> {
     _editContentTextController = SpannableTextEditingController(
       text: widget.memo.content ?? "",
       styleList: styleList,
+      historyLength: 10,
     );
 
     _memoContentImages = []..addAll(widget.memo.contentImages ?? []);
@@ -87,26 +89,42 @@ class _MemoScreenState extends State<MemoScreen> {
             ),
           ),
           Expanded(
-            child: ListView(
-              children: <Widget>[
-                Visibility(
-                  visible: _memoContentImages.isNotEmpty,
-                  child: _ContentImageList(
-                    imageList: _memoContentImages,
-                    heroTagId: widget.memo.id,
-                    onItemTap: _handleImageItemTapped,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Visibility(
+                    visible: _memoContentImages.isNotEmpty,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.imageHorizontalMargin(context),
+                      ),
+                      child: _ContentImageList(
+                        imageList: _memoContentImages,
+                        heroTagId: widget.memo.id,
+                        onItemTap: _handleImageItemTapped,
+                      ),
+                    ),
                   ),
-                ),
-                Container(
-                  height: kToolbarHeight,
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: _TitleEditText(controller: _editTitleTextController),
-                ),
-                _ContentEditText(
-                  autofocus: widget.memo.id == null,
-                  controller: _editContentTextController,
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.contentHorizontalMargin(context),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: kToolbarHeight,
+                          child: _TitleEditText(
+                              controller: _editTitleTextController),
+                        ),
+                        _ContentEditText(
+                          autofocus: widget.memo.id == null,
+                          controller: _editContentTextController,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Material(
@@ -119,7 +137,7 @@ class _MemoScreenState extends State<MemoScreen> {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(OMIcons.image),
-                      onPressed: _showAddImageBottomSheet,
+                      onPressed: _showAddImageSheet,
                     ),
                     VerticalDivider(),
                     Expanded(
@@ -189,12 +207,17 @@ class _MemoScreenState extends State<MemoScreen> {
     }
   }
 
-  Future _showAddImageBottomSheet() async {
+  Future _showAddImageSheet() async {
     TextSelection currentSelection = _editContentTextController.selection;
-
-    _AddImageSheetResult result = await showModalBottomSheet(
+    _AddImageResult result = await showModalBottomSheet(
       context: context,
       builder: (context) => _AddImageSheet(),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.circular(8.0),
+        ),
+      ),
     );
     if (result != null && result.file != null) {
       _addImage(result.file, result.enableTextRecognition, currentSelection);
@@ -245,18 +268,17 @@ class _MemoScreenState extends State<MemoScreen> {
     List<ProcessResult> results,
     TextSelection selection,
   ) async {
-    // TODO Fix pixel overflow.
     var selectedItems = await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text(AppLocalizations.of(context).titleResult),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 16.0,
+            contentPadding: EdgeInsets.symmetric(
+              vertical: Dimensions.keyline,
             ),
             content: Container(
-              width: 300,
-              height: 400,
+              width: Dimensions.dialogWidth(context),
+              height: Dimensions.dialogListHeight,
               child: ProcessResultPanel(
                 key: _processResultPanelKey,
                 results: results,
@@ -311,7 +333,7 @@ class _MemoScreenState extends State<MemoScreen> {
     if (enableTextRecognition) {
       var results = await _uploadProcessingServer(file);
       if (results != null) {
-        _showProcessResults(results, selection);
+        _showProcessResults(results.sublist(1), selection);
       }
     } else {
       _uploadFirebaseStorage(file);
@@ -427,20 +449,17 @@ class _ContentEditText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Scrollbar(
-          child: TextField(
-            autofocus: autofocus,
-            controller: controller,
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              filled: false,
-              hintText: AppLocalizations.of(context).hintInputNote,
-            ),
+      child: Scrollbar(
+        child: TextField(
+          autofocus: autofocus,
+          controller: controller,
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            filled: false,
+            hintText: AppLocalizations.of(context).hintInputNote,
           ),
         ),
       ),
@@ -462,20 +481,24 @@ class _ContentImageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var child;
+    if (imageList.length > 1) {
+      child = _buildList();
+    } else {
+      child = _buildItem(imageList[0], 0);
+    }
+
     return Container(
-      height: 240,
-      child: AspectRatio(
-        aspectRatio: 3 / 4,
-        child:
-            (imageList.length > 1 ? _buildList() : _buildItem(imageList[0], 0)),
-      ),
+      width: double.infinity,
+      height: Dimensions.imageHeight(context),
+      child: child,
     );
   }
 
   Widget _buildList() {
     return ListView(
       scrollDirection: Axis.horizontal,
-      itemExtent: 360,
+      itemExtent: Dimensions.imageNormalWidth,
       children: imageList
           .asMap()
           .entries
@@ -514,7 +537,7 @@ class _ContentImageItem extends StatelessWidget {
       onTap: onTap,
       child: PlatformNetworkImage(
         url: url,
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.cover,
         placeholder: LoadingProgress(),
       ),
     );
@@ -531,37 +554,35 @@ class _AddImageSheetState extends State<_AddImageSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Wrap(
-        children: <Widget>[
-          SwitchListItem(
-            title: AppLocalizations.of(context).actionAddTextFromImage,
-            value: _enableTextRecognition,
-            onChanged: (bool value) {
-              setState(() {
-                _enableTextRecognition = value;
-              });
-            },
+    return Wrap(
+      children: <Widget>[
+        SwitchListItem(
+          title: AppLocalizations.of(context).actionAddTextFromImage,
+          value: _enableTextRecognition,
+          onChanged: (bool value) {
+            setState(() {
+              _enableTextRecognition = value;
+            });
+          },
+        ),
+        Divider(),
+        ListItem(
+          leading: Icon(
+            OMIcons.image,
+            color: Theme.of(context).accentColor,
           ),
-          Divider(),
-          ListItem(
-            leading: Icon(
-              OMIcons.image,
-              color: Theme.of(context).accentColor,
-            ),
-            title: AppLocalizations.of(context).imageFromGallery,
-            onTap: () => _handleMenuTapped(ImageSource.gallery),
+          title: AppLocalizations.of(context).imageFromGallery,
+          onTap: () => _handleMenuTapped(ImageSource.gallery),
+        ),
+        ListItem(
+          leading: Icon(
+            OMIcons.photoCamera,
+            color: Theme.of(context).accentColor,
           ),
-          ListItem(
-            leading: Icon(
-              OMIcons.photoCamera,
-              color: Theme.of(context).accentColor,
-            ),
-            title: AppLocalizations.of(context).imageFromCamera,
-            onTap: () => _handleMenuTapped(ImageSource.camera),
-          ),
-        ],
-      ),
+          title: AppLocalizations.of(context).imageFromCamera,
+          onTap: () => _handleMenuTapped(ImageSource.camera),
+        ),
+      ],
     );
   }
 
@@ -569,7 +590,7 @@ class _AddImageSheetState extends State<_AddImageSheet> {
     var file = await ImagePicker.pickImage(source: source);
     Navigator.pop(
       context,
-      _AddImageSheetResult(
+      _AddImageResult(
         file: file,
         enableTextRecognition: _enableTextRecognition,
       ),
@@ -577,11 +598,11 @@ class _AddImageSheetState extends State<_AddImageSheet> {
   }
 }
 
-class _AddImageSheetResult {
+class _AddImageResult {
   final File file;
   final bool enableTextRecognition;
 
-  _AddImageSheetResult({this.file, this.enableTextRecognition});
+  _AddImageResult({this.file, this.enableTextRecognition});
 
   @override
   String toString() {

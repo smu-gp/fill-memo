@@ -1,6 +1,7 @@
 import 'package:fill_memo/bloc/blocs.dart';
 import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/memo_sort.dart';
 import 'package:flutter/foundation.dart';
@@ -135,8 +136,11 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
                       vertical: 24.0,
                       horizontal: 0.0,
                     ),
-                    content: MemoSortPanel(
-                      onSortSelected: () => Navigator.pop(context),
+                    content: Container(
+                      width: Dimensions.dialogWidth(context),
+                      child: MemoSortPanel(
+                        onSortSelected: () => Navigator.pop(context),
+                      ),
                     ),
                   ),
                 );

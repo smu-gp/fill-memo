@@ -17,6 +17,7 @@ import 'package:fill_memo/screen/settings/memo_type_screen.dart';
 import 'package:fill_memo/screen/settings/settings_screen.dart';
 import 'package:fill_memo/service/protobuf/connection.pb.dart';
 import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/localization.dart';
 import 'package:fill_memo/widget/select_folder_dialog.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +74,8 @@ class Routes {
       title: Text(AppLocalizations.of(context).dialogFolderSelect),
       contentPadding: EdgeInsets.all(16.0),
       content: Container(
-        width: 360.0,
-        height: 160.0,
+        width: Dimensions.dialogWidth(context),
+        height: Dimensions.dialogListHeight,
         child: SelectFolderDialog(),
       ),
       actions: <Widget>[

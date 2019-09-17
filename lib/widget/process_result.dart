@@ -44,6 +44,7 @@ class ProcessResultPanelState extends State<ProcessResultPanel> {
         }
 
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
               color: Theme.of(context).primaryColorDark,
@@ -72,38 +73,40 @@ class ProcessResultPanelState extends State<ProcessResultPanel> {
                 onLongPress: () {},
               ),
             ),
-            ListView.separated(
-              itemBuilder: (context, index) {
-                var result = widget.results[index];
-                var selected = false;
-                if (selectedItems != null) {
-                  selected = selectedItems.contains(result);
-                }
+            Expanded(
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  var result = widget.results[index];
+                  var selected = false;
+                  if (selectedItems != null) {
+                    selected = selectedItems.contains(result);
+                  }
 
-                return SelectableListItem(
-                  title: result.content,
-                  selectable: true,
-                  selected: selected,
-                  onCheckboxChanged: (bool value) {
-                    if (value) {
-                      _listBloc.dispatch(SelectItem(result));
-                    } else {
-                      _listBloc.dispatch(UnSelectItem(result));
-                    }
-                  },
-                  onTap: () {
-                    if (selected) {
-                      _listBloc.dispatch(UnSelectItem(result));
-                    } else {
-                      _listBloc.dispatch(SelectItem(result));
-                    }
-                  },
-                  onLongPress: () {},
-                );
-              },
-              separatorBuilder: (context, index) => Divider(height: 1),
-              itemCount: widget.results.length,
-              shrinkWrap: true,
+                  return SelectableListItem(
+                    title: result.content,
+                    selectable: true,
+                    selected: selected,
+                    onCheckboxChanged: (bool value) {
+                      if (value) {
+                        _listBloc.dispatch(SelectItem(result));
+                      } else {
+                        _listBloc.dispatch(UnSelectItem(result));
+                      }
+                    },
+                    onTap: () {
+                      if (selected) {
+                        _listBloc.dispatch(UnSelectItem(result));
+                      } else {
+                        _listBloc.dispatch(SelectItem(result));
+                      }
+                    },
+                    onLongPress: () {},
+                  );
+                },
+                separatorBuilder: (context, index) => Divider(height: 1),
+                itemCount: widget.results.length,
+                shrinkWrap: true,
+              ),
             ),
           ],
         );

@@ -3,6 +3,7 @@ import 'package:fill_memo/model/memo_list_type.dart';
 import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/repository/repositories.dart';
 import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/routes.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/main_appbar.dart';
@@ -10,7 +11,6 @@ import 'package:fill_memo/widget/main_drawer.dart';
 import 'package:fill_memo/widget/main_fab.dart';
 import 'package:fill_memo/widget/memo_list.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -43,11 +43,16 @@ class _MainScreenState extends State<MainScreen> {
         return BlocBuilder<MainDrawerBloc, MainDrawerState>(
           bloc: _drawerBloc,
           builder: (context, state) {
-            return MemoList(
-              folderId: state.folderId,
-              listType: listType.value,
-              onTap: _onMemoTapped,
-              onLongPress: _onMemoLongPressed,
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Dimensions.listHorizontalMargin(context),
+              ),
+              child: MemoList(
+                folderId: state.folderId,
+                listType: listType.value,
+                onTap: _onMemoTapped,
+                onLongPress: _onMemoLongPressed,
+              ),
             );
           },
         );
@@ -87,9 +92,7 @@ class _MainScreenState extends State<MainScreen> {
               builder: (_) => MemoSort(),
             ),
             ChangeNotifierProvider<MemoListType>(
-              builder: (_) => MemoListType(
-                kIsWeb ? ListType.list : ListType.grid,
-              ),
+              builder: (_) => MemoListType(),
             ),
           ],
           child: child,

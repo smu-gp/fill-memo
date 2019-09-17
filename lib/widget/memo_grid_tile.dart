@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/util/constants.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/loading_progress.dart';
+import 'package:fill_memo/widget/network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -51,11 +51,10 @@ class MemoGridTile extends StatelessWidget {
             child: Hero(
               tag: "image_${memo.id}_0",
               child: Material(
-                child: CachedNetworkImage(
-                  imageUrl: memo.contentImages.first,
-                  fit: BoxFit.fill,
-                  placeholder: (context, _) => LoadingProgress(),
-                  errorWidget: (context, url, _) => Icon(Icons.error),
+                child: PlatformNetworkImage(
+                  url: memo.contentImages.first,
+                  fit: BoxFit.cover,
+                  placeholder: LoadingProgress(),
                 ),
               ),
             ),

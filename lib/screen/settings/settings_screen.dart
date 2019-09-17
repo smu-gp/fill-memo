@@ -2,6 +2,7 @@ import 'package:fill_memo/bloc/blocs.dart';
 import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/repository/repositories.dart';
 import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/edit_text_dialog.dart';
 import 'package:fill_memo/widget/list_item.dart';
@@ -40,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: Util.isLarge(context) ? 56.0 : 0,
+          horizontal: Dimensions.preferenceHorizontalMargin(context),
         ),
         child: BlocProvider<PreferenceBloc>.value(
           value: _preferenceBloc,

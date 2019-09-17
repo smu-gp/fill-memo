@@ -1,3 +1,4 @@
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:flutter/material.dart';
 
 class ListItem extends StatelessWidget {
@@ -123,7 +124,7 @@ class SelectableListItem extends StatefulWidget {
   final VoidCallback onTap;
   final VoidCallback onLongPress;
   final ValueChanged<bool> onCheckboxChanged;
-  final VoidCallback onEditButtonPress;
+  final Widget tralling;
 
   SelectableListItem({
     Key key,
@@ -134,7 +135,7 @@ class SelectableListItem extends StatefulWidget {
     @required this.onTap,
     @required this.onLongPress,
     @required this.onCheckboxChanged,
-    this.onEditButtonPress,
+    this.tralling,
   }) : super(key: key);
 
   @override
@@ -148,7 +149,7 @@ class _SelectableListItemState extends State<SelectableListItem> {
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
       child: Container(
-        height: 56.0,
+        height: Dimensions.listOneLineHeight,
         padding:
             EdgeInsets.symmetric(horizontal: widget.selectable ? 4.0 : 16.0),
         child: Row(
@@ -168,6 +169,7 @@ class _SelectableListItemState extends State<SelectableListItem> {
                     ),
               ),
             ),
+            if (widget.tralling != null) widget.tralling,
           ],
         ),
       ),

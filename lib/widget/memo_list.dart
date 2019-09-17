@@ -1,6 +1,6 @@
 import 'package:fill_memo/bloc/blocs.dart';
 import 'package:fill_memo/model/models.dart';
-import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,7 +90,7 @@ class MemoList extends StatelessWidget {
                     );
                   } else {
                     return StaggeredGridView.countBuilder(
-                      crossAxisCount: Util.isLarge(context) ? 3 : 2,
+                      crossAxisCount: Dimensions.gridCrossAxisCount(context),
                       mainAxisSpacing: 2,
                       crossAxisSpacing: 2,
                       itemBuilder: itemBuilder,

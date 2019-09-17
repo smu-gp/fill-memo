@@ -182,23 +182,27 @@ class _FolderListState extends State<_FolderList> {
                       listBloc.dispatch(UnSelectItem(folders[index]));
                     }
                   },
-                  onEditButtonPress: () async {
-                    var folder = folders[index];
-                    var newName = await showDialog(
-                      context: context,
-                      builder: (context) => EditTextDialog(
-                        title: AppLocalizations.of(context).actionRenameFolder,
-                        value: folder.name,
-                        validation: (value) => value.isNotEmpty,
-                        validationMessage:
-                            AppLocalizations.of(context).errorEmptyName,
-                      ),
-                    );
-                    if (newName != null) {
-                      var updatedFolder = folder..name = newName;
-                      folderBloc.dispatch(UpdateFolder(updatedFolder));
-                    }
-                  },
+                  tralling: IconButton(
+                    icon: Icon(OMIcons.edit),
+                    onPressed: () async {
+                      var folder = folders[index];
+                      var newName = await showDialog(
+                        context: context,
+                        builder: (context) => EditTextDialog(
+                          title:
+                              AppLocalizations.of(context).actionRenameFolder,
+                          value: folder.name,
+                          validation: (value) => value.isNotEmpty,
+                          validationMessage:
+                              AppLocalizations.of(context).errorEmptyName,
+                        ),
+                      );
+                      if (newName != null) {
+                        var updatedFolder = folder..name = newName;
+                        folderBloc.dispatch(UpdateFolder(updatedFolder));
+                      }
+                    },
+                  ),
                 ),
                 itemCount: folders.length,
                 separatorBuilder: (context, index) => Divider(height: 1),
