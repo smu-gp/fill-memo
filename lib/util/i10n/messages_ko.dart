@@ -133,6 +133,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "titleHostConnection" : MessageLookupByLibrary.simpleMessage("연결코드 생성"),
     "titleResult" : MessageLookupByLibrary.simpleMessage("처리 결과"),
     "validationServiceHost" : MessageLookupByLibrary.simpleMessage("오류: 서비스 호스트는 비워둘 수 없습니다"),
-    "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("다른 기기에서 연결하기 전에 화면을 닫으면 연결 요청을 받을 수 없습니다.")
+    "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("화면을 닫으면 연결 요청을 받을 수 없습니다")
   };
 }

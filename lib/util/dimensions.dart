@@ -8,6 +8,8 @@ enum CompareOption { width, height, both }
 
 class Dimensions {
   // Common
+  static final double iconSize = 48.0;
+
   static final double keyline = 16.0;
   static final double keylineLarge = 24.0;
   static final double keylineXLarge = 48.0;
@@ -75,6 +77,32 @@ class Dimensions {
   static double imageNormalWidth = 360.0;
   static double imageNormalHeight = 240.0;
   static double imageLargeHeight = 360.0;
+
+  static double codeTextFieldNormalWidth = 280.0;
+  static double codeTextFieldLargeWidth = codeTextFieldNormalWidth * 1.2;
+  static double codeTextFieldXLargeWidth = codeTextFieldLargeWidth * 1.2;
+
+  static double introCardNormalWidth = 360.0;
+  static double introCardLargeWidth = introCardNormalWidth * 1.2;
+  static double introCardXLargeWidth = introCardLargeWidth * 1.2;
+
+  static double codeTextFieldWidth(BuildContext context) {
+    return responsiveDimension(
+      context: context,
+      normal: codeTextFieldNormalWidth,
+      large: codeTextFieldLargeWidth,
+      xlarge: codeTextFieldXLargeWidth,
+    );
+  }
+
+  static double introCardWidth(BuildContext context) {
+    return responsiveDimension(
+      context: context,
+      normal: introCardNormalWidth,
+      large: introCardLargeWidth,
+      xlarge: introCardXLargeWidth,
+    );
+  }
 
   static double imageHeight(BuildContext context) {
     return responsiveDimension(

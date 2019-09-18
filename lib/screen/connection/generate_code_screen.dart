@@ -4,8 +4,10 @@ import 'package:fill_memo/repository/repositories.dart';
 import 'package:fill_memo/service/protobuf/connection.pbgrpc.dart';
 import 'package:fill_memo/service/services.dart';
 import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/utils.dart';
-import 'package:fill_memo/widget/service_unavailable_label.dart';
+import 'package:fill_memo/widget/circular_button.dart';
+import 'package:fill_memo/widget/icon_label.dart';
 import 'package:fill_memo/widget/timer_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -65,44 +67,63 @@ class _GenerateCodeScreenState extends State<GenerateCodeScreen> {
       ),
       body: Column(
         children: <Widget>[
-          if (!_isServiceAvailable) ServiceUnavailableLabel(),
+          if (!_isServiceAvailable)
+            IconLabel(
+              icon: Icons.error,
+              text: AppLocalizations.of(context).labelServiceUnavailable,
+              backgroundColor: Colors.red,
+            ),
+          if (_isServiceAvailable)
+            IconLabel(
+              icon: Icons.warning,
+              text: AppLocalizations.of(context).warnGenerateCode,
+              backgroundColor: Colors.orange,
+            ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  TimerText(
-                    key: _timerKey,
-                    duration: Duration(seconds: 59),
-                    color: themeData.accentColor,
-                    warnColor: Colors.red,
-                    onChanged: (duration) {
-                      if (duration.inSeconds == 0) {
-                        _requestCode();
-                      }
-                    },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TimerText(
+                  key: _timerKey,
+                  duration: Duration(seconds: 59),
+                  color: themeData.accentColor,
+                  warnColor: Colors.red,
+                  onChanged: (duration) {
+                    if (duration.inSeconds == 0) {
+                      _requestCode();
+                    }
+                  },
+                ),
+                SizedBox(height: Dimensions.keylineSmall),
+                StreamBuilder<String>(
+                  stream: _codeStream,
+                  builder: (context, snapshot) {
+                    return Text(
+                      snapshot.hasData ? snapshot.data : '000000',
+                      style: TextStyle(
+                        fontSize: 40,
+                        letterSpacing: 8,
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: Dimensions.keylineSmall),
+                CircularButton(
+                  icon: Icon(Icons.refresh),
+                  child: Text(
+                    MaterialLocalizations.of(context)
+                        .refreshIndicatorSemanticLabel,
                   ),
-                  SizedBox(height: 4),
-                  StreamBuilder<String>(
-                    stream: _codeStream,
-                    builder: (context, snapshot) {
-                      return Text(
-                        snapshot.hasData ? snapshot.data : '000000',
-                        style: TextStyle(
-                          fontSize: 40,
-                          letterSpacing: 8,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                  outline: true,
+                  onPressed: _isServiceAvailable
+                      ? () {
+                          _requestCode();
+                        }
+                      : null,
+                )
+              ],
             ),
           ),
-          _buildWarnMsg(),
-          SizedBox(height: 4),
-          _buildBottomButton(themeData),
         ],
       ),
     );
@@ -157,41 +178,16 @@ class _GenerateCodeScreenState extends State<GenerateCodeScreen> {
     });
   }
 
-  Widget _buildBottomButton(ThemeData theme) {
-    return Material(
-      color: _isServiceAvailable ? theme.accentColor : theme.disabledColor,
-      child: InkWell(
-        child: Container(
-          width: double.infinity,
-          height: 48,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.refresh,
-                color: theme.accentIconTheme.color,
-              ),
-              SizedBox(width: 8),
-              Text(
-                MaterialLocalizations.of(context).refreshIndicatorSemanticLabel,
-                style: theme.accentTextTheme.button,
-              ),
-            ],
-          ),
-        ),
-        onTap: _isServiceAvailable ? _requestCode : null,
-      ),
-    );
-  }
-
   Widget _buildWarnMsg() {
-    return Card(
+    return Container(
+      height: 48.0,
+      color: Colors.orange,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.warning, color: Colors.yellow[700]),
+            Icon(Icons.warning),
             SizedBox(width: 24),
             Expanded(
               child: Text(

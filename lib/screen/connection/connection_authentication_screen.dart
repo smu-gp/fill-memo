@@ -9,6 +9,7 @@ import 'package:fill_memo/util/constants.dart';
 import 'package:fill_memo/util/localization.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/circular_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -106,17 +107,24 @@ class _ConnectionAuthenticationScreenState
 
   List<Widget> _buildResponseResult(AuthResponse response) {
     if (response.message == AuthResponse_ResultMessage.MESSAGE_SUCCESS) {
-      return <Widget>[
-        Icon(Icons.check_circle, color: Colors.green, size: 72),
-        Text(AppLocalizations.of(context).labelConnectSuccess),
-        CircularButton(
-          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-          outline: true,
-          onPressed: () {
-            Navigator.pop(context, AuthenticationResult.success());
-          },
-        )
-      ];
+      if (kIsWeb) {
+        Navigator.pop(context, AuthenticationResult.success());
+        return <Widget>[
+          Container(),
+        ];
+      } else {
+        return <Widget>[
+          Icon(Icons.check_circle, color: Colors.green, size: 72),
+          Text(AppLocalizations.of(context).labelConnectSuccess),
+          CircularButton(
+            child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+            outline: true,
+            onPressed: () {
+              Navigator.pop(context, AuthenticationResult.success());
+            },
+          )
+        ];
+      }
     } else {
       return <Widget>[
         Icon(Icons.error, color: Colors.red, size: 72),

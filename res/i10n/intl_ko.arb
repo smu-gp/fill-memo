@@ -466,7 +466,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "warnGenerateCode": "다른 기기에서 연결하기 전에 화면을 닫으면 연결 요청을 받을 수 없습니다.",
+  "warnGenerateCode": "화면을 닫으면 연결 요청을 받을 수 없습니다",
   "@warnGenerateCode": {
     "type": "text",
     "placeholders": {}

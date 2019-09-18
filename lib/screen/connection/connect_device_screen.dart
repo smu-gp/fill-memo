@@ -3,10 +3,11 @@ import 'package:fill_memo/bloc/auth/auth_bloc.dart';
 import 'package:fill_memo/bloc/auth/auth_state.dart';
 import 'package:fill_memo/model/web_auth.dart';
 import 'package:fill_memo/service/protobuf/connection.pbgrpc.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/localization.dart';
 import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/circular_button.dart';
-import 'package:fill_memo/widget/service_unavailable_label.dart';
+import 'package:fill_memo/widget/icon_label.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +19,6 @@ class ConnectDeviceScreen extends StatefulWidget {
 }
 
 class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final TextEditingController _codeController = TextEditingController();
 
   AuthBloc _authBloc;
@@ -34,112 +34,64 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return kIsWeb ? _buildOnWeb() : _build();
-  }
-
-  Widget _build() {
-    var themeData = Theme.of(context);
     var localizations = AppLocalizations.of(context);
 
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         title: Text(localizations.titleGuestConnection),
         elevation: 0,
       ),
       body: Column(
         children: <Widget>[
-          if (!_isServiceAvailable) ServiceUnavailableLabel(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Center(
-                child: _buildCodeField(),
-              ),
+          if (!_isServiceAvailable)
+            IconLabel(
+              icon: Icons.error,
+              text: AppLocalizations.of(context).labelServiceUnavailable,
+              backgroundColor: Colors.red,
             ),
-          ),
-          _buildBottomButton(themeData, localizations),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOnWeb() {
-    var themeData = Theme.of(context);
-    var localizations = AppLocalizations.of(context);
-
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 120),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  AppLocalizations.of(context).appName,
-                  style: themeData.textTheme.title.copyWith(
-                    fontSize: 32,
-                  ),
-                ),
-                SizedBox(height: 64),
-                Text(
-                  localizations.labelConnectionCode,
-                  style: TextStyle(),
-                ),
-                SizedBox(height: 8),
-                _buildCodeField(),
-                SizedBox(height: 32),
-                ButtonBar(
-                  alignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ConstrainedBox(
-                      constraints: BoxConstraints(minWidth: 240),
-                      child: CircularButton(
-                        child: Text(
-                          localizations.actionConnect,
-                          style: themeData.accentTextTheme.button,
-                        ),
-                        onPressed: () {
-                          _requestAuth(true);
-                        },
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: Dimensions.codeTextFieldNormalWidth,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      maxLength: 6,
+                      maxLengthEnforced: true,
+                      controller: _codeController,
+                      decoration: InputDecoration(
+                        errorText: !_codeValidation
+                            ? AppLocalizations.of(context).errorEmptyCode
+                            : null,
                       ),
                     ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          if (!_isServiceAvailable)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 400),
-                child: Card(child: ServiceUnavailableLabel()),
+                  ),
+                  SizedBox(height: Dimensions.keylineSmall),
+                  CircularButton(
+                    icon: Icon(Icons.link),
+                    child: Text(
+                      localizations.actionConnect,
+                    ),
+                    outline: true,
+                    onPressed: _isServiceAvailable
+                        ? () {
+                            _requestAuth();
+                          }
+                        : null,
+                  ),
+                ],
               ),
             ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildCodeField() {
-    return TextField(
-      keyboardType: TextInputType.number,
-      textInputAction: TextInputAction.done,
-      maxLength: 6,
-      maxLengthEnforced: true,
-      controller: _codeController,
-      decoration: InputDecoration(
-        errorText: !_codeValidation
-            ? AppLocalizations.of(context).errorEmptyCode
-            : null,
-      ),
-    );
-  }
-
-  void _requestAuth([bool runOnWeb = false]) async {
+  void _requestAuth() async {
     var code = _codeController.value.text;
     if (code.isEmpty) {
       setState(() {
@@ -149,7 +101,7 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
     }
 
     var authRequest;
-    if (runOnWeb) {
+    if (kIsWeb) {
       var currentDeviceInfo = AuthDeviceInfo()
         ..deviceType = AuthDeviceInfo_DeviceType.DEVICE_WEB;
 
@@ -177,10 +129,12 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
     }
 
     var result = await Navigator.push(
-        context, Routes().connectionAuthentication(authRequest));
+      context,
+      Routes().connectionAuthentication(authRequest),
+    );
     if (result.isServiceAvailable) {
       if (result.isSuccess) {
-        if (runOnWeb) {
+        if (kIsWeb) {
           var authenticate =
               Provider.of<WebAuthenticate>(context, listen: false);
           authenticate.value = true;
@@ -193,32 +147,5 @@ class _ConnectDeviceScreenState extends State<ConnectDeviceScreen> {
         _isServiceAvailable = false;
       });
     }
-  }
-
-  Widget _buildBottomButton(ThemeData theme, AppLocalizations localizations) {
-    return Material(
-      color: _isServiceAvailable ? theme.accentColor : theme.disabledColor,
-      child: InkWell(
-        child: Container(
-          width: double.infinity,
-          height: 48,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.link,
-                color: theme.accentIconTheme.color,
-              ),
-              SizedBox(width: 8),
-              Text(
-                localizations.actionConnect,
-                style: theme.accentTextTheme.button,
-              ),
-            ],
-          ),
-        ),
-        onTap: _isServiceAvailable ? _requestAuth : null,
-      ),
-    );
   }
 }
