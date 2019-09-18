@@ -4,6 +4,8 @@ import 'package:fill_memo/util/i10n/messages_all.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'locale_loader_app.dart' if (dart.library.html) 'locale_loader_web.dart';
+
 class AppLocalizations {
   String get actionAccept => Intl.message(
         'Accept',
@@ -548,9 +550,7 @@ class AppLocalizations {
       );
 
   static Future<AppLocalizations> load(Locale locale) async {
-    final String name =
-        locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
-    final String localeName = Intl.canonicalizedLocale(name);
+    String localeName = await initializeLocale(locale);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       return AppLocalizations();
