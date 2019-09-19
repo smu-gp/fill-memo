@@ -94,7 +94,6 @@ class Dimensions {
   // Grid
   static int gridCrossAxisCount(BuildContext context) {
     var displaySize = getDisplaySize(context, CompareOption.width);
-    print(displaySize);
     if (displaySize.index >= DisplaySize.xxlarge.index) {
       return 6;
     } else if (displaySize.index >= DisplaySize.large.index) {
@@ -151,7 +150,7 @@ class Dimensions {
     return responsiveDimension(
       context: context,
       normal: 0,
-      large: keylineXXLarge,
+      large: keyline,
       option: CompareOption.width,
     );
   }

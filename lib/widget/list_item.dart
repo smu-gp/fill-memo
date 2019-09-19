@@ -148,29 +148,35 @@ class _SelectableListItemState extends State<SelectableListItem> {
     return InkWell(
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
-      child: Container(
-        height: Dimensions.listOneLineHeight,
-        padding:
-            EdgeInsets.symmetric(horizontal: widget.selectable ? 4.0 : 16.0),
-        child: Row(
-          children: <Widget>[
-            if (widget.selectable)
-              Checkbox(
-                value: widget.selected,
-                onChanged: widget.onCheckboxChanged,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: widget.selectable ? Dimensions.keylineMini : Dimensions.keyline,
+          right: Dimensions.keyline,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: Dimensions.listOneLineHeight,
+          ),
+          child: Row(
+            children: <Widget>[
+              if (widget.selectable)
+                Checkbox(
+                  value: widget.selected,
+                  onChanged: widget.onCheckboxChanged,
+                ),
+              if (!widget.selectable && widget.icon != null) widget.icon,
+              SizedBox(width: widget.selectable ? 20.0 : 32.0),
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.subhead.copyWith(
+                        fontSize: 16.0,
+                      ),
+                ),
               ),
-            if (!widget.selectable && widget.icon != null) widget.icon,
-            SizedBox(width: widget.selectable ? 20.0 : 32.0),
-            Expanded(
-              child: Text(
-                widget.title,
-                style: Theme.of(context).textTheme.subhead.copyWith(
-                      fontSize: 16.0,
-                    ),
-              ),
-            ),
-            if (widget.tralling != null) widget.tralling,
-          ],
+              if (widget.tralling != null) widget.tralling,
+            ],
+          ),
         ),
       ),
     );

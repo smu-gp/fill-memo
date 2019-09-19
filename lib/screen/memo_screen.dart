@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fill_memo/bloc/blocs.dart';
 import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/screen/process_result_screen.dart';
 import 'package:fill_memo/service/services.dart' as Service;
 import 'package:fill_memo/util/constants.dart';
 import 'package:fill_memo/util/dimensions.dart';
@@ -11,7 +12,6 @@ import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/list_item.dart';
 import 'package:fill_memo/widget/loading_progress.dart';
 import 'package:fill_memo/widget/network_image.dart';
-import 'package:fill_memo/widget/process_result.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -36,8 +36,6 @@ class MemoScreen extends StatefulWidget {
 }
 
 class _MemoScreenState extends State<MemoScreen> {
-  GlobalKey<ProcessResultPanelState> _processResultPanelKey = GlobalKey();
-
   TextEditingController _editTitleTextController;
   SpannableTextEditingController _editContentTextController;
 
@@ -100,7 +98,8 @@ class _MemoScreenState extends State<MemoScreen> {
                         visible: _memoContentImages.isNotEmpty,
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.keyline,
+                            horizontal:
+                                Dimensions.imageHorizontalMargin(context),
                           ),
                           child: _ContentImageList(
                             imageList: _memoContentImages,
@@ -274,43 +273,18 @@ class _MemoScreenState extends State<MemoScreen> {
     List<ProcessResult> results,
     TextSelection selection,
   ) async {
-    var selectedItems = await showDialog(
+    var selectedItems;
+    if (Util.isLarge(context)) {
+      selectedItems = await showDialog(
         context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context).titleResult),
-            contentPadding: EdgeInsets.symmetric(
-              vertical: Dimensions.keyline,
-            ),
-            content: Container(
-              width: Dimensions.dialogWidth(context),
-              height: Dimensions.dialogListHeight,
-              child: ProcessResultPanel(
-                key: _processResultPanelKey,
-                results: results,
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(
-                  MaterialLocalizations.of(context).cancelButtonLabel,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              FlatButton(
-                child: Text(AppLocalizations.of(context).actionAdd),
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    _processResultPanelKey.currentState.selectedItems,
-                  );
-                },
-              ),
-            ],
-          );
-        });
+        builder: (context) => ProcessResultScreen(results),
+      );
+    } else {
+      selectedItems = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProcessResultScreen(results)),
+      );
+    }
 
     if (selectedItems != null) {
       var processedText = "";
@@ -339,7 +313,7 @@ class _MemoScreenState extends State<MemoScreen> {
     if (enableTextRecognition) {
       var results = await _uploadProcessingServer(file);
       if (results != null) {
-        _showProcessResults(results.sublist(1), selection);
+        _showProcessResults(results, selection);
       }
     } else {
       _uploadFirebaseStorage(file);
