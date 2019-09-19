@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class ProcessResult extends Equatable {
   static final String columnContent = 'content';
 

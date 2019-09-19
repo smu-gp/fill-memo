@@ -1,4 +1,5 @@
 import 'package:fill_memo/model/local_auth.dart';
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/localization.dart';
 import 'package:fill_memo/widget/circular_button.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
       body: Center(
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 16,
+          spacing: Dimensions.keylineLarge,
           direction: Axis.vertical,
           children: <Widget>[
             CircleAvatar(
@@ -41,15 +42,19 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
               backgroundColor:
                   _authenticateFailed ? Colors.red[500] : themeData.accentColor,
             ),
-            SizedBox(height: 8),
             Text(_authenticateFailed
                 ? localizations.androidFingerprintNotRecognized
                 : localizations.labelFingerprint),
-            CircularButton(
-              child: Text(localizations.actionRetry),
-              onPressed: () {
-                _requestAuthenticate();
-              },
+            Visibility(
+              visible: _authenticateFailed,
+              child: CircularButton(
+                icon: Icon(Icons.refresh),
+                child: Text(localizations.actionRetry),
+                outline: true,
+                onPressed: () {
+                  _requestAuthenticate();
+                },
+              ),
             )
           ],
         ),

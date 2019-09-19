@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import 'folder.dart';
 
+// ignore: must_be_immutable
 class Memo extends Equatable {
   static final String tableName = "memoSecret";
   static final String columnId = "id";

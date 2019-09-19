@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+// ignore: must_be_immutable
 class Folder extends Equatable {
   static final String tableName = "Folder";
   static final String columnId = "id";
