@@ -85,16 +85,14 @@ class MemoList extends StatelessWidget {
                   if (listType == ListType.list) {
                     return ListView.separated(
                       itemBuilder: itemBuilder,
-                      separatorBuilder: (context, index) => Divider(height: 2),
                       itemCount: memos.length,
+                      separatorBuilder: (context, index) => Divider(height: 2),
                     );
                   } else {
                     return StaggeredGridView.countBuilder(
-                      crossAxisCount: Dimensions.gridCrossAxisCount(context),
-                      mainAxisSpacing: 2,
-                      crossAxisSpacing: 2,
                       itemBuilder: itemBuilder,
                       itemCount: memos.length,
+                      crossAxisCount: Dimensions.gridCrossAxisCount(context),
                       staggeredTileBuilder: (index) => StaggeredTile.fit(1),
                     );
                   }

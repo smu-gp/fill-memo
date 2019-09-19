@@ -43,15 +43,18 @@ class _MainScreenState extends State<MainScreen> {
         return BlocBuilder<MainDrawerBloc, MainDrawerState>(
           bloc: _drawerBloc,
           builder: (context, state) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.listHorizontalMargin(context),
-              ),
-              child: MemoList(
-                folderId: state.folderId,
-                listType: listType.value,
-                onTap: _onMemoTapped,
-                onLongPress: _onMemoLongPressed,
+            return Center(
+              child: Container(
+                width: Dimensions.listWidth(context),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.keylineSmall,
+                ),
+                child: MemoList(
+                  folderId: state.folderId,
+                  listType: listType.value,
+                  onTap: _onMemoTapped,
+                  onLongPress: _onMemoLongPressed,
+                ),
               ),
             );
           },

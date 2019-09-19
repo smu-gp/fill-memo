@@ -1,13 +1,28 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-enum DisplaySize { normal, medium, large, xlarge }
+enum DisplaySize {
+  normal,
+  /** Over 480px */
+  medium,
+  /** Over 600px */
+  large,
+  /** Over 1280px */
+  xlarge,
+  /** Over 1920px */
+  xxlarge,
+  /** Over 2560px */
+  xxxlarge,
+}
 
 enum CompareOption { width, height, both }
 
 class Dimensions {
   // Common
+  static final double increment = 64.0;
+
   static final double iconSize = 48.0;
 
   static final double keyline = 16.0;
@@ -17,11 +32,22 @@ class Dimensions {
   static final double keylineSmall = 8.0;
   static final double keylineMini = 4.0;
 
+  static double contentWidth(BuildContext context) {
+    return responsiveDimension(
+      context: context,
+      normal: double.infinity,
+      large: increment * 8,
+      xlarge: increment * 12,
+      xxxlarge: increment * 24,
+      option: kIsWeb ? CompareOption.width : CompareOption.both,
+    );
+  }
+
   static double contentHorizontalMargin(BuildContext context) {
     return responsiveDimension(
       context: context,
       normal: keyline,
-      large: keylineXXLarge,
+      large: 0,
       option: CompareOption.width,
     );
   }
@@ -45,11 +71,15 @@ class Dimensions {
   static final double listHandWritingHeight = 192.0;
   static final double preferenceLargeMargin = 56.0;
 
-  static double listHorizontalMargin(BuildContext context) {
+  static double listWidth(BuildContext context) {
     return responsiveDimension(
       context: context,
-      normal: keylineSmall,
-      large: keyline,
+      normal: double.infinity,
+      large: double.infinity,
+      xlarge: increment * 16,
+      xxlarge: increment * 24,
+      xxxlarge: increment * 32,
+      option: kIsWeb ? CompareOption.width : CompareOption.both,
     );
   }
 
@@ -64,10 +94,11 @@ class Dimensions {
   // Grid
   static int gridCrossAxisCount(BuildContext context) {
     var displaySize = getDisplaySize(context, CompareOption.width);
-    if (displaySize.index >= DisplaySize.large.index) {
+    print(displaySize);
+    if (displaySize.index >= DisplaySize.xxlarge.index) {
+      return 6;
+    } else if (displaySize.index >= DisplaySize.large.index) {
       return 4;
-    } else if (displaySize == DisplaySize.medium) {
-      return 3;
     } else {
       return 2;
     }
@@ -77,6 +108,8 @@ class Dimensions {
   static double imageNormalWidth = 360.0;
   static double imageNormalHeight = 240.0;
   static double imageLargeHeight = 360.0;
+  static double imageXLargeHeight = 480.0;
+  static double imageXXLargeHeight = 560.0;
 
   static double codeTextFieldNormalWidth = 280.0;
   static double codeTextFieldLargeWidth = codeTextFieldNormalWidth * 1.2;
@@ -109,6 +142,8 @@ class Dimensions {
       context: context,
       normal: imageNormalHeight,
       large: imageLargeHeight,
+      xlarge: imageXLargeHeight,
+      xxlarge: imageXXLargeHeight,
     );
   }
 
@@ -128,9 +163,21 @@ class Dimensions {
     double medium = -1,
     @required double large,
     double xlarge = -1,
+    double xxlarge = -1,
+    double xxxlarge = -1,
     CompareOption option = CompareOption.both,
   }) {
     var displaySize = getDisplaySize(context, option);
+    if (displaySize.index >= DisplaySize.xxxlarge.index) {
+      if (xxxlarge != -1) {
+        return xxxlarge;
+      }
+    }
+    if (displaySize.index >= DisplaySize.xxlarge.index) {
+      if (xxlarge != -1) {
+        return xxlarge;
+      }
+    }
     if (displaySize.index >= DisplaySize.xlarge.index) {
       if (xlarge != -1) {
         return xlarge;
@@ -162,7 +209,11 @@ class Dimensions {
       compareValue = min(size.width, size.height);
     }
 
-    if (compareValue > 1280) {
+    if (compareValue > 2560) {
+      return DisplaySize.xxxlarge;
+    } else if (compareValue > 1920) {
+      return DisplaySize.xxlarge;
+    } else if (compareValue > 1280) {
       return DisplaySize.xlarge;
     } else if (compareValue > 600) {
       return DisplaySize.large;

@@ -89,41 +89,47 @@ class _MemoScreenState extends State<MemoScreen> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Visibility(
-                    visible: _memoContentImages.isNotEmpty,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.imageHorizontalMargin(context),
-                      ),
-                      child: _ContentImageList(
-                        imageList: _memoContentImages,
-                        heroTagId: widget.memo.id,
-                        onItemTap: _handleImageItemTapped,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.contentHorizontalMargin(context),
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: kToolbarHeight,
-                          child: _TitleEditText(
-                              controller: _editTitleTextController),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                width: Dimensions.contentWidth(context),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Visibility(
+                        visible: _memoContentImages.isNotEmpty,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.keyline,
+                          ),
+                          child: _ContentImageList(
+                            imageList: _memoContentImages,
+                            heroTagId: widget.memo.id,
+                            onItemTap: _handleImageItemTapped,
+                          ),
                         ),
-                        _ContentEditText(
-                          autofocus: widget.memo.id == null,
-                          controller: _editContentTextController,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.keyline,
                         ),
-                      ],
-                    ),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              height: kToolbarHeight,
+                              child: _TitleEditText(
+                                  controller: _editTitleTextController),
+                            ),
+                            _ContentEditText(
+                              autofocus: widget.memo.id == null,
+                              controller: _editContentTextController,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
