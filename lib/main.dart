@@ -6,6 +6,7 @@ import 'package:fill_memo/util/config.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -26,16 +27,16 @@ void main() async {
 
     WidgetsFlutterBinding.ensureInitialized();
 
-//  LocalAuthentication localAuth = LocalAuthentication();
-//  bool canCheckBiometrics = await localAuth.canCheckBiometrics;
+    LocalAuthentication localAuth = LocalAuthentication();
+    bool canCheckBiometrics = await localAuth.canCheckBiometrics;
     bool useFingerprint = false;
-//  if (canCheckBiometrics) {
-//    List<BiometricType> availableBiometrics =
-//        await localAuth.getAvailableBiometrics();
-//    if (availableBiometrics.contains(BiometricType.fingerprint)) {
-//      useFingerprint = true;
-//    }
-//  }
+    if (canCheckBiometrics) {
+      List<BiometricType> availableBiometrics =
+          await localAuth.getAvailableBiometrics();
+      if (availableBiometrics.contains(BiometricType.fingerprint)) {
+        useFingerprint = true;
+      }
+    }
 
     final sharedPreferences = await SharedPreferences.getInstance();
     appConfig = AppConfig(useFingerprint: useFingerprint);

@@ -17,8 +17,6 @@ class IconLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-
     return Container(
       height: Dimensions.keylineXLarge,
       color: backgroundColor,

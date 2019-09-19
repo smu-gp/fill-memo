@@ -38,7 +38,7 @@ subprojects {
             }
             if (details.requested.group == 'androidx.lifecycle' &&
                     !details.requested.name.contains('androidx')) {
-                details.useVersion "2.0.0"
+                details.useVersion "2.1.0"
             }
             if (details.requested.group == 'androidx.core' &&
                     !details.requested.name.contains('androidx')) {

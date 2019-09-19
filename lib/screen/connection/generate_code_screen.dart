@@ -177,26 +177,4 @@ class _GenerateCodeScreenState extends State<GenerateCodeScreen> {
       });
     });
   }
-
-  Widget _buildWarnMsg() {
-    return Container(
-      height: 48.0,
-      color: Colors.orange,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.warning),
-            SizedBox(width: 24),
-            Expanded(
-              child: Text(
-                AppLocalizations.of(context).warnGenerateCode,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
