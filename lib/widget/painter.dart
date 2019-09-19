@@ -460,12 +460,6 @@ class PainterController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void erase() {
-    if (!isFinished()) {
-      removeon = true;
-      notifyListeners();
-    }
-  }
 
   void undo() {
     if (!isFinished()) {

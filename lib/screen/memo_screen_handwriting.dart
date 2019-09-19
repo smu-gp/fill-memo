@@ -13,6 +13,7 @@ import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/list_item.dart';
 import 'package:fill_memo/widget/painter.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/basic.dart';
@@ -50,13 +51,11 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
   bool _showProgress = false;
   double _progressValue = 0;
   List<String> _memoContentImages;
-
   bool onPicture = false;
   IconData swc;
+  Color _bcolor;
   GlobalKey outCapture = new GlobalKey();
-
   int _curInx = 0;
-
   @override
   void initState() {
     super.initState();
@@ -148,39 +147,67 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     Finishsize = new Size(width, height);
     List<Widget> btns;
     if (isLarge(context)) {
-      btns = <Widget>[
-        new IconButton(
-          icon: _controller.pictureOn
-              ? new Icon(Icons.block)
-              : new Icon(Icons.image),
-          onPressed: () {
-            if (!_controller.pictureOn) {
-              _showAddImageBottomSheet();
-            } else {
+      if(kIsWeb){
+        btns = <Widget>[
+          new IconButton(
+            icon: _controller.pictureOn
+                ? new Icon(Icons.block)
+                : new Icon(Icons.image),
+            onPressed: () {
+              if (!_controller.pictureOn) {
+                _showAddImageBottomSheet();
+              } else {
+                setState(() {
+                  _controller.pictureOn = !_controller.pictureOn;
+                  _memoContentImages.removeLast();
+                  clear(_controller);
+                });
+              }
+            },
+          ),
+          new IconButton(
+            icon: new Icon(Icons.save),
+            onPressed: () => save(outCapture),
+          ),
+        ];
+      }
+      else{
+        btns = <Widget>[
+          new IconButton(
+            icon: _controller.pictureOn
+                ? new Icon(Icons.block)
+                : new Icon(Icons.image),
+            onPressed: () {
+              if (!_controller.pictureOn) {
+                _showAddImageBottomSheet();
+              } else {
+                setState(() {
+                  _controller.pictureOn = !_controller.pictureOn;
+                  _memoContentImages.removeLast();
+                  clear(_controller);
+                });
+              }
+            },
+          ),
+          new IconButton(
+            icon: _controller.penOrfinger
+                ? new Icon(Icons.touch_app)
+                : new Icon(Icons.create),
+            onPressed: () {
               setState(() {
-                _controller.pictureOn = !_controller.pictureOn;
-                _memoContentImages.removeLast();
-                clear(_controller);
+                _controller.penOrfinger = !_controller.penOrfinger;
               });
-            }
-          },
-        ),
-        new IconButton(
-          icon: _controller.penOrfinger
-              ? new Icon(Icons.touch_app)
-              : new Icon(Icons.create),
-          onPressed: () {
-            setState(() {
-              _controller.penOrfinger = !_controller.penOrfinger;
-            });
-          },
-        ),
-        new IconButton(
-          icon: new Icon(Icons.save),
-          onPressed: () => save(outCapture),
-        ),
-      ];
-    } else {
+            },
+          ),
+          new IconButton(
+            icon: new Icon(Icons.save),
+            onPressed: () => save(outCapture),
+          ),
+        ];
+      }
+    }
+    else{
+
       btns = <Widget>[
         new IconButton(
           icon: _controller.pictureOn
@@ -204,94 +231,74 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         ),
       ];
     }
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: _controller.backgroundColor,
-        title: Text(""),
-        actions: btns,
-        bottom: PreferredSize(
-            child: Container(
-              height: kToolbarHeight + 3,
+    return Theme(
+      data: AppThemes.lightTheme,
+      child:Scaffold(
+        appBar: AppBar(
+          actions: btns,
+          elevation: 0.0,
+        ),
+        body:Column(
+          children: <Widget>[
+            Visibility(
+              visible: _showProgress,
+              child: SizedBox(
+                child: LinearProgressIndicator(
+                  backgroundColor: AppColors.accentColor.withOpacity(0.2),
+                  value: _progressValue,
+                ),
+                height: 4,
+              ),
+            ),
+            Container(
+              height: kToolbarHeight,
               padding: const EdgeInsets.only(left: 16.0),
               child: _TitleEditText(controller: _editTitleTextController),
             ),
-            preferredSize: Size.fromHeight(kToolbarHeight)),
-        elevation: 0.0,
-      ),
-      body: Center(
-        child:
-            new RepaintBoundary(key: outCapture, child: Painter(_controller)),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.gesture,
-              color: Colors.black,
+            Expanded(
+              child:new RepaintBoundary(key: outCapture, child: Painter(_controller)),
             ),
-            activeIcon: Icon(
-              Icons.gesture,
-              size: 30,
+            Material(
+              elevation: 8.0,
+              child: Container(
+                  height: 48.0,
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: <Widget>[
+                          new IconButton(
+                            focusColor: _controller.drawColor,
+
+                            icon: _controller.removeon?
+                            new Icon(Icons.gesture):new Icon(Icons.delete),
+                            onPressed:(){
+                              setState(() {
+                                _controller.removeon = !_controller.removeon;
+                              });
+                            }
+
+                          ),
+                          new IconButton(
+                            icon: new Icon(Icons.create),
+                            focusColor: _controller.drawColor,
+                            onPressed: ()=> _showPenSettingBottomSheet(),
+                          ),
+                          new IconButton(
+                            icon: new Icon(Icons.loop),
+                            focusColor: _controller.drawColor,
+                            onPressed: ()=>clear(_controller),
+                          ),
+                        ],
+                      )
+                  )
+              ),
             ),
-            title: Text(""),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.create,
-              color: Colors.black,
-            ),
-            activeIcon: Icon(
-              Icons.create,
-              size: 30,
-            ),
-            title: Text(""),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.delete,
-              color: Colors.black,
-            ),
-            activeIcon: Icon(
-              Icons.delete,
-              size: 30,
-            ),
-            title: Text(""),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.loop,
-              color: Colors.black,
-            ),
-            activeIcon: Icon(
-              Icons.loop,
-              size: 30,
-            ),
-            title: Text(""),
-          ),
-        ],
-        selectedItemColor: _controller.drawColor,
-        currentIndex: _curInx,
-        onTap: (index) {
-          setState(() {
-            _curInx = index;
-            switch (index) {
-              case 0:
-                restart();
-                break;
-              case 1:
-                _showPenSettingBottomSheet();
-                break;
-              case 2:
-                _controller.erase();
-                break;
-              case 3:
-                clear(_controller);
-                break;
-            }
-          });
-        },
+          ],
+        ),
       ),
     );
+
+
   }
 
   void clear(PainterController controller) {
@@ -333,6 +340,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     }
   }
 
+
   Future<File> save(GlobalKey capture) async {
     //if(!AppConfig.runOnWeb){
     //}
@@ -351,16 +359,8 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       image.then((data) {
         file.writeAsBytesSync(data);
       });
-      //de.log(_controller.display.toString());
     }
-    //else{
-    //  cached = _controller.noSetFinish(Finishsize);
-    //  final image = cached.toPNG();
-    //  image.then((data){
-    //    file.writeAsBytesSync(data);
-    //  });
-    //}
-    //_uploadFirebaseStorage(file);
+
     else {
       final image = capturePng(_controller.noImageCap, _controller);
 
@@ -467,9 +467,6 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     super.dispose();
   }
 
-  void restart() {
-    _controller.removeon = false;
-  }
 
   Future<Uint8List> capturePng(
       GlobalKey capture, PainterController controller) async {
@@ -526,6 +523,8 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
             ));
   }
 }
+
+
 
 class _penSettingBottomSheet extends StatefulWidget {
   final Color color;
@@ -588,49 +587,70 @@ class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
               icon: new Icon(Icons.lens),
               color: Colors.black,
               onPressed: () {
-                setState(() => widget.controller.drawColor = Colors.black);
+                //setState(() => widget.controller.drawColor = Colors.black);
+                setState(() {
+                  widget.controller.drawColor = Colors.black;
+                });
               },
             ),
             new IconButton(
               icon: new Icon(Icons.lens),
               color: Colors.red,
               onPressed: () {
-                setState(() => widget.controller.drawColor = Colors.red);
+                //setState(() => widget.controller.drawColor = Colors.red);
+                setState(() {
+                  widget.controller.drawColor = Colors.red;
+                });
               },
             ),
             new IconButton(
               icon: new Icon(Icons.lens),
               color: Colors.blue,
               onPressed: () {
-                setState(() => widget.controller.drawColor = Colors.blue);
+                //setState(() => widget.controller.drawColor = Colors.blue);
+                setState(() {
+                  widget.controller.drawColor = Colors.blue;
+                });
               },
             ),
             new IconButton(
               icon: new Icon(Icons.lens),
               color: Colors.green,
               onPressed: () {
-                setState(() => widget.controller.drawColor = Colors.green);
+                //setState(() => widget.controller.drawColor = Colors.green);
+                setState(() {
+                  widget.controller.drawColor = Colors.green;
+                });
               },
             ),
             new IconButton(
               icon: new Icon(Icons.lens),
               color: Colors.purple,
               onPressed: () {
-                setState(() => widget.controller.drawColor = Colors.purple);
+                //setState(() => widget.controller.drawColor = Colors.purple);
+                setState(() {
+                  widget.controller.drawColor = Colors.purple;
+                });
               },
             ),
             new IconButton(
               icon: new Icon(Icons.lens),
               color: Colors.pinkAccent,
               onPressed: () {
-                setState(() => widget.controller.drawColor = Colors.pinkAccent);
+                //setState(() => widget.controller.drawColor = Colors.pinkAccent);
+                setState(() {
+                  widget.controller.drawColor = Colors.pinkAccent;
+                });
               },
             ),
             new IconButton(
               icon: new Icon(Icons.lens),
               color: Colors.amber,
               onPressed: () {
-                setState(() => widget.controller.drawColor = Colors.amber);
+                //setState(() => widget.controller.drawColor = Colors.amber);
+                setState(() {
+                  widget.controller.drawColor = Colors.amber;
+                });
               },
             ),
           ],
@@ -660,7 +680,7 @@ class _penSettingBottomSheetState extends State<_penSettingBottomSheet> {
             initialData: 0.0,
             stream: sliderStream,
           );
-        });
+      });
   }
 }
 

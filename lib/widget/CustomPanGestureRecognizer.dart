@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'dart:developer' as de;
+
 import 'package:fill_memo/widget/painter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 
 class CustomPanGestureRecognizer extends PanGestureRecognizer {
@@ -29,22 +32,29 @@ class CustomPanGestureRecognizer extends PanGestureRecognizer {
   void addPointer(PointerEvent event) {
     int p = 0;
     if (isLarge(context)) {
-      if (!controller.penOrfinger) {
-        if (event.kind == PointerDeviceKind.stylus) {
-          startTrackingPointer(event.pointer);
-          resolve(GestureDisposition.accepted);
+      if(kIsWeb){
+        startTrackingPointer(event.pointer);
+        resolve(GestureDisposition.accepted);
+      }
+      else{
+        if (!controller.penOrfinger) {
+          if (event.kind == PointerDeviceKind.stylus) {
+            startTrackingPointer(event.pointer);
+            resolve(GestureDisposition.accepted);
+          } else {
+            stopTrackingPointer(event.pointer);
+          }
         } else {
-          stopTrackingPointer(event.pointer);
-        }
-      } else {
-        if (event.kind == PointerDeviceKind.touch) {
-          startTrackingPointer(event.pointer);
-          resolve(GestureDisposition.accepted);
-        } else {
-          stopTrackingPointer(event.pointer);
+          if (event.kind == PointerDeviceKind.touch) {
+            startTrackingPointer(event.pointer);
+            resolve(GestureDisposition.accepted);
+          } else {
+            stopTrackingPointer(event.pointer);
+          }
         }
       }
     } else {
+      de.log("Large 통과X");
       startTrackingPointer(event.pointer);
       resolve(GestureDisposition.accepted);
     }
