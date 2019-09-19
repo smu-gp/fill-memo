@@ -1,15 +1,11 @@
-import 'package:equatable/equatable.dart';
-
-// ignore: must_be_immutable
-class ProcessResult extends Equatable {
+class ProcessResult {
   static final String columnContent = 'content';
 
   String content;
 
-  ProcessResult({this.content}) : super([content]);
+  ProcessResult(this.content);
 
-  ProcessResult.fromMap(Map<String, dynamic> map)
-      : super([map[columnContent]]) {
+  ProcessResult.fromMap(Map<String, dynamic> map) {
     content = map[columnContent];
   }
 

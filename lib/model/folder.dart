@@ -1,8 +1,6 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-// ignore: must_be_immutable
-class Folder extends Equatable {
+class Folder {
   static final String tableName = "Folder";
   static final String columnId = "id";
   static final String columnName = "name";
@@ -20,14 +18,9 @@ class Folder extends Equatable {
     this.id = defaultId,
     this.userId,
     @required this.name,
-  }) : super([id, userId, name]);
+  });
 
-  Folder.fromMap(Map<String, dynamic> map)
-      : super([
-          map[columnId],
-          map[columnUserId],
-          map[columnName],
-        ]) {
+  Folder.fromMap(Map<String, dynamic> map) {
     id = map[columnId];
     userId = map[columnUserId];
     name = map[columnName];
