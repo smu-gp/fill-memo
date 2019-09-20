@@ -7,6 +7,7 @@ import 'package:fill_memo/widget/memo_sort.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -109,7 +110,9 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
       Consumer<MemoListType>(builder: (context, listType, _) {
         return IconButton(
           icon: Icon(
-            listType.value == ListType.list ? Icons.dashboard : Icons.view_list,
+            listType.value == ListType.list
+                ? MdiIcons.viewGrid
+                : MdiIcons.viewStream,
           ),
           onPressed: () {
             if (listType.value == ListType.grid) {
