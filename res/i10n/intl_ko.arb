@@ -381,6 +381,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelQuickMemoWriting": "빠른 메모 작성",
+  "@labelQuickMemoWriting": {
+    "type": "text",
+    "placeholders": {}
+  },
   "memoEmpty": "메모가 비어있습니다",
   "@memoEmpty": {
     "type": "text",
@@ -448,6 +453,11 @@
   },
   "subtitleSecurity": "보안",
   "@subtitleSecurity": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleQuickMemoWriting": "기본 메모 유형을 사용하여 메모를 작성합니다",
+  "@subtitleQuickMemoWriting": {
     "type": "text",
     "placeholders": {}
   },

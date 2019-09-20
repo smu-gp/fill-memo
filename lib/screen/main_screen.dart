@@ -61,7 +61,9 @@ class _MainScreenState extends State<MainScreen> {
         );
       }),
       floatingActionButton: MainFloatingActionButton(
-        onPressed: _navigateNewMemo,
+        onPressed: (type) {
+          _navigateNewMemo(type: type);
+        },
       ),
       resizeToAvoidBottomPadding: false,
     );
@@ -123,7 +125,7 @@ class _MainScreenState extends State<MainScreen> {
     _listBloc.dispatch(SelectItem(memo));
   }
 
-  void _navigateNewMemo({bool onStartup = false}) {
+  void _navigateNewMemo({bool onStartup = false, String type}) {
     var preferenceRepository =
         RepositoryProvider.of<PreferenceRepository>(context);
 
@@ -139,15 +141,17 @@ class _MainScreenState extends State<MainScreen> {
             .getBool(AppPreferences.keyQuickFolderClassification) ??
         true;
 
-    var defaultMemoType =
-        preferenceRepository.getString(AppPreferences.keyDefaultMemoType) ??
-            typeRichText;
+    if (type == null) {
+      type =
+          preferenceRepository.getString(AppPreferences.keyDefaultMemoType) ??
+              typeRichText;
+    }
 
     var destination;
     if (quickFolderClassification) {
-      destination = Routes().memoTitle(defaultMemoType);
+      destination = Routes().memoTitle(type);
     } else {
-      destination = Routes().memo(Memo.empty(defaultMemoType));
+      destination = Routes().memo(Memo.empty(type));
     }
     Navigator.push(context, destination);
   }

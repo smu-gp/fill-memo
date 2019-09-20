@@ -387,6 +387,11 @@ class AppLocalizations {
         name: 'labelErrorOccurred',
       );
 
+  String get labelQuickMemoWriting => Intl.message(
+        'Quick memo writing',
+        name: 'labelQuickMemoWriting',
+      );
+
   String get memoEmpty => Intl.message(
         'Empty memo',
         name: 'memoEmpty',
@@ -456,6 +461,11 @@ class AppLocalizations {
   String get subtitleSecurity => Intl.message(
         'Security',
         name: 'subtitleSecurity',
+      );
+
+  String get subtitleQuickMemoWriting => Intl.message(
+        'Create a memo using the default memo type',
+        name: 'subtitleQuickMemoWriting',
       );
 
   String get titleAddImage => Intl.message(

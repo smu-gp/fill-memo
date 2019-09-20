@@ -67,9 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<Widget> _buildItems(Preferences preferences) {
     return <Widget>[
       ..._buildNoteItems(preferences),
-      if (!kIsWeb) ..._buildSecurityItems(preferences),
-      if (!kIsWeb && bool.fromEnvironment("dart.vm.product"))
-        ..._buildDebugItems(preferences),
+      ..._buildSecurityItems(preferences),
       ..._buildInfoItems(preferences),
     ];
   }
@@ -81,17 +79,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         preferences.get(AppPreferences.keyNewNoteOnStartup);
     var prefQuickFolderClassification =
         preferences.get(AppPreferences.keyQuickFolderClassification);
+    var prefQuickMemoWriting =
+        preferences.get(AppPreferences.keyQuickMemoWriting);
 
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleNote,
-      ),
-      ListItem(
-        title: AppLocalizations.of(context).labelDefaultMemoType,
-        subtitle: _toLocalizationsFromType(prefDefaultMemoType.value),
-        onTap: () {
-          Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
-        },
       ),
       if (!kIsWeb)
         SwitchListItem(
@@ -114,11 +107,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
           );
         },
       ),
+      SwitchListItem(
+        title: AppLocalizations.of(context).labelQuickMemoWriting,
+        subtitle: AppLocalizations.of(context).subtitleQuickMemoWriting,
+        value: prefQuickMemoWriting.value,
+        onChanged: (bool value) {
+          _preferenceBloc.dispatch(
+            UpdatePreference(prefQuickMemoWriting..value = value),
+          );
+        },
+      ),
+      ListItem(
+        title: AppLocalizations.of(context).labelDefaultMemoType,
+        subtitle: _toLocalizationsFromType(prefDefaultMemoType.value),
+        enabled: prefQuickMemoWriting.value,
+        onTap: () {
+          Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
+        },
+      ),
       Divider(height: 1),
     ];
   }
 
   List<Widget> _buildSecurityItems(Preferences preferences) {
+    if (kIsWeb) return [];
+
     var prefUseFingerprint = preferences.get(AppPreferences.keyUseFingerprint);
     var config = Provider.of<AppConfig>(context);
 
@@ -135,21 +148,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             UpdatePreference(prefUseFingerprint..value = value),
           );
         },
-      ),
-      Divider(height: 1),
-    ];
-  }
-
-  List<Widget> _buildDebugItems(Preferences preferences) {
-    return <Widget>[
-      SubHeader(
-        AppLocalizations.of(context).subtitleDebug,
-      ),
-      _EditTextPreference(
-        title: AppLocalizations.of(context).labelServiceHost,
-        preference: preferences.get(AppPreferences.keyServiceHost),
-        validation: (value) => value.isNotEmpty,
-        validationMessage: AppLocalizations.of(context).validationServiceHost,
       ),
       Divider(height: 1),
     ];

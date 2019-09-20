@@ -6,6 +6,7 @@ class AppPreferences {
   static final String keyUserId = "pref_user_id";
   static final String keyDarkMode = "pref_dark_mode";
   static final String keyDefaultMemoType = "pref_default_memo_type";
+  static final String keyQuickMemoWriting = "pref_quick_memo_writing";
   static final String keyNewNoteOnStartup = "pref_new_note_onstartup";
   static final String keyQuickFolderClassification =
       "pref_quick_folder_classification";
@@ -43,5 +44,9 @@ class AppPreferences {
       key: keyUseFingerprint,
       initValue: false,
     ),
+    Preference<bool>(
+      key: keyQuickMemoWriting,
+      initValue: false,
+    )
   ];
 }
