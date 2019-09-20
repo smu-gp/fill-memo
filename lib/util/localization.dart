@@ -372,6 +372,21 @@ class AppLocalizations {
         name: 'labelWriteNewNoteOnStartup',
       );
 
+  String get labelNoProcessResult => Intl.message(
+        'No process result',
+        name: 'labelNoProcessResult',
+      );
+
+  String get labelClose => Intl.message(
+        'Close',
+        name: 'labelClose',
+      );
+
+  String get labelErrorOccurred => Intl.message(
+        'Error occurred',
+        name: 'labelErrorOccurred',
+      );
+
   String get memoEmpty => Intl.message(
         'Empty memo',
         name: 'memoEmpty',

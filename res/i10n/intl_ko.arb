@@ -366,6 +366,21 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelNoProcessResult": "결과가 없습니다",
+  "@labelNoProcessResult": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelClose": "닫기",
+  "@labelClose": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelErrorOccurred": "오류 발생",
+  "@labelErrorOccurred": {
+    "type": "text",
+    "placeholders": {}
+  },
   "memoEmpty": "메모가 비어있습니다",
   "@memoEmpty": {
     "type": "text",

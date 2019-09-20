@@ -163,6 +163,14 @@ class _MemoScreenState extends State<MemoScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    _updateMemo();
+    _editTitleTextController.dispose();
+    _editContentTextController.dispose();
+    super.dispose();
+  }
+
   void _handleImageItemTapped(int index) async {
     await Navigator.push(
       context,
@@ -212,6 +220,77 @@ class _MemoScreenState extends State<MemoScreen> {
     }
   }
 
+  Future _addImage(
+    File file,
+    bool enableTextRecognition,
+    TextSelection selection,
+  ) async {
+    if (enableTextRecognition) {
+      try {
+        var results = await _uploadProcessServer(file);
+        if (results != null && results.isNotEmpty) {
+          await _showProcessResults(results, selection);
+        } else {
+          await _showProcessNoResults();
+        }
+      } catch (e) {
+        Navigator.pop(context); // Hide progress dialog
+        await _showProcessErrorDialog(e);
+      }
+    } else {
+      await _uploadFirebaseStorage(file);
+    }
+  }
+
+  Future<List<ProcessResult>> _uploadProcessServer(
+    File imageFile,
+  ) async {
+    _showProgressDialog();
+
+    var host = _preferenceRepository.getString(AppPreferences.keyServiceHost) ??
+        defaultServiceHost;
+
+    var results = await Service.sendImage(
+      imagePath: imageFile.path,
+      baseUrl: processingServiceUrl(host),
+    );
+
+    Navigator.pop(context); // Hide progress dialog
+    return results;
+  }
+
+  Future _uploadFirebaseStorage(File imageFile) async {
+    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
+    final uuid = Uuid().v1();
+    final ext = imageFile.path.split(".")[1];
+    final storage = FirebaseStorage.instance;
+    final storageRef = storage.ref().child(userId).child('$uuid.$ext');
+    final uploadTask = storageRef.putFile(imageFile);
+
+    setState(() {
+      _showProgress = true;
+    });
+
+    await for (final event in uploadTask.events) {
+      if (event.type == StorageTaskEventType.progress) {
+        setState(() {
+          _progressValue =
+              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
+          debugPrint(_progressValue.toString());
+        });
+      } else if (event.type == StorageTaskEventType.success) {
+        final downloadURL = await event.snapshot.ref.getDownloadURL();
+
+        _memoContentImages.add(downloadURL);
+
+        setState(() {
+          _progressValue = 0;
+          _showProgress = false;
+        });
+      }
+    }
+  }
+
   Future _showAddImageSheet() async {
     TextSelection currentSelection = _editContentTextController.selection;
     _AddImageResult result = await showModalBottomSheet(
@@ -249,19 +328,19 @@ class _MemoScreenState extends State<MemoScreen> {
     );
   }
 
-  Future _showSendErrorDialog([Object e]) {
-    return showDialog(
+  Future _showProcessErrorDialog(Object e) async {
+    await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Error occurred'),
-          content: Text(e != null ? e.toString() : 'No results from service'),
+          title: Text(AppLocalizations.of(context).labelErrorOccurred),
+          content: Text(e.toString()),
           actions: <Widget>[
             FlatButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('OK'),
+              child: Text(AppLocalizations.of(context).labelClose),
             ),
           ],
         );
@@ -269,7 +348,7 @@ class _MemoScreenState extends State<MemoScreen> {
     );
   }
 
-  void _showProcessResults(
+  Future _showProcessResults(
     List<ProcessResult> results,
     TextSelection selection,
   ) async {
@@ -305,84 +384,24 @@ class _MemoScreenState extends State<MemoScreen> {
     }
   }
 
-  Future _addImage(
-    File file,
-    bool enableTextRecognition,
-    TextSelection selection,
-  ) async {
-    if (enableTextRecognition) {
-      var results = await _uploadProcessingServer(file);
-      if (results != null) {
-        _showProcessResults(results, selection);
-      }
-    } else {
-      _uploadFirebaseStorage(file);
-    }
-  }
-
-  Future _uploadFirebaseStorage(File imageFile) async {
-    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
-    final uuid = Uuid().v1();
-    final ext = imageFile.path.split(".")[1];
-    final storage = FirebaseStorage.instance;
-    final storageRef = storage.ref().child(userId).child('$uuid.$ext');
-    final uploadTask = storageRef.putFile(imageFile);
-
-    setState(() {
-      _showProgress = true;
-    });
-
-    await for (final event in uploadTask.events) {
-      if (event.type == StorageTaskEventType.progress) {
-        setState(() {
-          _progressValue =
-              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
-          debugPrint(_progressValue.toString());
-        });
-      } else if (event.type == StorageTaskEventType.success) {
-        final downloadURL = await event.snapshot.ref.getDownloadURL();
-
-        _memoContentImages.add(downloadURL);
-
-        setState(() {
-          _progressValue = 0;
-          _showProgress = false;
-        });
-      }
-    }
-  }
-
-  Future<List<ProcessResult>> _uploadProcessingServer(
-    File imageFile,
-  ) async {
-    _showProgressDialog();
-
-    try {
-      var host =
-          _preferenceRepository.getString(AppPreferences.keyServiceHost) ??
-              defaultServiceHost;
-
-      var results = await Service.sendImage(
-        imagePath: imageFile.path,
-        baseUrl: processingServiceUrl(host),
-      );
-
-      Navigator.pop(context); // Hide progress dialog
-      return results;
-    } catch (e, stacktrace) {
-      Navigator.pop(context); // Hide progress dialog
-      await _showSendErrorDialog(e);
-      print(stacktrace);
-      return null;
-    }
-  }
-
-  @override
-  void dispose() {
-    _updateMemo();
-    _editTitleTextController.dispose();
-    _editContentTextController.dispose();
-    super.dispose();
+  Future _showProcessNoResults() async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context).titleResult),
+          content: Text(AppLocalizations.of(context).labelNoProcessResult),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(AppLocalizations.of(context).labelClose),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
