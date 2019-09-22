@@ -4,7 +4,7 @@ import 'package:fill_memo/bloc/blocs.dart';
 import 'package:fill_memo/model/models.dart';
 import 'package:fill_memo/repository/repositories.dart';
 import 'package:fill_memo/screen/process_result_screen.dart';
-import 'package:fill_memo/service/services.dart' as Service;
+import 'package:fill_memo/service/services.dart';
 import 'package:fill_memo/util/constants.dart';
 import 'package:fill_memo/util/dimensions.dart';
 import 'package:fill_memo/util/localization.dart';
@@ -12,11 +12,10 @@ import 'package:fill_memo/util/utils.dart';
 import 'package:fill_memo/widget/list_item.dart';
 import 'package:fill_memo/widget/loading_progress.dart';
 import 'package:fill_memo/widget/network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:rich_text_editor/rich_text_editor.dart';
 import 'package:uuid/uuid.dart';
@@ -221,13 +220,13 @@ class _MemoScreenState extends State<MemoScreen> {
   }
 
   Future _addImage(
-    File file,
+    ImageResult imageResult,
     bool enableTextRecognition,
     TextSelection selection,
   ) async {
     if (enableTextRecognition) {
       try {
-        var results = await _uploadProcessServer(file);
+        var results = await _uploadProcessServer(imageResult);
         if (results != null && results.isNotEmpty) {
           await _showProcessResults(results, selection);
         } else {
@@ -238,20 +237,20 @@ class _MemoScreenState extends State<MemoScreen> {
         await _showProcessErrorDialog(e);
       }
     } else {
-      await _uploadFirebaseStorage(file);
+      await _uploadFirebaseStorage(imageResult);
     }
   }
 
   Future<List<ProcessResult>> _uploadProcessServer(
-    File imageFile,
+    ImageResult imageResult,
   ) async {
     _showProgressDialog();
 
     var host = _preferenceRepository.getString(AppPreferences.keyServiceHost) ??
         defaultServiceHost;
 
-    var results = await Service.sendImage(
-      imagePath: imageFile.path,
+    var results = await sendImage(
+      imagePath: imageResult.path,
       baseUrl: processingServiceUrl(host),
     );
 
@@ -259,29 +258,33 @@ class _MemoScreenState extends State<MemoScreen> {
     return results;
   }
 
-  Future _uploadFirebaseStorage(File imageFile) async {
-    final userId = _preferenceRepository.getString(AppPreferences.keyUserId);
+  Future _uploadFirebaseStorage(ImageResult imageResult) async {
+    var userId;
+    final authState = BlocProvider.of<AuthBloc>(context).currentState;
+    if (authState is Authenticated) {
+      userId = authState.uid;
+    }
+
     final uuid = Uuid().v1();
-    final ext = imageFile.path.split(".")[1];
-    final storage = FirebaseStorage.instance;
-    final storageRef = storage.ref().child(userId).child('$uuid.$ext');
-    final uploadTask = storageRef.putFile(imageFile);
+    final ext = imageResult.path.split(".")[1];
+
+    var uploadTask = ImageStorage.putFile(
+      userId: userId,
+      name: '$uuid.$ext',
+      file: imageResult.file,
+    );
 
     setState(() {
       _showProgress = true;
     });
 
-    await for (final event in uploadTask.events) {
-      if (event.type == StorageTaskEventType.progress) {
+    await for (final event in uploadTask) {
+      if (event.state == TaskState.progress) {
         setState(() {
-          _progressValue =
-              event.snapshot.bytesTransferred / event.snapshot.totalByteCount;
-          debugPrint(_progressValue.toString());
+          _progressValue = event.bytesTransferred / event.totalBytes;
         });
-      } else if (event.type == StorageTaskEventType.success) {
-        final downloadURL = await event.snapshot.ref.getDownloadURL();
-
-        _memoContentImages.add(downloadURL);
+      } else if (event.state == TaskState.success) {
+        _memoContentImages.add(event.downloadUrl);
 
         setState(() {
           _progressValue = 0;
@@ -303,8 +306,12 @@ class _MemoScreenState extends State<MemoScreen> {
         ),
       ),
     );
-    if (result != null && result.file != null) {
-      _addImage(result.file, result.enableTextRecognition, currentSelection);
+    if (result != null && result.imageResult != null) {
+      _addImage(
+        result.imageResult,
+        result.enableTextRecognition,
+        currentSelection,
+      );
     }
   }
 
@@ -584,24 +591,25 @@ class _AddImageSheetState extends State<_AddImageSheet> {
           title: AppLocalizations.of(context).imageFromGallery,
           onTap: () => _handleMenuTapped(ImageSource.gallery),
         ),
-        ListItem(
-          leading: Icon(
-            OMIcons.photoCamera,
-            color: Theme.of(context).accentColor,
+        if (!kIsWeb)
+          ListItem(
+            leading: Icon(
+              OMIcons.photoCamera,
+              color: Theme.of(context).accentColor,
+            ),
+            title: AppLocalizations.of(context).imageFromCamera,
+            onTap: () => _handleMenuTapped(ImageSource.camera),
           ),
-          title: AppLocalizations.of(context).imageFromCamera,
-          onTap: () => _handleMenuTapped(ImageSource.camera),
-        ),
       ],
     );
   }
 
   Future _handleMenuTapped(ImageSource source) async {
-    var file = await ImagePicker.pickImage(source: source);
+    var imageResult = await pickImage(source);
     Navigator.pop(
       context,
       _AddImageResult(
-        file: file,
+        imageResult: imageResult,
         enableTextRecognition: _enableTextRecognition,
       ),
     );
@@ -609,13 +617,13 @@ class _AddImageSheetState extends State<_AddImageSheet> {
 }
 
 class _AddImageResult {
-  final File file;
+  final ImageResult imageResult;
   final bool enableTextRecognition;
 
-  _AddImageResult({this.file, this.enableTextRecognition});
+  _AddImageResult({this.imageResult, this.enableTextRecognition});
 
   @override
   String toString() {
-    return '$runtimeType(file: $file, enableTextRecognition: $enableTextRecognition)';
+    return '$runtimeType(imageResult: $imageResult, enableTextRecognition: $enableTextRecognition)';
   }
 }
