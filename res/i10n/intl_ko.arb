@@ -386,6 +386,31 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelResultAppendType": "텍스트 결과 추가 유형",
+  "@labelResultAppendType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleResultAppendType": "이미지에서 가져온 여러 텍스트 결과를 추가할때 내용에 덧붙일 방법을 설정합니다",
+  "@subtitleResultAppendType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeNone": "없음",
+  "@labelAppendTypeNone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeSpace": "띄어쓰기",
+  "@labelAppendTypeSpace": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeNewLine": "새로운 줄",
+  "@labelAppendTypeNewLine": {
+    "type": "text",
+    "placeholders": {}
+  },
   "memoEmpty": "메모가 비어있습니다",
   "@memoEmpty": {
     "type": "text",
@@ -456,7 +481,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "subtitleQuickMemoWriting": "기본 메모 유형을 사용하여 메모를 작성합니다",
+  "subtitleQuickMemoWriting": "기본 메모 유형으로 메모를 작성합니다",
   "@subtitleQuickMemoWriting": {
     "type": "text",
     "placeholders": {}

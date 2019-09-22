@@ -81,6 +81,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         preferences.get(AppPreferences.keyQuickFolderClassification);
     var prefQuickMemoWriting =
         preferences.get(AppPreferences.keyQuickMemoWriting);
+    var prefResultAppendType =
+        preferences.get(AppPreferences.keyResultAppendType);
 
     return <Widget>[
       SubHeader(
@@ -123,6 +125,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         enabled: prefQuickMemoWriting.value,
         onTap: () {
           Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
+        },
+      ),
+      _DropdownPreference<String>(
+        title: AppLocalizations.of(context).labelResultAppendType,
+        subtitle: AppLocalizations.of(context).subtitleResultAppendType,
+        labels: appendTypes
+            .map((type) => _toLocalizationsFromAppendType(type))
+            .toList(),
+        values: appendTypes,
+        initValue: prefResultAppendType.value ?? typeSpace,
+        onChanged: (dynamic newValue) {
+          _preferenceBloc.dispatch(
+            UpdatePreference(prefResultAppendType..value = newValue),
+          );
         },
       ),
       Divider(height: 1),
@@ -185,6 +201,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     return null;
   }
+
+  String _toLocalizationsFromAppendType(String appendType) {
+    switch (appendType) {
+      case typeNone:
+        return AppLocalizations.of(context).labelAppendTypeNone;
+      case typeSpace:
+        return AppLocalizations.of(context).labelAppendTypeSpace;
+      case typeNewline:
+        return AppLocalizations.of(context).labelAppendTypeNewLine;
+    }
+  }
 }
 
 class _EditTextPreference extends StatelessWidget {
@@ -224,6 +251,64 @@ class _EditTextPreference extends StatelessWidget {
           bloc.dispatch(UpdatePreference(preference..value = value));
         }
       },
+    );
+  }
+}
+
+class _DropdownPreference<T> extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final List<String> labels;
+  final List<T> values;
+  final T initValue;
+  final ValueChanged<T> onChanged;
+
+  _DropdownPreference({
+    Key key,
+    @required this.title,
+    this.subtitle,
+    @required this.labels,
+    @required this.values,
+    @required this.initValue,
+    this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _DropdownPreferenceState<T> createState() => _DropdownPreferenceState<T>();
+}
+
+class _DropdownPreferenceState<T> extends State<_DropdownPreference> {
+  T _dropdownValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _dropdownValue = widget.initValue;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem(
+      title: widget.title,
+      subtitle: widget.subtitle,
+      threeLine: true,
+      trailing: DropdownButton<T>(
+        value: _dropdownValue,
+        onChanged: widget.onChanged != null
+            ? (T newValue) {
+                setState(() {
+                  _dropdownValue = newValue;
+                });
+                widget.onChanged(newValue);
+              }
+            : null,
+        items: widget.values.asMap().entries.map((entry) {
+          return DropdownMenuItem<T>(
+            value: entry.value,
+            child: Text(widget.labels[entry.key]),
+          );
+        }).toList(),
+      ),
     );
   }
 }

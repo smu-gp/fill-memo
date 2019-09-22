@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-09-20T19:05:14.014599",
+  "@@last_modified": "2019-09-22T17:30:55.091966",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -383,6 +383,31 @@
   },
   "labelQuickMemoWriting": "Quick memo writing",
   "@labelQuickMemoWriting": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelResultAppendType": "Result append type",
+  "@labelResultAppendType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleResultAppendType": "Set extract text result append type",
+  "@subtitleResultAppendType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeNone": "None",
+  "@labelAppendTypeNone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeSpace": "Space",
+  "@labelAppendTypeSpace": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeNewLine": "New line",
+  "@labelAppendTypeNewLine": {
     "type": "text",
     "placeholders": {}
   },

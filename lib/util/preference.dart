@@ -11,6 +11,7 @@ class AppPreferences {
   static final String keyQuickFolderClassification =
       "pref_quick_folder_classification";
   static final String keyUseFingerprint = "pref_use_finderprint";
+  static final String keyResultAppendType = "pref_result_append_type";
 
   // For debug options
   static final String keyServiceHost = "pref_service_host";
@@ -47,6 +48,10 @@ class AppPreferences {
     Preference<bool>(
       key: keyQuickMemoWriting,
       initValue: false,
-    )
+    ),
+    Preference<String>(
+      key: keyResultAppendType,
+      initValue: typeSpace,
+    ),
   ];
 }

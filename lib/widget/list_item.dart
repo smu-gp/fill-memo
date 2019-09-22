@@ -8,6 +8,7 @@ class ListItem extends StatelessWidget {
   final Widget trailing;
   final VoidCallback onTap;
   final bool enabled;
+  final bool threeLine;
 
   const ListItem({
     Key key,
@@ -17,6 +18,7 @@ class ListItem extends StatelessWidget {
     this.subtitle,
     this.onTap,
     this.enabled = true,
+    this.threeLine = false,
   });
 
   @override
@@ -27,7 +29,7 @@ class ListItem extends StatelessWidget {
     return InkWell(
       onTap: enabled ? onTap : null,
       child: Container(
-        height: twoLine ? 64.0 : 48.0,
+        height: twoLine ? threeLine ? 88.0 : 64.0 : 48.0,
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           children: <Widget>[
@@ -54,6 +56,7 @@ class ListItem extends StatelessWidget {
                 ],
               ),
             ),
+            if (trailing != null) SizedBox(width: 16.0),
             if (trailing != null) trailing,
           ],
         ),

@@ -366,9 +366,20 @@ class _MemoScreenState extends State<MemoScreen> {
     }
 
     if (selectedItems != null) {
+      var prefResultAppendType =
+          _preferenceRepository.getString(AppPreferences.keyResultAppendType) ??
+              typeSpace;
+      var appendValue = "";
+      if (prefResultAppendType == typeSpace) {
+        appendValue = " ";
+      } else if (prefResultAppendType == typeNewline) {
+        appendValue = "\n";
+      }
+
       var processedText = "";
+
       selectedItems.forEach((result) {
-        processedText += (result as ProcessResult).content;
+        processedText += (result as ProcessResult).content + appendValue;
       });
 
       var text = _editContentTextController.text;

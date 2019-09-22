@@ -392,6 +392,31 @@ class AppLocalizations {
         name: 'labelQuickMemoWriting',
       );
 
+  String get labelResultAppendType => Intl.message(
+        'Result append type',
+        name: 'labelResultAppendType',
+      );
+
+  String get subtitleResultAppendType => Intl.message(
+        'Set extract text result append type',
+        name: 'subtitleResultAppendType',
+      );
+
+  String get labelAppendTypeNone => Intl.message(
+        'None',
+        name: 'labelAppendTypeNone',
+      );
+
+  String get labelAppendTypeSpace => Intl.message(
+        'Space',
+        name: 'labelAppendTypeSpace',
+      );
+
+  String get labelAppendTypeNewLine => Intl.message(
+        'New line',
+        name: 'labelAppendTypeNewLine',
+      );
+
   String get memoEmpty => Intl.message(
         'Empty memo',
         name: 'memoEmpty',
