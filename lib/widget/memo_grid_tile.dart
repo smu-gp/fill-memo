@@ -7,7 +7,6 @@ import 'package:fill_memo/widget/loading_progress.dart';
 import 'package:fill_memo/widget/network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:rich_text_editor/rich_text_editor.dart';
 
 class MemoGridTile extends StatelessWidget {
@@ -70,10 +69,11 @@ class MemoGridTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(4.0),
       );
     } else if (memo.type == typeMarkdown) {
-      content = Container(
-          child: MarkdownBody(
-        data: memo.content,
-      ));
+      content = Text(
+        memo.content,
+        maxLines: 5,
+        overflow: TextOverflow.ellipsis,
+      );
     }
 
     return Card(
