@@ -132,9 +132,10 @@ class Routes {
     );
   }
 
-  PageRoute markdownPreviewMemo({String content}) {
+  PageRoute markdownPreviewMemo({String title, String content}) {
     return MaterialPageRoute(
       builder: (context) => MemoMarkdownPreviewScreen(
+        title: title,
         content: content,
       ),
     );
