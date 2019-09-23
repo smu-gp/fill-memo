@@ -5,11 +5,11 @@ enum ImageSource {
   camera,
 }
 
-class ImageResult {
+class ImageObject {
   final Object file;
   final String path;
 
-  ImageResult(this.file, this.path);
+  ImageObject(this.file, this.path);
 
   @override
   String toString() {

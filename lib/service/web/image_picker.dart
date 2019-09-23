@@ -4,16 +4,16 @@ import 'package:universal_html/html.dart' as html;
 
 import '../image_model.dart';
 
-Future<ImageResult> pickImage(ImageSource imageSource) async {
+Future<ImageObject> pickImage(ImageSource imageSource) async {
   if (imageSource == ImageSource.gallery) {
-    final completer = Completer<ImageResult>();
+    final completer = Completer<ImageObject>();
     final html.InputElement input = html.document.createElement('input');
     input
       ..type = 'file'
       ..accept = 'image/jpeg, image/png';
     input.onChange.listen((event) async {
       final file = input.files.first;
-      completer.complete(ImageResult(file, file.name));
+      completer.complete(ImageObject(file, file.name));
     });
     input.click();
     return completer.future;

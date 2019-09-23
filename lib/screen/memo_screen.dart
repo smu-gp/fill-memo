@@ -220,13 +220,13 @@ class _MemoScreenState extends State<MemoScreen> {
   }
 
   Future _addImage(
-    ImageResult imageResult,
+    ImageObject imageObject,
     bool enableTextRecognition,
     TextSelection selection,
   ) async {
     if (enableTextRecognition) {
       try {
-        var results = await _uploadProcessServer(imageResult);
+        var results = await _uploadProcessServer(imageObject);
         if (results != null && results.isNotEmpty) {
           await _showProcessResults(results, selection);
         } else {
@@ -237,12 +237,12 @@ class _MemoScreenState extends State<MemoScreen> {
         await _showProcessErrorDialog(e);
       }
     } else {
-      await _uploadFirebaseStorage(imageResult);
+      await _uploadFirebaseStorage(imageObject);
     }
   }
 
   Future<List<ProcessResult>> _uploadProcessServer(
-    ImageResult imageResult,
+    ImageObject imageObject,
   ) async {
     _showProgressDialog();
 
@@ -250,7 +250,7 @@ class _MemoScreenState extends State<MemoScreen> {
         defaultServiceHost;
 
     var results = await sendImage(
-      imagePath: imageResult.path,
+      imageObject: imageObject,
       baseUrl: processingServiceUrl(host),
     );
 
@@ -258,7 +258,7 @@ class _MemoScreenState extends State<MemoScreen> {
     return results;
   }
 
-  Future _uploadFirebaseStorage(ImageResult imageResult) async {
+  Future _uploadFirebaseStorage(ImageObject imageObject) async {
     var userId;
     final authState = BlocProvider.of<AuthBloc>(context).currentState;
     if (authState is Authenticated) {
@@ -266,12 +266,12 @@ class _MemoScreenState extends State<MemoScreen> {
     }
 
     final uuid = Uuid().v1();
-    final ext = imageResult.path.split(".")[1];
+    final ext = imageObject.path.split(".")[1];
 
     var uploadTask = ImageStorage.putFile(
       userId: userId,
       name: '$uuid.$ext',
-      file: imageResult.file,
+      file: imageObject.file,
     );
 
     setState(() {
@@ -306,9 +306,9 @@ class _MemoScreenState extends State<MemoScreen> {
         ),
       ),
     );
-    if (result != null && result.imageResult != null) {
+    if (result != null && result.imageObject != null) {
       _addImage(
-        result.imageResult,
+        result.imageObject,
         result.enableTextRecognition,
         currentSelection,
       );
@@ -605,11 +605,11 @@ class _AddImageSheetState extends State<_AddImageSheet> {
   }
 
   Future _handleMenuTapped(ImageSource source) async {
-    var imageResult = await pickImage(source);
+    var imageObject = await pickImage(source);
     Navigator.pop(
       context,
       _AddImageResult(
-        imageResult: imageResult,
+        imageObject: imageObject,
         enableTextRecognition: _enableTextRecognition,
       ),
     );
@@ -617,13 +617,13 @@ class _AddImageSheetState extends State<_AddImageSheet> {
 }
 
 class _AddImageResult {
-  final ImageResult imageResult;
+  final ImageObject imageObject;
   final bool enableTextRecognition;
 
-  _AddImageResult({this.imageResult, this.enableTextRecognition});
+  _AddImageResult({this.imageObject, this.enableTextRecognition});
 
   @override
   String toString() {
-    return '$runtimeType(imageResult: $imageResult, enableTextRecognition: $enableTextRecognition)';
+    return '$runtimeType(imageObject: $imageObject, enableTextRecognition: $enableTextRecognition)';
   }
 }

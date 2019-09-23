@@ -2,7 +2,7 @@ import 'package:image_picker/image_picker.dart' as lib;
 
 import '../image_model.dart';
 
-Future<ImageResult> pickImage(ImageSource imageSource) async {
+Future<ImageObject> pickImage(ImageSource imageSource) async {
   var libSource;
   if (imageSource == ImageSource.gallery) {
     libSource = lib.ImageSource.gallery;
@@ -11,7 +11,7 @@ Future<ImageResult> pickImage(ImageSource imageSource) async {
   }
   var pickImage = await lib.ImagePicker.pickImage(source: libSource);
   if (pickImage != null) {
-    return ImageResult(pickImage, pickImage.path);
+    return ImageObject(pickImage, pickImage.path);
   } else {
     return null;
   }

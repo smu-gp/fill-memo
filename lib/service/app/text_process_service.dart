@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:fill_memo/model/process_result.dart';
 import 'package:http/http.dart' as http;
 
+import '../image_model.dart';
+
 Future<List<ProcessResult>> sendImage({
   String baseUrl,
-  String imagePath,
+  ImageObject imageObject,
 }) async {
-  var sendImage = await http.MultipartFile.fromPath('image', imagePath);
+  var sendImage = await http.MultipartFile.fromPath('image', imageObject.path);
   var request = http.MultipartRequest(
     "POST",
     Uri.parse("$baseUrl/process/"),
