@@ -411,6 +411,31 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelDeviceConnect": "기기 연결",
+  "@labelDeviceConnect": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeHelp": "연결코드란?",
+  "@connectionCodeHelp": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodePrefix": "Fill 메모 애플리케이션이 설치된 기기와의 연결을 위해 필요한 코드입니다. 연결코드는 애플리케이션 내 ",
+  "@connectionCodePrefix": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeNavigate": "연결 > 연결코드 생성",
+  "@connectionCodeNavigate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeSuffix": " 으로 확인할 수 있습니다.",
+  "@connectionCodeSuffix": {
+    "type": "text",
+    "placeholders": {}
+  },
   "memoEmpty": "메모가 비어있습니다",
   "@memoEmpty": {
     "type": "text",

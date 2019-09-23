@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2019-09-22T17:30:55.091966",
+  "@@last_modified": "2019-09-23T13:42:18.586256",
   "actionAccept": "Accept",
   "@actionAccept": {
     "type": "text",
@@ -408,6 +408,31 @@
   },
   "labelAppendTypeNewLine": "New line",
   "@labelAppendTypeNewLine": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelDeviceConnect": "Device connect",
+  "@labelDeviceConnect": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeHelp": "Connection code?",
+  "@connectionCodeHelp": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodePrefix": "Connection code required to connect the device Fill memo application installed. can be found ",
+  "@connectionCodePrefix": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeNavigate": "Connection > Generate connection code",
+  "@connectionCodeNavigate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeSuffix": " in the application.",
+  "@connectionCodeSuffix": {
     "type": "text",
     "placeholders": {}
   },

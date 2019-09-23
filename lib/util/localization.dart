@@ -417,6 +417,31 @@ class AppLocalizations {
         name: 'labelAppendTypeNewLine',
       );
 
+  String get labelDeviceConnect => Intl.message(
+        'Device connect',
+        name: 'labelDeviceConnect',
+      );
+
+  String get connectionCodeHelp => Intl.message(
+        'Connection code?',
+        name: 'connectionCodeHelp',
+      );
+
+  String get connectionCodePrefix => Intl.message(
+        'Connection code required to connect the device Fill memo application installed. can be found ',
+        name: 'connectionCodePrefix',
+      );
+
+  String get connectionCodeNavigate => Intl.message(
+        'Connection > Generate connection code',
+        name: 'connectionCodeNavigate',
+      );
+
+  String get connectionCodeSuffix => Intl.message(
+        ' in the application.',
+        name: 'connectionCodeSuffix',
+      );
+
   String get memoEmpty => Intl.message(
         'Empty memo',
         name: 'memoEmpty',

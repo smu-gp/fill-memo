@@ -55,7 +55,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
+  assets:
+    - res/images/
   fonts:
     - family: NotoSansKR
       fonts:
