@@ -1,10 +1,10 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/util/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/util/utils.dart';
 
 class MemoTitleScreen extends StatefulWidget {
   final String memoType;
@@ -83,13 +83,13 @@ class _MemoTitleScreenState extends State<MemoTitleScreen> {
   }
 
   void _updateFolder() {
-    var words = _editTextController.text.split(" ");
+    var text = _editTextController.text;
     var findFolder;
-    if (words.length >= 1) {
+    if (text.isNotEmpty) {
       var folderState = _folderBloc.currentState;
       if (folderState is FoldersLoaded) {
         folderState.folders.forEach((folder) {
-          if (folder.name == words.first) {
+          if (text.startsWith(folder.name)) {
             findFolder = folder;
           }
         });

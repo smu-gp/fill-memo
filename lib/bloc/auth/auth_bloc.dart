@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:fill_memo/repository/repositories.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/repository/repositories.dart';
 
 import './bloc.dart';
 
@@ -83,6 +83,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> _mapChangedUserToState(ChangedUser event) async* {
     if (await _userRepository.isSignedIn()) {
       await _userRepository.signOut();
+      await _userRepository.signIn(event.changeUserId);
+    } else {
       await _userRepository.signIn(event.changeUserId);
     }
     dispatch(LoggedIn());

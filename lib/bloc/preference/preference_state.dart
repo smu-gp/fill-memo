@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:fill_memo/model/preferences.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/model/preferences.dart';
 
 class PreferenceState extends Equatable {
   final int updatedTime;

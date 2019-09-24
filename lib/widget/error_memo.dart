@@ -1,5 +1,5 @@
+import 'package:fill_memo/util/localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sp_client/util/localization.dart';
 
 class ErrorMemo extends StatelessWidget {
   final Object exception;

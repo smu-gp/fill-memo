@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:fill_memo/model/models.dart';
 import 'package:meta/meta.dart';
-import 'package:sp_client/model/models.dart';
 
 @immutable
 abstract class MemoEvent extends Equatable {
@@ -40,12 +40,13 @@ class DeleteMemo extends MemoEvent {
 }
 
 class MergeMemo extends MemoEvent {
+  final String type;
   final List<Memo> memos;
 
-  MergeMemo(this.memos);
+  MergeMemo(this.type, this.memos);
 
   @override
-  String toString() => '$runtimeType(memos: $memos)';
+  String toString() => '$runtimeType(type: $type, memos: $memos)';
 }
 
 class MemosUpdated extends MemoEvent {

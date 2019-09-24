@@ -1,22 +1,29 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/screen/connection/connect_device_screen.dart';
+import 'package:fill_memo/screen/connection/connection_authentication_screen.dart';
+import 'package:fill_memo/screen/connection/connection_authorization_screen.dart';
+import 'package:fill_memo/screen/connection/generate_code_screen.dart';
+import 'package:fill_memo/screen/connection/menu_screen.dart';
+import 'package:fill_memo/screen/connection/profile_screen.dart';
+import 'package:fill_memo/screen/folder_manage_screen.dart';
+import 'package:fill_memo/screen/memo_image_screen.dart';
+import 'package:fill_memo/screen/memo_markdown_preview_screen.dart';
+import 'package:fill_memo/screen/memo_markdown_screen.dart';
+import 'package:fill_memo/screen/memo_screen.dart';
+import 'package:fill_memo/screen/memo_screen_handwriting.dart';
+import 'package:fill_memo/screen/memo_title_screen.dart';
+import 'package:fill_memo/screen/settings/memo_type_screen.dart';
+import 'package:fill_memo/screen/settings/settings_screen.dart';
+import 'package:fill_memo/service/protobuf/connection.pb.dart';
+import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/widget/select_folder_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/screen/connection/connect_device_screen.dart';
-import 'package:sp_client/screen/connection/connection_authentication_screen.dart';
-import 'package:sp_client/screen/connection/connection_authorization_screen.dart';
-import 'package:sp_client/screen/connection/generate_code_screen.dart';
-import 'package:sp_client/screen/connection/menu_screen.dart';
-import 'package:sp_client/screen/connection/profile_screen.dart';
-import 'package:sp_client/screen/folder_manage_screen.dart';
-import 'package:sp_client/screen/memo_image_screen.dart';
-import 'package:sp_client/screen/memo_screen.dart';
-import 'package:sp_client/screen/memo_title_screen.dart';
-import 'package:sp_client/screen/settings/memo_type_screen.dart';
-import 'package:sp_client/screen/settings/settings_screen.dart';
-import 'package:sp_client/service/protobuf/connection.pb.dart';
-import 'package:sp_client/util/localization.dart';
-import 'package:sp_client/widget/select_folder_dialog.dart';
+
+import 'constants.dart';
 
 class Routes {
   PageRoute memoTitle(String memoType) {
@@ -24,14 +31,27 @@ class Routes {
   }
 
   PageRoute memo(Memo memo) {
-    return MaterialPageRoute(builder: (context) => MemoScreen(memo));
+    var dest;
+    if (memo.type == typeRichText) {
+      dest = MemoScreen(memo);
+    } else if (memo.type == typeHandWriting) {
+      dest = MemoHandwritingScreen(memo);
+    } else if (memo.type == typeMarkdown) {
+      dest = MemoMarkdownScreen(memo);
+    }
+    return MaterialPageRoute(builder: (context) => dest);
   }
 
-  PageRoute memoImage({List<String> contentImages, int initIndex}) {
+  PageRoute memoImage({
+    List<String> contentImages,
+    int initIndex,
+    String heroTagId,
+  }) {
     return MaterialPageRoute(
       builder: (context) => MemoImageScreen(
         contentImages: contentImages,
         initIndex: initIndex,
+        heroTagId: heroTagId,
       ),
     );
   }
@@ -54,8 +74,8 @@ class Routes {
       title: Text(AppLocalizations.of(context).dialogFolderSelect),
       contentPadding: EdgeInsets.all(16.0),
       content: Container(
-        width: 360.0,
-        height: 160.0,
+        width: Dimensions.dialogWidth(context),
+        height: Dimensions.dialogListHeight,
         child: SelectFolderDialog(),
       ),
       actions: <Widget>[
@@ -108,6 +128,15 @@ class Routes {
       builder: (context) => BlocProvider<PreferenceBloc>.value(
         value: preferenceBloc,
         child: SettingsMemoTypeScreen(),
+      ),
+    );
+  }
+
+  PageRoute markdownPreviewMemo({String title, String content}) {
+    return MaterialPageRoute(
+      builder: (context) => MemoMarkdownPreviewScreen(
+        title: title,
+        content: content,
       ),
     );
   }

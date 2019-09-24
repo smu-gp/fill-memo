@@ -1,15 +1,17 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/constants.dart';
+import 'package:fill_memo/util/dimensions.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/edit_text_dialog.dart';
+import 'package:fill_memo/widget/list_item.dart';
+import 'package:fill_memo/widget/sub_header.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/constants.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/edit_text_dialog.dart';
-import 'package:sp_client/widget/list_item.dart';
-import 'package:sp_client/widget/sub_header.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -39,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: Util.isLarge(context) ? 56.0 : 0,
+          horizontal: Dimensions.preferenceHorizontalMargin(context),
         ),
         child: BlocProvider<PreferenceBloc>.value(
           value: _preferenceBloc,
@@ -66,8 +68,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return <Widget>[
       ..._buildNoteItems(preferences),
       ..._buildSecurityItems(preferences),
-      if (!bool.fromEnvironment('dart.vm.product'))
-        ..._buildDebugItems(preferences),
       ..._buildInfoItems(preferences),
     ];
   }
@@ -79,27 +79,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
         preferences.get(AppPreferences.keyNewNoteOnStartup);
     var prefQuickFolderClassification =
         preferences.get(AppPreferences.keyQuickFolderClassification);
+    var prefQuickMemoWriting =
+        preferences.get(AppPreferences.keyQuickMemoWriting);
+    var prefResultAppendType =
+        preferences.get(AppPreferences.keyResultAppendType);
 
     return <Widget>[
       SubHeader(
         AppLocalizations.of(context).subtitleNote,
       ),
-      ListItem(
-        title: AppLocalizations.of(context).labelDefaultMemoType,
-        subtitle: _toLocalizationsFromType(prefDefaultMemoType.value),
-        onTap: () {
-          Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
-        },
-      ),
-      SwitchListItem(
-        title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
-        value: prefNewNoteOnStartup.value,
-        onChanged: (bool value) {
-          _preferenceBloc.dispatch(
-            UpdatePreference(prefNewNoteOnStartup..value = value),
-          );
-        },
-      ),
+      if (!kIsWeb)
+        SwitchListItem(
+          title: AppLocalizations.of(context).labelWriteNewNoteOnStartup,
+          value: prefNewNoteOnStartup.value,
+          onChanged: (bool value) {
+            _preferenceBloc.dispatch(
+              UpdatePreference(prefNewNoteOnStartup..value = value),
+            );
+          },
+        ),
       SwitchListItem(
         title: AppLocalizations.of(context).labelQuickFolderClassification,
         subtitle:
@@ -111,11 +109,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
           );
         },
       ),
+      SwitchListItem(
+        title: AppLocalizations.of(context).labelQuickMemoWriting,
+        subtitle: AppLocalizations.of(context).subtitleQuickMemoWriting,
+        value: prefQuickMemoWriting.value,
+        onChanged: (bool value) {
+          _preferenceBloc.dispatch(
+            UpdatePreference(prefQuickMemoWriting..value = value),
+          );
+        },
+      ),
+      ListItem(
+        title: AppLocalizations.of(context).labelDefaultMemoType,
+        subtitle: _toLocalizationsFromType(prefDefaultMemoType.value),
+        enabled: prefQuickMemoWriting.value,
+        onTap: () {
+          Navigator.push(context, Routes().settingsMemoType(_preferenceBloc));
+        },
+      ),
+      _DropdownPreference<String>(
+        title: AppLocalizations.of(context).labelResultAppendType,
+        subtitle: AppLocalizations.of(context).subtitleResultAppendType,
+        labels: appendTypes
+            .map((type) => _toLocalizationsFromAppendType(type))
+            .toList(),
+        values: appendTypes,
+        initValue: prefResultAppendType.value ?? typeSpace,
+        onChanged: (dynamic newValue) {
+          _preferenceBloc.dispatch(
+            UpdatePreference(prefResultAppendType..value = newValue),
+          );
+        },
+      ),
       Divider(height: 1),
     ];
   }
 
   List<Widget> _buildSecurityItems(Preferences preferences) {
+    if (kIsWeb) return [];
+
     var prefUseFingerprint = preferences.get(AppPreferences.keyUseFingerprint);
     var config = Provider.of<AppConfig>(context);
 
@@ -137,21 +169,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ];
   }
 
-  List<Widget> _buildDebugItems(Preferences preferences) {
-    return <Widget>[
-      SubHeader(
-        AppLocalizations.of(context).subtitleDebug,
-      ),
-      _EditTextPreference(
-        title: AppLocalizations.of(context).labelServiceHost,
-        preference: preferences.get(AppPreferences.keyServiceHost),
-        validation: (value) => value.isNotEmpty,
-        validationMessage: AppLocalizations.of(context).validationServiceHost,
-      ),
-      Divider(height: 1),
-    ];
-  }
-
   List<Widget> _buildInfoItems(Preferences preferences) {
     return <Widget>[
       SubHeader(
@@ -160,7 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (context, snapshot) {
-          var subtitle;
+          var subtitle = "v1.0";
           if (snapshot.hasData) {
             subtitle = "v${snapshot.data.version}";
           }
@@ -183,6 +200,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return AppLocalizations.of(context).labelHandWriting;
     }
     return null;
+  }
+
+  String _toLocalizationsFromAppendType(String appendType) {
+    switch (appendType) {
+      case typeNone:
+        return AppLocalizations.of(context).labelAppendTypeNone;
+      case typeSpace:
+        return AppLocalizations.of(context).labelAppendTypeSpace;
+      case typeNewline:
+        return AppLocalizations.of(context).labelAppendTypeNewLine;
+    }
   }
 }
 
@@ -223,6 +251,64 @@ class _EditTextPreference extends StatelessWidget {
           bloc.dispatch(UpdatePreference(preference..value = value));
         }
       },
+    );
+  }
+}
+
+class _DropdownPreference<T> extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final List<String> labels;
+  final List<T> values;
+  final T initValue;
+  final ValueChanged<T> onChanged;
+
+  _DropdownPreference({
+    Key key,
+    @required this.title,
+    this.subtitle,
+    @required this.labels,
+    @required this.values,
+    @required this.initValue,
+    this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _DropdownPreferenceState<T> createState() => _DropdownPreferenceState<T>();
+}
+
+class _DropdownPreferenceState<T> extends State<_DropdownPreference> {
+  T _dropdownValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _dropdownValue = widget.initValue;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem(
+      title: widget.title,
+      subtitle: widget.subtitle,
+      threeLine: true,
+      trailing: DropdownButton<T>(
+        value: _dropdownValue,
+        onChanged: widget.onChanged != null
+            ? (T newValue) {
+                setState(() {
+                  _dropdownValue = newValue;
+                });
+                widget.onChanged(newValue);
+              }
+            : null,
+        items: widget.values.asMap().entries.map((entry) {
+          return DropdownMenuItem<T>(
+            value: entry.value,
+            child: Text(widget.labels[entry.key]),
+          );
+        }).toList(),
+      ),
     );
   }
 }

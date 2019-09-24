@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:sp_client/model/preference.dart';
+import 'package:fill_memo/model/preference.dart';
 
 abstract class PreferenceEvent extends Equatable {
   PreferenceEvent([List props = const []]) : super(props);

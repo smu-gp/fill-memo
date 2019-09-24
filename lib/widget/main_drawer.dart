@@ -1,11 +1,14 @@
+import 'package:fill_memo/bloc/blocs.dart';
+import 'package:fill_memo/model/models.dart';
+import 'package:fill_memo/model/web_auth.dart';
+import 'package:fill_memo/repository/repositories.dart';
+import 'package:fill_memo/util/utils.dart';
+import 'package:fill_memo/widget/loading_progress.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:sp_client/bloc/blocs.dart';
-import 'package:sp_client/model/models.dart';
-import 'package:sp_client/repository/repositories.dart';
-import 'package:sp_client/util/utils.dart';
-import 'package:sp_client/widget/loading_progress.dart';
+import 'package:provider/provider.dart';
 
 import 'edit_text_dialog.dart';
 
@@ -26,7 +29,8 @@ class MainDrawer extends StatelessWidget {
                     ThemeSwitchItem(),
                 ],
               ),
-            )
+            ),
+            WebDisconnectButton(),
           ],
         ),
       ),
@@ -59,13 +63,14 @@ class MainDrawerMenu extends StatelessWidget {
               selectedFolder: state.folderId,
             ),
             Divider(),
-            _DrawerItem(
-              icon: OMIcons.phonelink,
-              title: Text(AppLocalizations.of(context).actionConnection),
-              onTap: () {
-                Navigator.push(context, Routes().connectionMenu);
-              },
-            ),
+            if (!kIsWeb)
+              _DrawerItem(
+                icon: OMIcons.phonelink,
+                title: Text(AppLocalizations.of(context).actionConnection),
+                onTap: () {
+                  Navigator.push(context, Routes().connectionMenu);
+                },
+              ),
             _DrawerItem(
               icon: OMIcons.settings,
               title: Text(AppLocalizations.of(context).actionSettings),
@@ -387,5 +392,43 @@ class _FolderExpansionTileState extends State<_FolderExpansionTile> {
     if (folderName != null) {
       _folderBloc.dispatch(AddFolder(Folder(name: folderName)));
     }
+  }
+}
+
+class WebDisconnectButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    var localizations = AppLocalizations.of(context);
+
+    return Visibility(
+      visible: kIsWeb,
+      child: Material(
+        color: theme.accentColor,
+        child: InkWell(
+          child: Container(
+            width: double.infinity,
+            height: 48,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.link_off,
+                  color: theme.accentIconTheme.color,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  localizations.labelDisconnect,
+                  style: theme.accentTextTheme.button,
+                ),
+              ],
+            ),
+          ),
+          onTap: () {
+            Provider.of<WebAuthenticate>(context, listen: false).value = false;
+          },
+        ),
+      ),
+    );
   }
 }

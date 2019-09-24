@@ -1,9 +1,11 @@
+import 'package:fill_memo/model/local_auth.dart';
+import 'package:fill_memo/util/dimensions.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/widget/circular_button.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:sp_client/model/local_auth.dart';
-import 'package:sp_client/util/localization.dart';
 
 class LocalAuthScreen extends StatefulWidget {
   @override
@@ -31,7 +33,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
       body: Center(
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 16,
+          spacing: Dimensions.keylineLarge,
           direction: Axis.vertical,
           children: <Widget>[
             CircleAvatar(
@@ -40,19 +42,19 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
               backgroundColor:
                   _authenticateFailed ? Colors.red[500] : themeData.accentColor,
             ),
-            SizedBox(height: 8),
             Text(_authenticateFailed
                 ? localizations.androidFingerprintNotRecognized
                 : localizations.labelFingerprint),
-            FlatButton(
-              child: Text(localizations.actionRetry),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-                side: BorderSide(
-                  color: themeData.colorScheme.onSurface.withOpacity(0.12),
-                ),
+            Visibility(
+              visible: _authenticateFailed,
+              child: CircularButton(
+                icon: Icon(Icons.refresh),
+                child: Text(localizations.actionRetry),
+                outline: true,
+                onPressed: () {
+                  _requestAuthenticate();
+                },
               ),
-              onPressed: () => _requestAuthenticate(),
             )
           ],
         ),

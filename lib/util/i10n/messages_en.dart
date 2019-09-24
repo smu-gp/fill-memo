@@ -3,22 +3,21 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+// Ignore issues from commonly used lints in this file.
+// ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
+// ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
+// ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
+// ignore_for_file:unused_import, file_names
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
-// ignore: unnecessary_new
 final messages = new MessageLookup();
 
-// ignore: unused_element
-final _keepAnalysisHappy = Intl.defaultLocale;
-
-// ignore: non_constant_identifier_names
-typedef MessageIfAbsent(String message_str, List args);
+typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  get localeName => 'en';
+  String get localeName => 'en';
 
   static m0(displayName, modelName) => "${displayName}\'s ${modelName}";
 
@@ -50,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionRenameFolder" : MessageLookupByLibrary.simpleMessage("Rename folder"),
     "actionRetry" : MessageLookupByLibrary.simpleMessage("Retry"),
     "actionSecretFolder" : MessageLookupByLibrary.simpleMessage("Secret folder"),
+    "actionSelectionAll" : MessageLookupByLibrary.simpleMessage("Selection All"),
     "actionSendImage" : MessageLookupByLibrary.simpleMessage("Send image"),
     "actionSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "actionSort" : MessageLookupByLibrary.simpleMessage("Sort"),
@@ -60,8 +60,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "androidFingerprintSuccess" : MessageLookupByLibrary.simpleMessage("Fingerprint recognized."),
     "androidGoToSettingsDescription" : MessageLookupByLibrary.simpleMessage("Fingerprint is not set up on your device. Go to \'Settings > Security\' to add your fingerprint."),
     "androidSignInTitle" : MessageLookupByLibrary.simpleMessage("Fingerprint Authentication"),
-    "appName" : MessageLookupByLibrary.simpleMessage("sp_client"),
+    "appName" : MessageLookupByLibrary.simpleMessage("Fill Memo"),
     "authenticatedReason" : MessageLookupByLibrary.simpleMessage("Please authenticate to use app"),
+    "connectionCodeHelp" : MessageLookupByLibrary.simpleMessage("Connection code?"),
+    "connectionCodeNavigate" : MessageLookupByLibrary.simpleMessage("Connection > Generate connection code"),
+    "connectionCodePrefix" : MessageLookupByLibrary.simpleMessage("Connection code required to connect the device Fill memo application installed. can be found "),
+    "connectionCodeSuffix" : MessageLookupByLibrary.simpleMessage(" in the application."),
     "deviceName" : m0,
     "dialogConnectionWithDevice" : MessageLookupByLibrary.simpleMessage("Connection with device?"),
     "dialogDeleteFolder" : MessageLookupByLibrary.simpleMessage("All the notes in the folder are moved to the default folder. Delete folder?"),
@@ -80,14 +84,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "imageFromCamera" : MessageLookupByLibrary.simpleMessage("Take from camera"),
     "imageFromGallery" : MessageLookupByLibrary.simpleMessage("Select from gallery"),
     "labelAppInitialize" : MessageLookupByLibrary.simpleMessage("Initialize app..."),
+    "labelAppendTypeNewLine" : MessageLookupByLibrary.simpleMessage("New line"),
+    "labelAppendTypeNone" : MessageLookupByLibrary.simpleMessage("None"),
+    "labelAppendTypeSpace" : MessageLookupByLibrary.simpleMessage("Space"),
     "labelAuthFailed" : MessageLookupByLibrary.simpleMessage("Auth failed"),
     "labelChangePinCode" : MessageLookupByLibrary.simpleMessage("Change pin code"),
+    "labelClose" : MessageLookupByLibrary.simpleMessage("Close"),
     "labelConnectFailed" : MessageLookupByLibrary.simpleMessage("Connect failed"),
     "labelConnectSuccess" : MessageLookupByLibrary.simpleMessage("Connect success"),
     "labelConnectionCode" : MessageLookupByLibrary.simpleMessage("Connection code"),
     "labelConnectionRequest" : m1,
     "labelDefaultMemoType" : MessageLookupByLibrary.simpleMessage("Default memo type"),
+    "labelDeviceConnect" : MessageLookupByLibrary.simpleMessage("Device connect"),
+    "labelDisconnect" : MessageLookupByLibrary.simpleMessage("Disconnect"),
     "labelDisconnectAnother" : MessageLookupByLibrary.simpleMessage("Disconnect another device"),
+    "labelErrorOccurred" : MessageLookupByLibrary.simpleMessage("Error occurred"),
     "labelFingerprint" : MessageLookupByLibrary.simpleMessage("Use fingerprint to unlock"),
     "labelHandWriting" : MessageLookupByLibrary.simpleMessage("Hand writing"),
     "labelInternalErr" : MessageLookupByLibrary.simpleMessage("Internal server error"),
@@ -95,10 +106,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelMarkdown" : MessageLookupByLibrary.simpleMessage("Markdown"),
     "labelName" : MessageLookupByLibrary.simpleMessage("Name"),
     "labelNoHostWaited" : MessageLookupByLibrary.simpleMessage("No host waited"),
+    "labelNoProcessResult" : MessageLookupByLibrary.simpleMessage("No process result"),
+    "labelNoTitle" : MessageLookupByLibrary.simpleMessage("No Title"),
     "labelNone" : MessageLookupByLibrary.simpleMessage("None"),
     "labelQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("Quick folder classification"),
+    "labelQuickMemoWriting" : MessageLookupByLibrary.simpleMessage("Quick memo writing"),
     "labelRejectHost" : MessageLookupByLibrary.simpleMessage("Reject by host"),
     "labelResponseTimeout" : MessageLookupByLibrary.simpleMessage("Host Response timeout"),
+    "labelResultAppendType" : MessageLookupByLibrary.simpleMessage("Result append type"),
     "labelRichText" : MessageLookupByLibrary.simpleMessage("Rich text"),
     "labelServiceHost" : MessageLookupByLibrary.simpleMessage("Service host"),
     "labelServiceUnavailable" : MessageLookupByLibrary.simpleMessage("Service Unavailable"),
@@ -108,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelVersion" : MessageLookupByLibrary.simpleMessage("Version"),
     "labelWaitConnection" : MessageLookupByLibrary.simpleMessage("Connection..."),
     "labelWaitHostResponse" : MessageLookupByLibrary.simpleMessage("Waiting host response"),
+    "labelWebConnectionRequest" : MessageLookupByLibrary.simpleMessage("Web requests connection"),
     "labelWriteNewNoteOnStartup" : MessageLookupByLibrary.simpleMessage("Write new note on startup"),
     "memoEmpty" : MessageLookupByLibrary.simpleMessage("Empty memo"),
     "memoError" : MessageLookupByLibrary.simpleMessage("Error occurred"),
@@ -123,12 +139,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "subtitleInfo" : MessageLookupByLibrary.simpleMessage("Info"),
     "subtitleNote" : MessageLookupByLibrary.simpleMessage("Note"),
     "subtitleQuickFolderClassification" : MessageLookupByLibrary.simpleMessage("Folder classification on write new note title"),
+    "subtitleQuickMemoWriting" : MessageLookupByLibrary.simpleMessage("Create a memo using the default memo type"),
+    "subtitleResultAppendType" : MessageLookupByLibrary.simpleMessage("Set extract text result append type"),
     "subtitleSecurity" : MessageLookupByLibrary.simpleMessage("Security"),
     "titleAddImage" : MessageLookupByLibrary.simpleMessage("Select image area to send"),
     "titleGuestConnection" : MessageLookupByLibrary.simpleMessage("Connect another device"),
     "titleHistory" : MessageLookupByLibrary.simpleMessage("History"),
     "titleHostConnection" : MessageLookupByLibrary.simpleMessage("Get connection code"),
-    "titleResult" : MessageLookupByLibrary.simpleMessage("Result"),
+    "titleResult" : MessageLookupByLibrary.simpleMessage("Process result"),
     "validationServiceHost" : MessageLookupByLibrary.simpleMessage("Error: service host is not empty"),
     "warnGenerateCode" : MessageLookupByLibrary.simpleMessage("If you close the screen before connecting from another device, you will not receive a connection request.")
   };

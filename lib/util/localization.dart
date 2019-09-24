@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:fill_memo/util/i10n/messages_all.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sp_client/util/i10n/messages_all.dart';
+
+import 'locale_loader_app.dart' if (dart.library.html) 'locale_loader_web.dart';
 
 class AppLocalizations {
   String get actionAccept => Intl.message(
@@ -110,6 +112,11 @@ class AppLocalizations {
         name: 'actionRetry',
       );
 
+  String get actionSelectionAll => Intl.message(
+        'Selection All',
+        name: 'actionSelectionAll',
+      );
+
   String get actionSecretFolder => Intl.message(
         'Secret folder',
         name: 'actionSecretFolder',
@@ -131,7 +138,7 @@ class AppLocalizations {
       );
 
   String get appName => Intl.message(
-        'sp_client',
+        'Fill Memo',
         name: 'appName',
       );
 
@@ -245,6 +252,11 @@ class AppLocalizations {
         name: 'labelDefaultMemoType',
       );
 
+  String get labelDisconnect => Intl.message(
+        'Disconnect',
+        name: 'labelDisconnect',
+      );
+
   String get labelDisconnectAnother => Intl.message(
         'Disconnect another device',
         name: 'labelDisconnectAnother',
@@ -315,6 +327,11 @@ class AppLocalizations {
         name: 'labelServiceUnavailable',
       );
 
+  String get labelNoTitle => Intl.message(
+        'No Title',
+        name: 'labelNoTitle',
+      );
+
   String get labelUnnamed => Intl.message(
         'Unnamed',
         name: 'labelUnnamed',
@@ -345,9 +362,84 @@ class AppLocalizations {
         name: 'labelWaitHostResponse',
       );
 
+  String get labelWebConnectionRequest => Intl.message(
+        'Web requests connection',
+        name: 'labelWebConnectionRequest',
+      );
+
   String get labelWriteNewNoteOnStartup => Intl.message(
         'Write new note on startup',
         name: 'labelWriteNewNoteOnStartup',
+      );
+
+  String get labelNoProcessResult => Intl.message(
+        'No process result',
+        name: 'labelNoProcessResult',
+      );
+
+  String get labelClose => Intl.message(
+        'Close',
+        name: 'labelClose',
+      );
+
+  String get labelErrorOccurred => Intl.message(
+        'Error occurred',
+        name: 'labelErrorOccurred',
+      );
+
+  String get labelQuickMemoWriting => Intl.message(
+        'Quick memo writing',
+        name: 'labelQuickMemoWriting',
+      );
+
+  String get labelResultAppendType => Intl.message(
+        'Result append type',
+        name: 'labelResultAppendType',
+      );
+
+  String get subtitleResultAppendType => Intl.message(
+        'Set extract text result append type',
+        name: 'subtitleResultAppendType',
+      );
+
+  String get labelAppendTypeNone => Intl.message(
+        'None',
+        name: 'labelAppendTypeNone',
+      );
+
+  String get labelAppendTypeSpace => Intl.message(
+        'Space',
+        name: 'labelAppendTypeSpace',
+      );
+
+  String get labelAppendTypeNewLine => Intl.message(
+        'New line',
+        name: 'labelAppendTypeNewLine',
+      );
+
+  String get labelDeviceConnect => Intl.message(
+        'Device connect',
+        name: 'labelDeviceConnect',
+      );
+
+  String get connectionCodeHelp => Intl.message(
+        'Connection code?',
+        name: 'connectionCodeHelp',
+      );
+
+  String get connectionCodePrefix => Intl.message(
+        'Connection code required to connect the device Fill memo application installed. can be found ',
+        name: 'connectionCodePrefix',
+      );
+
+  String get connectionCodeNavigate => Intl.message(
+        'Connection > Generate connection code',
+        name: 'connectionCodeNavigate',
+      );
+
+  String get connectionCodeSuffix => Intl.message(
+        ' in the application.',
+        name: 'connectionCodeSuffix',
       );
 
   String get memoEmpty => Intl.message(
@@ -421,6 +513,11 @@ class AppLocalizations {
         name: 'subtitleSecurity',
       );
 
+  String get subtitleQuickMemoWriting => Intl.message(
+        'Create a memo using the default memo type',
+        name: 'subtitleQuickMemoWriting',
+      );
+
   String get titleAddImage => Intl.message(
         'Select image area to send',
         name: 'titleAddImage',
@@ -442,7 +539,7 @@ class AppLocalizations {
       );
 
   String get titleResult => Intl.message(
-        'Result',
+        'Process result',
         name: 'titleResult',
       );
 
@@ -528,9 +625,7 @@ class AppLocalizations {
       );
 
   static Future<AppLocalizations> load(Locale locale) async {
-    final String name =
-        locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
-    final String localeName = Intl.canonicalizedLocale(name);
+    String localeName = await initializeLocale(locale);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       return AppLocalizations();

@@ -1,3 +1,4 @@
+import 'package:fill_memo/util/dimensions.dart';
 import 'package:flutter/material.dart';
 
 class ListItem extends StatelessWidget {
@@ -7,6 +8,7 @@ class ListItem extends StatelessWidget {
   final Widget trailing;
   final VoidCallback onTap;
   final bool enabled;
+  final bool threeLine;
 
   const ListItem({
     Key key,
@@ -16,6 +18,7 @@ class ListItem extends StatelessWidget {
     this.subtitle,
     this.onTap,
     this.enabled = true,
+    this.threeLine = false,
   });
 
   @override
@@ -26,7 +29,7 @@ class ListItem extends StatelessWidget {
     return InkWell(
       onTap: enabled ? onTap : null,
       child: Container(
-        height: twoLine ? 64.0 : 48.0,
+        height: twoLine ? threeLine ? 88.0 : 64.0 : 48.0,
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           children: <Widget>[
@@ -53,6 +56,7 @@ class ListItem extends StatelessWidget {
                 ],
               ),
             ),
+            if (trailing != null) SizedBox(width: 16.0),
             if (trailing != null) trailing,
           ],
         ),
@@ -112,5 +116,72 @@ class _SwitchListItemState extends State<SwitchListItem> {
       _value = value;
     });
     widget.onChanged(_value);
+  }
+}
+
+class SelectableListItem extends StatefulWidget {
+  final String title;
+  final Widget icon;
+  final bool selectable;
+  final bool selected;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+  final ValueChanged<bool> onCheckboxChanged;
+  final Widget tralling;
+
+  SelectableListItem({
+    Key key,
+    @required this.title,
+    this.icon,
+    this.selectable = false,
+    this.selected = false,
+    @required this.onTap,
+    @required this.onLongPress,
+    @required this.onCheckboxChanged,
+    this.tralling,
+  }) : super(key: key);
+
+  @override
+  _SelectableListItemState createState() => _SelectableListItemState();
+}
+
+class _SelectableListItemState extends State<SelectableListItem> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: widget.selectable ? Dimensions.keylineMini : Dimensions.keyline,
+          right: Dimensions.keyline,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: Dimensions.listOneLineHeight,
+          ),
+          child: Row(
+            children: <Widget>[
+              if (widget.selectable)
+                Checkbox(
+                  value: widget.selected,
+                  onChanged: widget.onCheckboxChanged,
+                ),
+              if (!widget.selectable && widget.icon != null) widget.icon,
+              SizedBox(width: widget.selectable ? 20.0 : 32.0),
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.subhead.copyWith(
+                        fontSize: 16.0,
+                      ),
+                ),
+              ),
+              if (widget.tralling != null) widget.tralling,
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

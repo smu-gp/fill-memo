@@ -1,6 +1,7 @@
+import 'package:fill_memo/service/protobuf/connection.pb.dart';
+import 'package:fill_memo/util/localization.dart';
+import 'package:fill_memo/widget/circular_button.dart';
 import 'package:flutter/material.dart';
-import 'package:sp_client/service/protobuf/connection.pb.dart';
-import 'package:sp_client/util/localization.dart';
 
 class ConnectionAuthorizationScreen extends StatelessWidget {
   final WaitAuthResponse waitAuthResponse;
@@ -17,6 +18,7 @@ class ConnectionAuthorizationScreen extends StatelessWidget {
 
     var deviceName;
     var deviceIcon;
+    var isWebConnection = false;
     if (deviceType == AuthDeviceInfo_DeviceType.DEVICE_ANDROID) {
       var separateName = deviceInfo.deviceName.split("|");
       if (separateName[0].isEmpty) {
@@ -26,6 +28,7 @@ class ConnectionAuthorizationScreen extends StatelessWidget {
       }
       deviceIcon = Icons.android;
     } else if (deviceType == AuthDeviceInfo_DeviceType.DEVICE_WEB) {
+      isWebConnection = true;
       deviceName = deviceInfo.deviceName;
       deviceIcon = Icons.public;
     } else {
@@ -53,29 +56,26 @@ class ConnectionAuthorizationScreen extends StatelessWidget {
               backgroundColor: themeData.accentColor,
             ),
             SizedBox(height: 8),
-            Text(localization.labelConnectionRequest(deviceName)),
+            Text(isWebConnection
+                ? localization.labelWebConnectionRequest
+                : localization.labelConnectionRequest(deviceName)),
             ButtonBar(
               children: <Widget>[
-                FlatButton(
+                CircularButton(
                   child: Text(localization.actionReject),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    side: BorderSide(
-                      color: themeData.colorScheme.onSurface.withOpacity(0.12),
-                    ),
-                  ),
-                  onPressed: () => Navigator.pop(context, false),
+                  outline: true,
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
                 ),
-                FlatButton(
+                CircularButton(
                   child: Text(
                     localization.actionAccept,
                     style: themeData.accentTextTheme.button,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  color: themeData.accentColor,
-                  onPressed: () => Navigator.pop(context, true),
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
                 ),
               ],
             )

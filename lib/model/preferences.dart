@@ -1,4 +1,4 @@
-import 'package:sp_client/model/preference.dart';
+import 'package:fill_memo/model/preference.dart';
 
 /// A wrapper class for preference lists.
 class Preferences {

@@ -106,6 +106,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "actionSelectionAll": "전체 선택",
+  "@actionSelectionAll": {
+    "type": "text",
+    "placeholders": {}
+  },
   "actionSecretFolder": "비밀 폴더",
   "@actionSecretFolder": {
     "type": "text",
@@ -126,7 +131,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "appName": "sp_client",
+  "appName": "Fill 메모",
   "@appName": {
     "type": "text",
     "placeholders": {}
@@ -241,6 +246,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelDisconnect": "연결 해제",
+  "@labelDisconnect": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelDisconnectAnother": "다른 기기에서 연결 해제",
   "@labelDisconnectAnother": {
     "type": "text",
@@ -311,6 +321,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelNoTitle": "제목없음",
+  "@labelNoTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelUnnamed": "이름 없음",
   "@labelUnnamed": {
     "type": "text",
@@ -341,8 +356,83 @@
     "type": "text",
     "placeholders": {}
   },
+  "labelWebConnectionRequest": "웹에서 연결을 요청합니다",
+  "@labelWebConnectionRequest": {
+    "type": "text",
+    "placeholders": {}
+  },
   "labelWriteNewNoteOnStartup": "앱 시작 시 새 메모 작성",
   "@labelWriteNewNoteOnStartup": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelNoProcessResult": "결과가 없습니다",
+  "@labelNoProcessResult": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelClose": "닫기",
+  "@labelClose": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelErrorOccurred": "오류 발생",
+  "@labelErrorOccurred": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelQuickMemoWriting": "빠른 메모 작성",
+  "@labelQuickMemoWriting": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelResultAppendType": "텍스트 결과 추가 유형",
+  "@labelResultAppendType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "subtitleResultAppendType": "이미지에서 가져온 여러 텍스트 결과를 추가할때 내용에 덧붙일 방법을 설정합니다",
+  "@subtitleResultAppendType": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeNone": "없음",
+  "@labelAppendTypeNone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeSpace": "띄어쓰기",
+  "@labelAppendTypeSpace": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelAppendTypeNewLine": "새로운 줄",
+  "@labelAppendTypeNewLine": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "labelDeviceConnect": "기기 연결",
+  "@labelDeviceConnect": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeHelp": "연결코드란?",
+  "@connectionCodeHelp": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodePrefix": "Fill 메모 애플리케이션이 설치된 기기와의 연결을 위해 필요한 코드입니다. 연결코드는 애플리케이션 내 ",
+  "@connectionCodePrefix": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeNavigate": "연결 > 연결코드 생성",
+  "@connectionCodeNavigate": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "connectionCodeSuffix": " 으로 확인할 수 있습니다.",
+  "@connectionCodeSuffix": {
     "type": "text",
     "placeholders": {}
   },
@@ -416,6 +506,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "subtitleQuickMemoWriting": "기본 메모 유형으로 메모를 작성합니다",
+  "@subtitleQuickMemoWriting": {
+    "type": "text",
+    "placeholders": {}
+  },
   "titleAddImage": "이미지 영역 선택",
   "@titleAddImage": {
     "type": "text",
@@ -436,7 +531,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "titleResult": "결과",
+  "titleResult": "처리 결과",
   "@titleResult": {
     "type": "text",
     "placeholders": {}
@@ -446,7 +541,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "warnGenerateCode": "다른 기기에서 연결하기 전에 화면을 닫으면 연결 요청을 받을 수 없습니다.",
+  "warnGenerateCode": "화면을 닫으면 연결 요청을 받을 수 없습니다",
   "@warnGenerateCode": {
     "type": "text",
     "placeholders": {}

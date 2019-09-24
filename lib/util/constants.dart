@@ -7,6 +7,13 @@ String processingServiceUrl(String host) => "http://$host:8000";
 const tokenServiceUrl = "https://us-central1-smu-gp.cloudfunctions.net";
 
 /// Memo type
+const memoTypes = [typeRichText, typeMarkdown, typeHandWriting];
 const typeRichText = "text/richtext";
 const typeMarkdown = "text/markdown";
 const typeHandWriting = "image/handWriting";
+
+/// Result append type
+const appendTypes = [typeNone, typeSpace, typeNewline];
+const typeNone = "none";
+const typeSpace = "space";
+const typeNewline = "newline";

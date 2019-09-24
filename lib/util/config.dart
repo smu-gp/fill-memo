@@ -1,8 +1,9 @@
 class AppConfig {
+  /// Runtime config constants
   final bool useFingerprint;
 
   AppConfig({
-    this.useFingerprint,
+    this.useFingerprint = false,
   });
 
   @override
