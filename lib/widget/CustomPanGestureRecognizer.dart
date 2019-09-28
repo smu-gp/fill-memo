@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'dart:developer' as de;
-
 import 'package:fill_memo/widget/painter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -54,7 +52,6 @@ class CustomPanGestureRecognizer extends PanGestureRecognizer {
         }
       }
     } else {
-      de.log("Large 통과X");
       startTrackingPointer(event.pointer);
       resolve(GestureDisposition.accepted);
     }
