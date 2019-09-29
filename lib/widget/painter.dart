@@ -3,10 +3,12 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:developer' as de;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import 'CustomPanGestureRecognizer.dart';
@@ -34,8 +36,8 @@ class _PainterState extends State<Painter> {
     _finished = false;
     widget.painterController._widgetFinish = _finish;
 
-    //widget.painterController.capture = capture;
   }
+
 
   Size _finish() {
     setState(() {
@@ -48,39 +50,41 @@ class _PainterState extends State<Painter> {
     return context.size;
   }
 
+
   @override
   Widget build(BuildContext context) {
     var controller = widget.painterController;
     Widget child;
     if (controller.pictureOn) {
-      child = new CustomPaint(
-        willChange: true,
-        foregroundPainter: new PicturePainter(
-          controller._pathHistory,
-          repaint: controller,
-        ),
-        child: Container(child: Image.file(controller.onDrawing)),
-      );
-      return new RepaintBoundary(
+      child = new RepaintBoundary(
         key: controller.capture,
-        //key : capture
-        child: RawGestureDetector(
-          gestures: <Type, GestureRecognizerFactory>{
-            CustomPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
-                CustomPanGestureRecognizer>(
-              () => CustomPanGestureRecognizer(
-                onPanStart: _onPanStart,
-                onPanUpdate: _onPanUpdate,
-                onPanEnd: _onPanEnd,
-                context: context,
-                controller: controller,
-              ),
-              (CustomPanGestureRecognizer instance) {},
-            ),
-          },
-          child: child,
+        child:new CustomPaint(
+          willChange: true,
+          foregroundPainter: new PicturePainter(
+            controller._pathHistory,
+            repaint: controller,
+          ),
+          child: Container(child: Image.file(controller.onDrawing)),
         ),
       );
+
+      Widget w= new RawGestureDetector(
+        gestures: <Type, GestureRecognizerFactory>{
+          CustomPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+            CustomPanGestureRecognizer>(
+                () => CustomPanGestureRecognizer(
+            onPanStart: _onPanStart,
+            onPanUpdate: _onPanUpdate,
+            onPanEnd: _onPanEnd,
+            context: context,
+            controller: controller,
+            ),
+                (CustomPanGestureRecognizer instance) {},
+          ),
+        },
+        child: child,
+      );
+      return w;
     } else {
       child = new CustomPaint(
         willChange: true,
@@ -89,12 +93,6 @@ class _PainterState extends State<Painter> {
       );
       child = new ClipRect(child: child);
       if (!_finished) {
-        //child=new GestureDetector(
-        //  child:child,
-        //  onPanStart: _onPanStart,
-        //  onPanUpdate: _onPanUpdate,
-        //  onPanEnd: _onPanEnd,
-        //);
         child = RawGestureDetector(
           gestures: <Type, GestureRecognizerFactory>{
             CustomPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
@@ -190,40 +188,35 @@ class _PainterState extends State<Painter> {
   void _onPanEnd(DragEndDetails end) {
     widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
-    if (widget.painterController.pictureOn) {
-      capturePng(widget.painterController.capture, widget.painterController);
-    }
   }
 
   Future<void> capturePng(
-      GlobalKey capture, PainterController controller) async {
+     GlobalKey capture, PainterController controller,pixelRatio) async {
     ui.Image image;
     bool catched = false;
     RenderRepaintBoundary boundary = capture.currentContext.findRenderObject();
     try {
-      image = await boundary.toImage(pixelRatio: 3.0);
+      image = await boundary.toImage(pixelRatio: pixelRatio);
       catched = true;
     } catch (exception) {
       catched = false;
       Timer(Duration(milliseconds: 1), () {
-        capturePng(capture, controller);
+        capturePng(capture, controller,pixelRatio);
       });
     }
     if (catched) {
       Uint8List data = (await image.toByteData(format: ui.ImageByteFormat.png))
           .buffer
           .asUint8List();
-      setState(() {
-        controller.display = data;
-      });
+      if(this.mounted){
+        setState(() {
+          controller.display = data;
+        });
+      }
+      de.log("painter capturePng----------------------------- ");
     }
   }
 
-//void getimg(Future<Uint8List> val) {
-//  val.then((data)=>setState((){
-//    widget.painterController.display = data;
-//  }));
-// }
 
 }
 
@@ -237,6 +230,8 @@ class _PainterPainter extends CustomPainter {
     _path.draw(canvas, size);
   }
 
+
+
   @override
   bool shouldRepaint(_PainterPainter oldDelegate) {
     return true;
@@ -245,7 +240,6 @@ class _PainterPainter extends CustomPainter {
 
 class PicturePainter extends CustomPainter {
   final _PathHistory _path;
-
   PicturePainter(this._path, {Listenable repaint}) : super(repaint: repaint);
 
   @override
@@ -257,6 +251,7 @@ class PicturePainter extends CustomPainter {
   bool shouldRepaint(PicturePainter oldDelegate) {
     return true;
   }
+
 }
 
 class _PathHistory {
@@ -319,6 +314,7 @@ class _PathHistory {
   }
 
   void endCurrent() {
+
     _inDrag = false;
   }
 
@@ -389,6 +385,7 @@ class PainterController extends ChangeNotifier {
   File _onDrawing;
   Uint8List display;
   GlobalKey _capture = GlobalKey();
+
   GlobalKey _noImageCap = GlobalKey();
 
   /////////////////////////////////////////
@@ -401,6 +398,7 @@ class PainterController extends ChangeNotifier {
   ///////////////////////////////////////
   PainterController() {
     _pathHistory = new _PathHistory();
+    _onDrawing = null;
   }
 
   bool get penOrfinger => _penOrfinger;
@@ -409,6 +407,7 @@ class PainterController extends ChangeNotifier {
     _penOrfinger = penOrfinger;
     notifyListeners();
   }
+
 
   bool get pictureOn => _pictureOn;
 

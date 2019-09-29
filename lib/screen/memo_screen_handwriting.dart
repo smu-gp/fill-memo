@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:developer' as de;
 
 import 'package:fill_memo/bloc/blocs.dart';
 import 'package:fill_memo/model/models.dart';
@@ -24,6 +25,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission/permission.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
+
 
 final _slider = PublishSubject<double>();
 Observable<double> get sliderStream => _slider.stream;
@@ -111,6 +113,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
     }
     controller.thickness = 5.0;
     controller.drawColor = Colors.black;
+
     return controller;
   }
 
@@ -122,10 +125,12 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       controller.backgroundColor = Colors.white;
       return controller;
     } else {
-      if (widget.memo.contentImages?.isNotEmpty != false) {
+      if (widget.memo.contentImages?.isNotEmpty) {
         PainterController controller = new PainterController();
-        controller.pictureOn = true;
-        controller.onDrawing = new File(widget.memo.contentImages[0]);
+        setState(() {
+          controller.pictureOn = true;
+          controller.onDrawing = new File(widget.memo.contentImages[0]);
+        });
         return getControllor(widget.memo, controller);
       } else {
         PainterController controller = new PainterController();
@@ -142,6 +147,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height - kToolbarHeight - 48.0;
     Finishsize = new Size(width, height);
@@ -213,12 +219,15 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
           icon: _controller.pictureOn
               ? new Icon(Icons.block)
               : new Icon(Icons.image),
+
+          //comeback
           onPressed: () {
             if (!_controller.pictureOn) {
-              _showAddImageBottomSheet();
+              final get = _showAddImageBottomSheet();
             } else {
               setState(() {
                 _controller.pictureOn = !_controller.pictureOn;
+                _controller.display = null;
                 _memoContentImages.removeLast();
                 clear(_controller);
               });
@@ -231,7 +240,9 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
         ),
       ];
     }
-    return Theme(
+    de.log("build Complet");
+    //comeback
+    Widget w = Theme(
       data: AppThemes.lightTheme,
       child:Scaffold(
         appBar: AppBar(
@@ -256,7 +267,10 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
               child: _TitleEditText(controller: _editTitleTextController),
             ),
             Expanded(
-              child:new RepaintBoundary(key: outCapture, child: Painter(_controller)),
+              child:new RepaintBoundary(
+                  key: outCapture,
+                  child: Painter(_controller)
+              ),
             ),
             Material(
               elevation: 8.0,
@@ -268,7 +282,6 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
                         children: <Widget>[
                           new IconButton(
                             focusColor: _controller.drawColor,
-
                             icon: _controller.removeon?
                             new Icon(Icons.gesture):new Icon(Icons.delete),
                             onPressed:(){
@@ -298,12 +311,13 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       ),
     );
 
-
+    return w;
   }
 
   void clear(PainterController controller) {
     controller.clear();
-    capturePng(controller.capture, controller);
+    //capturePng(controller.capture, controller,1.0);
+    capturePng(outCapture, controller, 1.0);
   }
 
   Future<String> get _localPath async {
@@ -342,28 +356,24 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
 
 
   Future<File> save(GlobalKey capture) async {
-    //if(!AppConfig.runOnWeb){
-    //}
     var permissionNames =
         await Permission.requestPermissions([PermissionName.Storage]);
 
     final path = await _localPath;
-    //de.log("dir" + '$path');
+
     String name = widget.memo.title +
         "_" +
         DateTime.now().millisecondsSinceEpoch.toString();
     final file = File('$path/$name.png');
     if (_controller.pictureOn) {
-      final image = capturePng(_controller.capture, _controller);
-
+      final image = capturePng(_controller.capture, _controller,3.0);
       image.then((data) {
         file.writeAsBytesSync(data);
       });
     }
 
     else {
-      final image = capturePng(_controller.noImageCap, _controller);
-
+      final image = capturePng(_controller.noImageCap, _controller,3.0);
       image.then((data) {
         file.writeAsBytesSync(data);
       });
@@ -374,6 +384,7 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
 
   void _updateDrawingMemo(Size size) {
     //The error _debugLifecycleState != _ElementLifecycle.defunct is because setState is called after widget dispose()
+    de.log("Pictureon :" + _controller.pictureOn.toString());
 
     var titleText = _editTitleTextController.text;
 
@@ -385,14 +396,23 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
 
     String img;
     if (_controller.pictureOn) {
+      //de.log("onDrawing :" + _controller.onDrawing.toString());
+      //final image = capturePng(_controller.capture, _controller);
+      //capturePng(outCapture, _controller, 1.0);
       savedInfo(memo, contentText, img, _controller.display, titleText);
+
     } else {
       cached = _controller.noSetFinish(size);
+
       Future<Uint8List> getimage;
+
       getimage = cached.toPNG();
+
       getimage.then((data) {
+
         savedInfo(memo, contentText, img, data, titleText);
-      }, onError: (e) {});
+
+        }, onError: (e) {});
     }
   }
 
@@ -460,38 +480,39 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       }
     }
   }
+  @override
+  void deactivate(){
 
+    final image = capturePng(outCapture, _controller, 1.0);
+    image.then((data) {
+      _updateDrawingMemo(Finishsize);
+
+    });
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
-    _updateDrawingMemo(Finishsize);
+    de.log("dispose-----------------------------------------------");
     _editTitleTextController.dispose();
     super.dispose();
   }
 
 
   Future<Uint8List> capturePng(
-      GlobalKey capture, PainterController controller) async {
+      GlobalKey capture, PainterController controller,pixelRatio) async {
     ui.Image image;
     bool catched = false;
     RenderRepaintBoundary boundary = capture.currentContext.findRenderObject();
-    try {
-      image = await boundary.toImage(pixelRatio: 3.0);
-      catched = true;
-    } catch (exception) {
-      catched = false;
-      Timer(Duration(milliseconds: 1), () {
-        capturePng(capture, controller);
-      });
-    }
-    if (catched) {
-      Uint8List data = (await image.toByteData(format: ui.ImageByteFormat.png))
-          .buffer
-          .asUint8List();
-      //var redata = (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asInt8List();
-      setState(() {
-        _controller.display = data;
-      });
-      return data;
-    }
+    image = await boundary.toImage(pixelRatio: pixelRatio);
+    Uint8List data = (await image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
+    var redata = (await image.toByteData(format: ui.ImageByteFormat.png)).buffer.asInt8List();
+    _controller.display = data;
+    de.log("capturePng 실행");
+    return data;
+
   }
 
   Future _showAddImageBottomSheet() async {
@@ -505,12 +526,18 @@ class _MemoHandwritingScreenState extends State<MemoHandwritingScreen> {
       } else {
         _memoContentImages[0] = result.file.path;
       }
-      setState(() {
-        _controller.pictureOn = true;
-        _controller.onDrawing = result.file;
-      });
-      clear(_controller);
-      capturePng(outCapture, _controller);
+      if(this.mounted){
+        setState(() {
+          _controller.pictureOn = true;
+          _controller.onDrawing = result.file;
+
+        });
+      }
+
+
+      _controller.clear();
+
+      return await true;
     }
   }
 
