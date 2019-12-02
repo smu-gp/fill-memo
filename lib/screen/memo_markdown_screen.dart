@@ -465,7 +465,9 @@ class _MemoMarkdownScreenState extends State<MemoMarkdownScreen> {
     }
 
     var isValid = memo.title != null || memo.content != null;
-
+    if(memo.content == null){
+      memo.content="";
+    }
     if (widget.memo.id != null) {
       if (isValid) {
         if (isChanged) {
