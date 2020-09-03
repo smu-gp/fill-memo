@@ -5,7 +5,7 @@
 
 ## Screenshots
 
-   Rich Text Editor
+- Rich Text Editor
 
 ![rich-text-editor_1](art/rich-text-editor_1.png)
 ![rich-text-editor_2](art/rich-text-editor_2.png)
