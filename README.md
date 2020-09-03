@@ -3,17 +3,22 @@
 [![Codemagic build status](https://api.codemagic.io/apps/5c358f4b084a180009cfb1ac/5c358f4b084a180009cfb1ab/status_badge.svg)](https://codemagic.io/apps/5c358f4b084a180009cfb1ac/5c358f4b084a180009cfb1ab/latest_build)
 [![Coverage Status](https://coveralls.io/repos/github/smu-gp/sp-client/badge.svg?branch=master)](https://coveralls.io/github/smu-gp/sp-client?branch=master)
 
-A new Flutter application.
+## Screenshots
 
-## Getting Started
+   Rich Text Editor
 
-This project is a starting point for a Flutter application.
+![rich-text-editor_1](art/rich-text-editor_1.png)
+![rich-text-editor_2](art/rich-text-editor_2.png)
+![rich-text-editor_3](art/rich-text-editor_3.png)
 
-A few resources to get you started if this is your first Flutter project:
+- Markdown
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+![markdown_1](art/markdown_1.png)
+![markdown_2](art/markdown_2.png)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.io/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Connection
+
+![connection_1](art/connection_1.png)
+![connection_2](art/connection_2.png)
+![connection_3](art/connection_3.png)
+![connection_4](art/connection_4.png)
